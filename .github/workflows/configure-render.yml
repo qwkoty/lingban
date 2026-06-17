@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      RENDER_SERVICE_NAME: lingban-server
+      RENDER_SERVICE_NAME: lingban
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Resolve Render service ID
