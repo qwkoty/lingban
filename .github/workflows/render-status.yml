@@ -1,0 +1,33 @@
+name: Check Render Deploy Status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_NAME: lingban
+    steps:
+      - name: Resolve service and latest deploy
+        run: |
+          set -e
+          SERVICE_JSON=$(curl -fsSL \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services?name=$RENDER_SERVICE_NAME&limit=1")
+          SERVICE_ID=$(echo "$SERVICE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['service']['id'])")
+          echo "Service ID: $SERVICE_ID"
+          echo ""
+          echo "=== Latest deploy ==="
+          curl -fsSL \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID/deploys?limit=1" | python3 -m json.tool
+          echo ""
+          echo "=== Service details ==="
+          curl -fsSL \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID" | python3 -m json.tool
