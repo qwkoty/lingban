@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Animated,
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ScreenWrapper } from '../components/ScreenWrapper';
@@ -18,8 +19,54 @@ import { useAuth } from '../context/AuthContext';
 import { ConversationMessage } from '../types';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { SendIcon } from '../components/icons';
+import { TypingIndicator } from '../components/animations';
 
 type ChatRoute = RouteProp<RootStackParamList, 'Chat'>;
+
+function MessageBubble({
+  item,
+  agent,
+  colors,
+}: {
+  item: ConversationMessage;
+  agent: any;
+  colors: any;
+}) {
+  const isUser = item.role === 'user';
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(isUser ? 20 : -20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 250, useNativeDriver: true }),
+      Animated.spring(translateX, { toValue: 0, friction: 7, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={[
+        styles.bubbleRow,
+        isUser ? styles.userRow : styles.agentRow,
+        { opacity, transform: [{ translateX }] },
+      ]}
+    >
+      {!isUser && <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={36} />}
+      <View
+        style={[
+          styles.bubble,
+          isUser
+            ? { backgroundColor: colors.primary, borderBottomRightRadius: 6 }
+            : { backgroundColor: colors.surface, borderBottomLeftRadius: 6, borderColor: colors.border, borderWidth: 1 },
+        ]}
+      >
+        <Text style={{ color: isUser ? colors.textInverse : colors.text, fontSize: 15, lineHeight: 22, fontWeight: '400' }}>
+          {item.content}
+        </Text>
+      </View>
+    </Animated.View>
+  );
+}
 
 export function ChatScreen() {
   const { colors } = useTheme();
@@ -79,27 +126,6 @@ export function ChatScreen() {
     }
   };
 
-  const renderItem = ({ item }: { item: ConversationMessage }) => {
-    const isUser = item.role === 'user';
-    return (
-      <View style={[styles.bubbleRow, isUser ? styles.userRow : styles.agentRow]}>
-        {!isUser && <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={36} />}
-        <View
-          style={[
-            styles.bubble,
-            isUser
-              ? { backgroundColor: colors.primary, borderBottomRightRadius: 4 }
-              : { backgroundColor: colors.surface, borderBottomLeftRadius: 4, borderColor: colors.border, borderWidth: 1 },
-          ]}
-        >
-          <Text style={{ color: isUser ? colors.textInverse : colors.text, fontSize: 15, lineHeight: 22 }}>
-            {item.content}
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <ScreenWrapper>
       <KeyboardAvoidingView
@@ -107,21 +133,29 @@ export function ChatScreen() {
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        <View style={styles.header}>
-          <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={40} />
-          <View style={{ marginLeft: 12 }}>
+        <View style={[styles.header, { borderBottomColor: colors.border }]}>
+          <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={42} />
+          <View style={{ marginLeft: 14 }}>
             <Text style={[styles.agentName, { color: colors.text }]}>{agent.name}</Text>
-            <Text style={[styles.agentMeta, { color: colors.textSecondary }]}>点击卡片进入设置</Text>
+            <Text style={[styles.agentMeta, { color: colors.textSecondary }]}>{agent.model}</Text>
           </View>
         </View>
         <FlatList
           ref={flatListRef}
           data={messages}
           keyExtractor={(item) => String(item.id)}
-          renderItem={renderItem}
+          renderItem={({ item }) => <MessageBubble item={item} agent={agent} colors={colors} />}
           contentContainerStyle={styles.list}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
         />
+        {loading && (
+          <View style={[styles.typingRow, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={28} />
+            <View style={[styles.typingBubble, { borderColor: colors.border }]}>
+              <TypingIndicator color={colors.primary} />
+            </View>
+          </View>
+        )}
         <View style={[styles.inputBar, { backgroundColor: colors.surface, borderTopColor: colors.border }]}>
           <TextInput
             value={input}
@@ -152,16 +186,18 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
   },
   agentName: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
   },
   agentMeta: {
     fontSize: 12,
     marginTop: 2,
+    fontWeight: '500',
   },
   list: {
     padding: 16,
@@ -169,7 +205,7 @@ const styles = StyleSheet.create({
   },
   bubbleRow: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 14,
     alignItems: 'flex-end',
   },
   userRow: {
@@ -180,30 +216,45 @@ const styles = StyleSheet.create({
   },
   bubble: {
     maxWidth: '76%',
+    paddingHorizontal: 15,
+    paddingVertical: 11,
+    borderRadius: 20,
+  },
+  typingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+  },
+  typingBubble: {
+    marginLeft: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 18,
+    borderWidth: 1,
+    borderBottomLeftRadius: 6,
   },
   inputBar: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     borderTopWidth: 1,
   },
   input: {
     flex: 1,
     maxHeight: 120,
     borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    borderRadius: 22,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
     fontSize: 15,
   },
   sendButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,

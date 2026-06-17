@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
   Alert,
   ScrollView,
@@ -17,6 +16,7 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { ThemeIcon, ShieldIcon, ServerIcon, ChevronRightIcon } from '../components/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_KEY } from '../context/AuthContext';
+import { ScalePress, FadeIn, AnimatedSwitch } from '../components/animations';
 
 type ProfileNav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -62,68 +62,71 @@ export function ProfileScreen() {
     label,
     value,
     onPress,
+    right,
   }: {
     icon: React.ReactNode;
     label: string;
     value?: string;
     onPress?: () => void;
+    right?: React.ReactNode;
   }) => (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      disabled={!onPress}
-      onPress={onPress}
-      style={[styles.row, { backgroundColor: colors.surface, borderColor: colors.border }]}
-    >
-      <View style={styles.rowLeft}>{icon}</View>
-      <View style={styles.rowCenter}>
-        <Text style={[styles.rowLabel, { color: colors.text }]}>{label}</Text>
-        {value ? <Text style={[styles.rowValue, { color: colors.textSecondary }]}>{value}</Text> : null}
+    <ScalePress scale={0.98} disabled={!onPress} onPress={onPress}>
+      <View style={[styles.row, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={styles.rowLeft}>{icon}</View>
+        <View style={styles.rowCenter}>
+          <Text style={[styles.rowLabel, { color: colors.text }]}>{label}</Text>
+          {value ? <Text style={[styles.rowValue, { color: colors.textSecondary }]}>{value}</Text> : null}
+        </View>
+        {right || (onPress && <ChevronRightIcon size={18} color={colors.textSecondary} />)}
       </View>
-      {onPress && <ChevronRightIcon size={18} color={colors.textSecondary} />}
-    </TouchableOpacity>
+    </ScalePress>
   );
 
   return (
     <ScreenWrapper>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={[styles.headerCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-            <Text style={styles.avatarText}>{user?.id || '?'}</Text>
+        <FadeIn>
+          <View style={[styles.headerCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+              <Text style={styles.avatarText}>{user?.id || '?'}</Text>
+            </View>
+            <View>
+              <Text style={[styles.userTitle, { color: colors.text }]}>用户 {user?.id || ''}</Text>
+              <Text style={[styles.userSubtitle, { color: colors.textSecondary }]}>匿名用户，无需登录</Text>
+            </View>
           </View>
-          <View>
-            <Text style={[styles.userTitle, { color: colors.text }]}>用户 {user?.id || ''}</Text>
-            <Text style={[styles.userSubtitle, { color: colors.textSecondary }]}>匿名用户，无需登录</Text>
-          </View>
-        </View>
+        </FadeIn>
 
         <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>外观</Text>
         {renderRow({
           icon: <ThemeIcon size={22} color={colors.primary} />,
           label: '主题风格',
           value: mode === 'warm' ? '暖色调' : '冷色调',
-          onPress: toggle,
+          right: <AnimatedSwitch value={mode === 'cool'} onValueChange={toggle} activeColor={colors.primary} inactiveColor={colors.border} />,
         })}
 
         <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>服务</Text>
         {editingServer ? (
-          <View style={[styles.editServer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-            <TextInput
-              value={serverUrl}
-              onChangeText={setServerUrl}
-              placeholder="https://..."
-              placeholderTextColor={colors.textSecondary}
-              autoCapitalize="none"
-              style={[styles.serverInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.inputBackground }]}
-            />
-            <View style={styles.editButtons}>
-              <TouchableOpacity onPress={() => setEditingServer(false)} style={[styles.editBtn, { backgroundColor: colors.surfaceAlt }]}>
-                <Text style={{ color: colors.text }}>取消</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={saveServerUrl} style={[styles.editBtn, { backgroundColor: colors.primary }]}>
-                <Text style={{ color: colors.textInverse }}>保存</Text>
-              </TouchableOpacity>
+          <FadeIn>
+            <View style={[styles.editServer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <TextInput
+                value={serverUrl}
+                onChangeText={setServerUrl}
+                placeholder="https://..."
+                placeholderTextColor={colors.textSecondary}
+                autoCapitalize="none"
+                style={[styles.serverInput, { color: colors.text, borderColor: colors.border, backgroundColor: colors.inputBackground }]}
+              />
+              <View style={styles.editButtons}>
+                <ScalePress scale={0.95} onPress={() => setEditingServer(false)} style={[styles.editBtn, { backgroundColor: colors.surfaceAlt }]}>
+                  <Text style={{ color: colors.text, fontWeight: '600' }}>取消</Text>
+                </ScalePress>
+                <ScalePress scale={0.95} onPress={saveServerUrl} style={[styles.editBtn, { backgroundColor: colors.primary }]}>
+                  <Text style={{ color: colors.textInverse, fontWeight: '600' }}>保存</Text>
+                </ScalePress>
+              </View>
             </View>
-          </View>
+          </FadeIn>
         ) : (
           renderRow({
             icon: <ServerIcon size={22} color={colors.primary} />,
@@ -140,13 +143,11 @@ export function ProfileScreen() {
           onPress: () => navigation.navigate('Privacy'),
         })}
 
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handleLogout}
-          style={[styles.logoutButton, { backgroundColor: colors.danger }]}
-        >
-          <Text style={[styles.logoutText, { color: colors.textInverse }]}>清除本地数据</Text>
-        </TouchableOpacity>
+        <ScalePress scale={0.97} onPress={handleLogout}>
+          <View style={[styles.logoutButton, { backgroundColor: colors.danger }]}>
+            <Text style={[styles.logoutText, { color: colors.textInverse }]}>清除本地数据</Text>
+          </View>
+        </ScalePress>
 
         <Text style={[styles.version, { color: colors.textSecondary }]}>灵伴 v1.0.0</Text>
       </ScrollView>
@@ -163,14 +164,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: 1,
     marginBottom: 24,
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
@@ -178,20 +179,21 @@ const styles = StyleSheet.create({
   avatarText: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   userTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   userSubtitle: {
     fontSize: 13,
     marginTop: 4,
+    fontWeight: '500',
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: '600',
-    marginTop: 20,
+    fontWeight: '700',
+    marginTop: 22,
     marginBottom: 10,
     marginLeft: 6,
   },
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     marginBottom: 10,
   },
@@ -211,15 +213,16 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   rowValue: {
     fontSize: 12,
     marginTop: 2,
+    fontWeight: '500',
   },
   editServer: {
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     marginBottom: 10,
   },
@@ -238,23 +241,24 @@ const styles = StyleSheet.create({
   editBtn: {
     paddingHorizontal: 18,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 10,
     marginLeft: 10,
   },
   logoutButton: {
-    height: 48,
-    borderRadius: 12,
+    height: 50,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 32,
   },
   logoutText: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   version: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 12,
+    fontWeight: '500',
   },
 });

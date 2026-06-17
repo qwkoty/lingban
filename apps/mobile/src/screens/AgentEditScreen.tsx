@@ -4,11 +4,10 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { Agent, Provider, PROVIDER_PRESETS } from '../types';
 import { avatarColors } from '../theme/colors';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { ScalePress, FadeIn, StaggerItem } from '../components/animations';
 
 type EditRoute = RouteProp<RootStackParamList, 'AgentEdit'>;
 type EditNav = NativeStackNavigationProp<RootStackParamList>;
@@ -98,22 +98,26 @@ export function AgentEditScreen() {
     <ScreenWrapper>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <View style={styles.avatarSection}>
-            <AvatarCircle name={name || 'A'} color={avatarColor} size={72} />
-            <View style={styles.colorRow}>
-              {avatarColors.map((c) => (
-                <TouchableOpacity
-                  key={c}
-                  onPress={() => setAvatarColor(c)}
-                  style={[
-                    styles.colorDot,
-                    { backgroundColor: c },
-                    avatarColor === c && { borderColor: colors.text, borderWidth: 2 },
-                  ]}
-                />
-              ))}
+          <FadeIn>
+            <View style={styles.avatarSection}>
+              <AvatarCircle name={name || 'A'} color={avatarColor} size={80} />
+              <View style={styles.colorRow}>
+                {avatarColors.map((c, i) => (
+                  <StaggerItem key={c} index={i}>
+                    <ScalePress
+                      scale={0.85}
+                      onPress={() => setAvatarColor(c)}
+                      style={[
+                        styles.colorDot,
+                        { backgroundColor: c },
+                        avatarColor === c && { borderColor: colors.text, borderWidth: 2.5 },
+                      ]}
+                    />
+                  </StaggerItem>
+                ))}
+              </View>
             </View>
-          </View>
+          </FadeIn>
 
           <Text style={[styles.label, { color: colors.text }]}>名称</Text>
           <TextInput
@@ -126,22 +130,24 @@ export function AgentEditScreen() {
 
           <Text style={[styles.label, { color: colors.text }]}>模型提供商</Text>
           <View style={styles.providerRow}>
-            {(Object.keys(PROVIDER_PRESETS) as Provider[]).map((p) => (
-              <TouchableOpacity
-                key={p}
-                onPress={() => setProvider(p)}
-                style={[
-                  styles.providerChip,
-                  {
-                    backgroundColor: provider === p ? colors.primary : colors.inputBackground,
-                    borderColor: provider === p ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text style={{ color: provider === p ? colors.textInverse : colors.text, fontWeight: '600' }}>
-                  {PROVIDER_PRESETS[p].label}
-                </Text>
-              </TouchableOpacity>
+            {(Object.keys(PROVIDER_PRESETS) as Provider[]).map((p, i) => (
+              <StaggerItem key={p} index={i}>
+                <ScalePress
+                  scale={0.95}
+                  onPress={() => setProvider(p)}
+                  style={[
+                    styles.providerChip,
+                    {
+                      backgroundColor: provider === p ? colors.primary : colors.inputBackground,
+                      borderColor: provider === p ? colors.primary : colors.border,
+                    },
+                  ]}
+                >
+                  <Text style={{ color: provider === p ? colors.textInverse : colors.text, fontWeight: '700' }}>
+                    {PROVIDER_PRESETS[p].label}
+                  </Text>
+                </ScalePress>
+              </StaggerItem>
             ))}
           </View>
 
@@ -209,14 +215,11 @@ export function AgentEditScreen() {
             </View>
           </View>
 
-          <TouchableOpacity
-            activeOpacity={0.9}
-            disabled={saving}
-            onPress={handleSave}
-            style={[styles.saveButton, { backgroundColor: colors.primary }]}
-          >
-            <Text style={[styles.saveText, { color: colors.textInverse }]}>{saving ? '保存中...' : '保存'}</Text>
-          </TouchableOpacity>
+          <ScalePress scale={0.97} disabled={saving} onPress={handleSave}>
+            <View style={[styles.saveButton, { backgroundColor: colors.primary }]}>
+              <Text style={[styles.saveText, { color: colors.textInverse }]}>{saving ? '保存中...' : '保存'}</Text>
+            </View>
+          </ScalePress>
         </ScrollView>
       </KeyboardAvoidingView>
     </ScreenWrapper>
@@ -225,45 +228,45 @@ export function AgentEditScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: 22,
+    paddingBottom: 44,
   },
   avatarSection: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 28,
   },
   colorRow: {
     flexDirection: 'row',
-    marginTop: 16,
+    marginTop: 18,
   },
   colorDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     marginHorizontal: 6,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 8,
-    marginTop: 16,
+    marginTop: 18,
   },
   input: {
-    height: 48,
+    height: 50,
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 14,
+    borderRadius: 14,
+    paddingHorizontal: 15,
     fontSize: 15,
   },
   textArea: {
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingTop: 12,
+    borderRadius: 14,
+    paddingHorizontal: 15,
+    paddingTop: 13,
     fontSize: 15,
-    minHeight: 100,
+    minHeight: 110,
     textAlignVertical: 'top',
   },
   providerRow: {
@@ -271,9 +274,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   providerChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 22,
     borderWidth: 1,
     marginRight: 10,
     marginBottom: 10,
@@ -286,14 +289,14 @@ const styles = StyleSheet.create({
     width: '47%',
   },
   saveButton: {
-    height: 50,
-    borderRadius: 12,
+    height: 54,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 28,
+    marginTop: 30,
   },
   saveText: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });
