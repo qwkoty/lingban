@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: lingban-server
+    runtime: node
+    region: singapore
+    plan: free
+    branch: main
+    rootDir: apps/server
+    buildCommand: npm install && npm run db:generate && npm run build && npm run db:deploy
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lingban-db
+          property: connectionString
+
+databases:
+  - name: lingban-db
+    databaseName: lingban
+    user: lingban
+    plan: free
+    region: singapore
