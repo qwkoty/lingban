@@ -23,12 +23,22 @@ jobs:
             "https://api.render.com/v1/services?name=$RENDER_SERVICE_NAME&limit=1")
           SERVICE_ID=$(echo "$SERVICE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['service']['id'])")
           echo "Service ID: $SERVICE_ID"
-          echo ""
-          echo "=== Latest deploy ==="
-          curl -fsSL \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            "https://api.render.com/v1/services/$SERVICE_ID/deploys?limit=1" | python3 -m json.tool
+
+          echo "=== Polling latest deploy (up to 5 min) ==="
+          for i in $(seq 1 20); do
+            DEPLOY_JSON=$(curl -fsSL \
+              -H "Accept: application/json" \
+              -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/services/$SERVICE_ID/deploys?limit=1")
+            STATUS=$(echo "$DEPLOY_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['deploy']['status'])")
+            COMMIT=$(echo "$DEPLOY_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['deploy']['commit']['id'][:7])")
+            echo "[$i] commit=$COMMIT status=$STATUS"
+            case "$STATUS" in
+              build_in_progress|deploy_in_progress|created|updating) sleep 15;;
+              *) echo ""; echo "=== Final deploy status: $STATUS ==="; echo "$DEPLOY_JSON" | python3 -m json.tool; break;;
+            esac
+          done
+
           echo ""
           echo "=== Service details ==="
           curl -fsSL \
