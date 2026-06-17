@@ -4,6 +4,10 @@
   "private": true,
   "workspaces": ["apps/*"],
   "scripts": {
-    "dev:server": "npm run dev --workspace=apps/server"
+    "dev:server": "npm run dev --workspace=apps/server",
+    "dev:mobile": "npm run start --workspace=apps/mobile",
+    "web:mobile": "npm run web --workspace=apps/mobile",
+    "android:mobile": "npm run android --workspace=apps/mobile",
+    "ios:mobile": "npm run ios --workspace=apps/mobile"
   }
 }
