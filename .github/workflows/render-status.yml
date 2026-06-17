@@ -47,6 +47,15 @@ jobs:
             "https://api.render.com/v1/services/$SERVICE_ID/env-vars" | python3 -m json.tool
 
           echo ""
+          echo "=== Deploy logs (last failed deploy) ==="
+          DEPLOY_ID=$(echo "$DEPLOY_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['deploy']['id'])")
+          echo "Deploy ID: $DEPLOY_ID"
+          curl -fsSL \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID/logs" 2>/dev/null | python3 -m json.tool 2>/dev/null || echo "(logs endpoint not available or empty)"
+
+          echo ""
           echo "=== Service details ==="
           curl -fsSL \
             -H "Accept: application/json" \
