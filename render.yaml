@@ -1,3 +1,8 @@
+databases:
+  - name: lingban-db
+    plan: free
+    region: singapore
+
 services:
   - type: web
     name: lingban-server
@@ -12,4 +17,6 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: lingban-db
+          property: connectionString

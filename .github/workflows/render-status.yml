@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      RENDER_SERVICE_NAME: lingban
+      RENDER_SERVICE_NAME: lingban-server
     steps:
       - name: Resolve service and latest deploy
         run: |

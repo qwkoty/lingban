@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      RENDER_SERVICE_NAME: lingban
+      RENDER_SERVICE_NAME: lingban-server
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Resolve Render service ID
@@ -50,6 +50,7 @@ jobs:
             "https://api.render.com/v1/services/${{ steps.resolve.outputs.service_id }}"
 
       - name: Set DATABASE_URL environment variable
+        if: ${{ env.DATABASE_URL != '' }}
         run: |
           set -e
           cat > /tmp/env.json <<EOF
