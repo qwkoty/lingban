@@ -40,6 +40,13 @@ jobs:
           done
 
           echo ""
+          echo "=== Service env vars (keys only) ==="
+          curl -fsSL \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            "https://api.render.com/v1/services/$SERVICE_ID/env-vars" | python3 -m json.tool
+
+          echo ""
           echo "=== Service details ==="
           curl -fsSL \
             -H "Accept: application/json" \
