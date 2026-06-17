@@ -2,6 +2,11 @@ name: Configure and Deploy LingBan Server
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'render.yaml'
+      - '.github/workflows/configure-render.yml'
 
 jobs:
   configure:
