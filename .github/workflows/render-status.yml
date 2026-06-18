@@ -1,4 +1,5 @@
 name: Check Render Deploy Status
+# Triggered on render-status.yml changes or manual dispatch
 
 on:
   workflow_dispatch:
