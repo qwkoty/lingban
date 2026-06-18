@@ -126,8 +126,8 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center py-4">
             <div className="relative mb-4">
               <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-30 animate-breathing" />
-              <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float">
-                <span className="text-3xl font-bold text-white font-display">灵</span>
+              <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float p-3">
+                <img src="/images/lingban-logo.svg" alt="灵伴" className="w-full h-full object-contain" />
               </div>
             </div>
             <h3 className="text-xl font-bold font-display text-white/90">灵伴</h3>

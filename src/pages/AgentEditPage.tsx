@@ -178,13 +178,16 @@ export default function AgentEditPage() {
                 <button
                   key={provider.id}
                   onClick={() => handleProviderChange(provider.id)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-400 ${
+                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-400 flex items-center gap-2 ${
                     selected
                       ? 'aurora-gradient text-white scale-105 shadow-lg shadow-aurora-blue/20'
                       : 'glass text-white/50 hover:text-white/70 hover:scale-102'
                   }`}
                   style={{ transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
                 >
+                  {provider.id === 'deepseek' && (
+                    <img src="/images/deepseek-icon.svg" alt="DeepSeek" className="w-5 h-5 rounded-full bg-[#1a5cff] p-0.5" />
+                  )}
                   {provider.name}
                 </button>
               )

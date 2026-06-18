@@ -22,8 +22,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col items-center gap-5">
           <div className="relative">
             <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-40 animate-breathing" />
-            <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float">
-              <span className="text-3xl font-bold text-white font-display">灵</span>
+            <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float p-3">
+              <img src="/images/lingban-logo.svg" alt="灵伴" className="w-full h-full object-contain" />
             </div>
           </div>
           <p className="text-sm text-white/40 animate-pulse-soft">正在进入...</p>
@@ -37,8 +37,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex flex-col items-center justify-center aurora-bg gap-8">
         <div className="relative">
           <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-40 animate-breathing" />
-          <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float">
-            <span className="text-3xl font-bold text-white font-display">灵</span>
+          <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float p-3">
+            <img src="/images/lingban-logo.svg" alt="灵伴" className="w-full h-full object-contain" />
           </div>
         </div>
         <button
