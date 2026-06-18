@@ -6,8 +6,8 @@
   "scripts": {
     "dev:server": "npm run dev --workspace=apps/server",
     "dev:web": "npm run dev --workspace=apps/web",
-    "build:web": "cd apps/web && npm run build",
-    "build:server": "cd apps/server && npm run db:generate && npm run build",
+    "build:web": "cd apps/web && npm run build && ls -la ../server/public",
+    "build:server": "cd apps/server && npm run db:generate && npm run build && ls -la public 2>/dev/null || echo 'no public'",
     "build": "npm run build:web && npm run build:server"
   }
 }

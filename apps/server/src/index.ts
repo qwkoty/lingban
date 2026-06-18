@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import usersRouter from './routes/users';
 import agentsRouter from './routes/agents';
 import { prisma } from './lib/prisma';
@@ -56,12 +57,43 @@ app.get('/api/models/nvidia', async (req, res) => {
 });
 
 // 静态文件服务：web 前端构建产物
-const publicPath = path.join(__dirname, '../public');
+const possiblePublicPaths = [
+  path.join(__dirname, '../public'),     // dist/../public (production)
+  path.join(__dirname, '../../public'),  // dist/src/../../public (alt)
+  path.join(__dirname, 'public'),        // dev fallback
+  path.join(process.cwd(), 'apps/server/public'),
+  path.join(process.cwd(), 'public'),
+];
+
+let publicPath: string | null = null;
+for (const p of possiblePublicPaths) {
+  const indexHtml = path.join(p, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    publicPath = p;
+    console.log(`[static] serving from ${p}`);
+    break;
+  }
+}
+if (!publicPath) {
+  console.warn('[static] no public directory found, web UI will be unavailable');
+  publicPath = possiblePublicPaths[0]; // 兜底
+}
+
 app.use(express.static(publicPath));
 
 // SPA 路由回退：所有非 API 请求返回 index.html
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+app.get(/^(?!\/api).*/, (_req, res) => {
+  const indexHtml = path.join(publicPath!, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    res.sendFile(indexHtml);
+  } else {
+    res
+      .status(503)
+      .type('html')
+      .send(
+        `<!doctype html><html><body style="background:#0a0a0f;color:#f0f0f5;font-family:sans-serif;padding:40px"><h1>灵伴 Web 端尚未构建</h1><p>请稍后重试，或检查 Render 构建日志。</p></body></html>`
+      );
+  }
 });
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

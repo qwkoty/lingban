@@ -11,7 +11,7 @@ services:
     plan: free
     branch: main
     rootDir: .
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: cd apps/server && npm run db:deploy && npm start
     envVars:
       - key: NODE_ENV
