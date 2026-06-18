@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import usersRouter from './routes/users';
 import agentsRouter from './routes/agents';
 import { prisma } from './lib/prisma';
@@ -10,10 +11,6 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
-
-app.get('/', (_req, res) => {
-  res.json({ status: 'ok', service: 'lingban-api', time: new Date().toISOString() });
-});
 
 app.get('/health', async (_req, res) => {
   try {
@@ -56,6 +53,15 @@ app.get('/api/models/nvidia', async (req, res) => {
   } catch (e) {
     res.status(500).json({ success: false, error: e instanceof Error ? e.message : 'Failed to fetch models' });
   }
+});
+
+// 静态文件服务：web 前端构建产物
+const publicPath = path.join(__dirname, '../public');
+app.use(express.static(publicPath));
+
+// SPA 路由回退：所有非 API 请求返回 index.html
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
