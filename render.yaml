@@ -12,7 +12,7 @@ services:
     branch: main
     rootDir: apps/server
     buildCommand: npm install && npm run db:generate && npm run build
-    startCommand: npx prisma migrate deploy > /tmp/migrate.log 2>&1 || true; npm start
+    startCommand: npm run db:deploy && npm start
     envVars:
       - key: NODE_ENV
         value: production

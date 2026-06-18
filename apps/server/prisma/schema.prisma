@@ -4,12 +4,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "cockroachdb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        BigInt   @id @default(autoincrement())
   deviceId  String   @unique @map("device_id")
   token     String   @unique @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -20,14 +20,14 @@ model User {
 }
 
 model Agent {
-  id           Int      @id @default(autoincrement())
-  userId       Int      @map("user_id")
+  id           BigInt   @id @default(autoincrement())
+  userId       BigInt   @map("user_id")
   name         String
   provider     String
   model        String
   apiKey       String?  @map("api_key")
   apiUrl       String?  @map("api_url")
-  systemPrompt String?  @map("system_prompt") @db.Text
+  systemPrompt String?  @map("system_prompt")
   temperature  Float    @default(0.7)
   maxTokens    Int      @default(2048) @map("max_tokens")
   avatarUrl    String?  @map("avatar_url")
@@ -40,11 +40,11 @@ model Agent {
 }
 
 model Conversation {
-  id        Int      @id @default(autoincrement())
-  agentId   Int      @map("agent_id")
+  id        BigInt   @id @default(autoincrement())
+  agentId   BigInt   @map("agent_id")
   sessionId String   @default("default") @map("session_id")
   role      String
-  content   String   @db.Text
+  content   String
   createdAt DateTime @default(now()) @map("created_at")
   agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
