@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Sora:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Noto Sans SC", "Inter", system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0f;
+  color: #e8e8f0;
+  min-height: 100vh;
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* 毛玻璃卡片 */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-nav {
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* 七彩渐变 */
+.aurora-gradient {
+  background: linear-gradient(
+    135deg,
+    #4f8cff 0%,
+    #3ad7e0 16%,
+    #5ee27a 33%,
+    #f5d142 50%,
+    #ff9e57 66%,
+    #ff6ba6 83%,
+    #a674ff 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientFlow 8s ease infinite;
+}
+
+.aurora-text {
+  background: linear-gradient(
+    135deg,
+    #4f8cff 0%,
+    #3ad7e0 16%,
+    #5ee27a 33%,
+    #f5d142 50%,
+    #ff9e57 66%,
+    #ff6ba6 83%,
+    #a674ff 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 8s ease infinite;
+}
+
+/* 极光背景光晕 */
+.aurora-bg::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(79, 140, 255, 0.12) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: breathing 6s ease-in-out infinite;
+}
+
+.aurora-bg::after {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(166, 116, 255, 0.1) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  animation: breathing 8s ease-in-out infinite reverse;
+}
+
+/* 骨架屏 */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* 页面过渡 */
+.page-enter {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* 输入框样式 */
+input, textarea, select {
+  font-family: inherit;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* 按钮点击效果 */
+button {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* 隐藏滚动条但保持可滚动 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 安全区域 */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
