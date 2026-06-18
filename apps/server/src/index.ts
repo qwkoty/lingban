@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import usersRouter from './routes/users';
 import agentsRouter from './routes/agents';
+import { prisma } from './lib/prisma';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -10,8 +11,18 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+app.get('/health', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', db: 'connected', time: new Date().toISOString() });
+  } catch (e) {
+    res.status(500).json({
+      status: 'ok',
+      db: 'error',
+      error: e instanceof Error ? e.message : String(e),
+      time: new Date().toISOString(),
+    });
+  }
 });
 
 app.use('/api/users', usersRouter);
