@@ -25,13 +25,15 @@ export interface ConversationMessage {
 }
 
 // 最新模型预设（2026年6月更新）
-// DeepSeek V4 系列：deepseek-v4-pro（旗舰）、deepseek-v4-flash（轻量）
-//   deepseek-chat 仍可用（指向 V4-Flash 非思考模式）
-//   deepseek-reasoner 仍可用（指向 V4-Flash 思考模式）
-// Qwen 系列：qwen3-max（旗舰）、qwen-plus（均衡）、qwen-turbo（快速）
+// DeepSeek V4 系列（2026-04-24 发布）：
+//   deepseek-v4-pro（旗舰 1.6T）、deepseek-v4-flash（轻量 284B）
+//   旧版 deepseek-chat / deepseek-reasoner 将于 2026-07-24 停用，不要再用
+// Qwen 系列（2026-06）：
+//   qwen3.7-plus（最新多模态 Agent）、qwen3.7-max（旗舰）
+//   qwen-plus / qwen-turbo 为别名，自动指向最新版
 export const PROVIDER_PRESETS: Record<Provider, { label: string; defaultModel: string; defaultApiUrl: string }> = {
-  deepseek: { label: 'DeepSeek', defaultModel: 'deepseek-chat', defaultApiUrl: 'https://api.deepseek.com/v1/chat/completions' },
+  deepseek: { label: 'DeepSeek', defaultModel: 'deepseek-v4-flash', defaultApiUrl: 'https://api.deepseek.com/v1/chat/completions' },
   nvidia: { label: 'NVIDIA', defaultModel: 'meta/llama3-70b-instruct', defaultApiUrl: 'https://integrate.api.nvidia.com/v1/chat/completions' },
-  qwen: { label: '通义千问', defaultModel: 'qwen-plus', defaultApiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions' },
+  qwen: { label: '通义千问', defaultModel: 'qwen3.7-plus', defaultApiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions' },
   custom: { label: '自定义', defaultModel: '', defaultApiUrl: '' },
 };
