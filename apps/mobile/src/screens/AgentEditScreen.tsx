@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ScreenWrapper } from '../components/ScreenWrapper';
 import { AvatarCircle } from '../components/AvatarCircle';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { Agent, Provider, PROVIDER_PRESETS } from '../types';
-import { avatarColors } from '../theme/colors';
+import { avatarGradients } from '../theme/colors';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { ScalePress, FadeIn, StaggerItem } from '../components/animations';
 
@@ -38,7 +39,7 @@ export function AgentEditScreen() {
   const [systemPrompt, setSystemPrompt] = useState(existing?.systemPrompt || '');
   const [temperature, setTemperature] = useState(String(existing?.temperature ?? 0.7));
   const [maxTokens, setMaxTokens] = useState(String(existing?.maxTokens ?? 2048));
-  const [avatarColor, setAvatarColor] = useState(existing?.avatarUrl || avatarColors[0]);
+  const [avatarColor, setAvatarColor] = useState(existing?.avatarUrl || avatarGradients[0].id);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -94,27 +95,56 @@ export function AgentEditScreen() {
     }
   };
 
+  const inputStyle = [
+    styles.input,
+    {
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      borderColor: colors.border,
+    },
+  ];
+
+  const textAreaStyle = [
+    styles.textArea,
+    {
+      backgroundColor: colors.inputBackground,
+      color: colors.text,
+      borderColor: colors.border,
+    },
+  ];
+
   return (
     <ScreenWrapper>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <FadeIn>
-            <View style={styles.avatarSection}>
-              <AvatarCircle name={name || 'A'} color={avatarColor} size={80} />
+            <View style={[styles.avatarSection, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <View style={styles.avatarGlow}>
+                <AvatarCircle name={name || 'A'} color={avatarColor} size={80} />
+              </View>
               <View style={styles.colorRow}>
-                {avatarColors.map((c, i) => (
-                  <StaggerItem key={c} index={i}>
-                    <ScalePress
-                      scale={0.85}
-                      onPress={() => setAvatarColor(c)}
-                      style={[
-                        styles.colorDot,
-                        { backgroundColor: c },
-                        avatarColor === c && { borderColor: colors.text, borderWidth: 2.5 },
-                      ]}
-                    />
-                  </StaggerItem>
-                ))}
+                {avatarGradients.map((g, i) => {
+                  const selected = avatarColor === g.id;
+                  return (
+                    <StaggerItem key={g.id} index={i}>
+                      <ScalePress
+                        scale={0.85}
+                        onPress={() => setAvatarColor(g.id)}
+                        style={[
+                          styles.colorDotWrap,
+                          selected && { borderColor: colors.text, borderWidth: 2 },
+                        ]}
+                      >
+                        <LinearGradient
+                          colors={g.colors}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.colorDot}
+                        />
+                      </ScalePress>
+                    </StaggerItem>
+                  );
+                })}
               </View>
             </View>
           </FadeIn>
@@ -125,30 +155,46 @@ export function AgentEditScreen() {
             onChangeText={setName}
             placeholder="给智能体起个名字"
             placeholderTextColor={colors.textSecondary}
-            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            style={inputStyle}
           />
 
           <Text style={[styles.label, { color: colors.text }]}>模型提供商</Text>
           <View style={styles.providerRow}>
-            {(Object.keys(PROVIDER_PRESETS) as Provider[]).map((p, i) => (
-              <StaggerItem key={p} index={i}>
-                <ScalePress
-                  scale={0.95}
-                  onPress={() => setProvider(p)}
-                  style={[
-                    styles.providerChip,
-                    {
-                      backgroundColor: provider === p ? colors.primary : colors.inputBackground,
-                      borderColor: provider === p ? colors.primary : colors.border,
-                    },
-                  ]}
-                >
-                  <Text style={{ color: provider === p ? colors.textInverse : colors.text, fontWeight: '700' }}>
-                    {PROVIDER_PRESETS[p].label}
-                  </Text>
-                </ScalePress>
-              </StaggerItem>
-            ))}
+            {(Object.keys(PROVIDER_PRESETS) as Provider[]).map((p, i) => {
+              const selected = provider === p;
+              return (
+                <StaggerItem key={p} index={i}>
+                  <ScalePress
+                    scale={0.95}
+                    onPress={() => setProvider(p)}
+                    style={[
+                      styles.providerChipWrap,
+                      !selected && {
+                        backgroundColor: colors.inputBackground,
+                        borderColor: colors.border,
+                      },
+                    ]}
+                  >
+                    {selected ? (
+                      <LinearGradient
+                        colors={colors.gradient}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.providerChipGradient}
+                      >
+                        <Text style={[styles.providerChipText, { color: colors.textInverse }]}>
+                          {PROVIDER_PRESETS[p].label}
+                        </Text>
+                      </LinearGradient>
+                    ) : (
+                      <Text style={[styles.providerChipText, { color: colors.text }]}>
+                        {PROVIDER_PRESETS[p].label}
+                      </Text>
+                    )}
+                  </ScalePress>
+                </StaggerItem>
+              );
+            })}
           </View>
 
           <Text style={[styles.label, { color: colors.text }]}>模型</Text>
@@ -157,7 +203,7 @@ export function AgentEditScreen() {
             onChangeText={setModel}
             placeholder="例如 deepseek-chat"
             placeholderTextColor={colors.textSecondary}
-            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            style={inputStyle}
           />
 
           <Text style={[styles.label, { color: colors.text }]}>API Key</Text>
@@ -167,7 +213,7 @@ export function AgentEditScreen() {
             placeholder="sk-..."
             placeholderTextColor={colors.textSecondary}
             secureTextEntry
-            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            style={inputStyle}
           />
 
           {provider === 'custom' && (
@@ -178,7 +224,7 @@ export function AgentEditScreen() {
                 onChangeText={setApiUrl}
                 placeholder="https://.../chat/completions"
                 placeholderTextColor={colors.textSecondary}
-                style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+                style={inputStyle}
               />
             </>
           )}
@@ -191,7 +237,7 @@ export function AgentEditScreen() {
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={4}
-            style={[styles.textArea, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            style={textAreaStyle}
           />
 
           <View style={styles.row}>
@@ -201,7 +247,7 @@ export function AgentEditScreen() {
                 value={temperature}
                 onChangeText={setTemperature}
                 keyboardType="decimal-pad"
-                style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+                style={inputStyle}
               />
             </View>
             <View style={styles.half}>
@@ -210,15 +256,22 @@ export function AgentEditScreen() {
                 value={maxTokens}
                 onChangeText={setMaxTokens}
                 keyboardType="number-pad"
-                style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+                style={inputStyle}
               />
             </View>
           </View>
 
           <ScalePress scale={0.97} disabled={saving} onPress={handleSave}>
-            <View style={[styles.saveButton, { backgroundColor: colors.primary }]}>
-              <Text style={[styles.saveText, { color: colors.textInverse }]}>{saving ? '保存中...' : '保存'}</Text>
-            </View>
+            <LinearGradient
+              colors={colors.gradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.saveButton}
+            >
+              <Text style={[styles.saveText, { color: colors.textInverse }]}>
+                {saving ? '保存中...' : '保存'}
+              </Text>
+            </LinearGradient>
           </ScalePress>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -234,18 +287,38 @@ const styles = StyleSheet.create({
   avatarSection: {
     alignItems: 'center',
     marginBottom: 28,
+    paddingVertical: 28,
+    borderRadius: 22,
+    borderWidth: 1,
+  },
+  avatarGlow: {
+    marginBottom: 8,
   },
   colorRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: 18,
+    justifyContent: 'center',
+    maxWidth: 200,
+    alignSelf: 'center',
   },
-  colorDot: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  colorDotWrap: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     marginHorizontal: 6,
+    marginVertical: 6,
     borderWidth: 2,
     borderColor: 'transparent',
+    overflow: 'hidden',
+    padding: 0,
+  },
+  colorDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    alignSelf: 'center',
+    margin: 2,
   },
   label: {
     fontSize: 14,
@@ -254,32 +327,40 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   input: {
-    height: 50,
+    height: 52,
     borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 15,
+    borderRadius: 16,
+    paddingHorizontal: 16,
     fontSize: 15,
   },
   textArea: {
     borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 15,
-    paddingTop: 13,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingTop: 14,
     fontSize: 15,
-    minHeight: 110,
+    minHeight: 120,
     textAlignVertical: 'top',
   },
   providerRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  providerChip: {
-    paddingHorizontal: 15,
-    paddingVertical: 9,
-    borderRadius: 22,
+  providerChipWrap: {
+    borderRadius: 20,
     borderWidth: 1,
     marginRight: 10,
     marginBottom: 10,
+    overflow: 'hidden',
+  },
+  providerChipGradient: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  providerChipText: {
+    fontSize: 14,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
@@ -289,8 +370,8 @@ const styles = StyleSheet.create({
     width: '47%',
   },
   saveButton: {
-    height: 54,
-    borderRadius: 14,
+    height: 56,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 30,

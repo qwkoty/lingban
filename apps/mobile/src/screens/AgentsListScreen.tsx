@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ScreenWrapper } from '../components/ScreenWrapper';
 import { AvatarCircle } from '../components/AvatarCircle';
 import { useTheme } from '../theme/ThemeContext';
@@ -69,12 +70,21 @@ export function AgentsListScreen() {
       <ScalePress
         scale={0.98}
         onPress={() => navigation.navigate('Chat', { agent: item })}
-        style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border, shadowColor: colors.shadow }]}
+        style={[
+          styles.card,
+          {
+            backgroundColor: colors.surface,
+            borderColor: colors.border,
+            shadowColor: colors.shadow,
+          },
+        ]}
       >
         <AvatarCircle name={item.name} color={item.avatarUrl || undefined} size={52} />
         <View style={styles.info}>
-          <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
-          <Text style={[styles.meta, { color: colors.textSecondary }]}>
+          <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>
+            {item.name}
+          </Text>
+          <Text style={[styles.meta, { color: colors.textSecondary }]} numberOfLines={1}>
             {PROVIDER_PRESETS[item.provider].label} / {item.model}
           </Text>
         </View>
@@ -100,19 +110,45 @@ export function AgentsListScreen() {
     <ScreenWrapper>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>我的智能体</Text>
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>选择一个开始对话</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
+          选择一个开始对话
+        </Text>
       </View>
       <FlatList
         data={agents}
         keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={loadAgents} colors={[colors.primary]} tintColor={colors.primary} />}
+        contentContainerStyle={[styles.list, { paddingBottom: 100 }]}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={loadAgents}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
         renderItem={renderItem}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <AvatarCircle name="?" color={colors.border} size={72} />
+            <View style={styles.emptyGraphicWrap}>
+              <LinearGradient
+                colors={colors.gradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.emptyGraphicGlow}
+              />
+              <View
+                style={[
+                  styles.emptyGraphic,
+                  { backgroundColor: colors.surface, borderColor: colors.border },
+                ]}
+              >
+                <AvatarCircle name="?" color={colors.primary} size={72} />
+              </View>
+            </View>
             <Text style={[styles.emptyTitle, { color: colors.text }]}>还没有智能体</Text>
-            <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>点击右下角按钮创建你的第一个智能体</Text>
+            <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+              点击右下角按钮创建你的第一个智能体
+            </Text>
           </View>
         }
       />
@@ -122,9 +158,15 @@ export function AgentsListScreen() {
           onPress={() => navigation.navigate('AgentEdit', {})}
           accessibilityLabel="创建智能体"
           accessibilityRole="button"
-          style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
         >
-          <AddIcon size={28} color={colors.textInverse} />
+          <LinearGradient
+            colors={colors.gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.fab, { shadowColor: colors.shadow }]}
+          >
+            <AddIcon size={28} color={colors.textInverse} />
+          </LinearGradient>
         </ScalePress>
       </PulsingFAB>
     </ScreenWrapper>
@@ -138,29 +180,29 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: '800',
+    letterSpacing: 0.3,
   },
   headerSubtitle: {
     fontSize: 14,
-    marginTop: 4,
+    marginTop: 6,
     fontWeight: '500',
   },
   list: {
     padding: 16,
-    paddingBottom: 110,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    borderRadius: 18,
+    borderRadius: 22,
     borderWidth: 1,
     marginBottom: 12,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 3,
   },
   info: {
     flex: 1,
@@ -178,7 +220,7 @@ const styles = StyleSheet.create({
   iconButton: {
     width: 36,
     height: 36,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -188,28 +230,52 @@ const styles = StyleSheet.create({
     bottom: 30,
   },
   fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 56,
+    height: 56,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
+    elevation: 6,
   },
   empty: {
     alignItems: 'center',
-    marginTop: 100,
+    marginTop: 90,
+    paddingHorizontal: 24,
+  },
+  emptyGraphicWrap: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  emptyGraphicGlow: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    opacity: 0.35,
+    transform: [{ scale: 1.1 }],
+  },
+  emptyGraphic: {
+    width: 112,
+    height: 112,
+    borderRadius: 28,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyTitle: {
     fontSize: 18,
     fontWeight: '700',
-    marginTop: 20,
+    marginTop: 8,
   },
   emptySubtitle: {
     fontSize: 14,
     marginTop: 8,
     fontWeight: '500',
+    textAlign: 'center',
   },
 });

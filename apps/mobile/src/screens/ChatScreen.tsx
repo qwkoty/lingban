@@ -12,6 +12,7 @@ import {
   Animated,
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ScreenWrapper } from '../components/ScreenWrapper';
 import { AvatarCircle } from '../components/AvatarCircle';
 import { useTheme } from '../theme/ThemeContext';
@@ -52,18 +53,29 @@ function MessageBubble({
       ]}
     >
       {!isUser && <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={36} />}
-      <View
-        style={[
-          styles.bubble,
-          isUser
-            ? { backgroundColor: colors.primary, borderBottomRightRadius: 6 }
-            : { backgroundColor: colors.surface, borderBottomLeftRadius: 6, borderColor: colors.border, borderWidth: 1 },
-        ]}
-      >
-        <Text style={{ color: isUser ? colors.textInverse : colors.text, fontSize: 15, lineHeight: 22, fontWeight: '400' }}>
-          {item.content}
-        </Text>
-      </View>
+      {isUser ? (
+        <LinearGradient
+          colors={colors.gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.bubble, styles.userBubble]}
+        >
+          <Text style={styles.userText}>{item.content}</Text>
+        </LinearGradient>
+      ) : (
+        <View
+          style={[
+            styles.bubble,
+            styles.agentBubble,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+            },
+          ]}
+        >
+          <Text style={[styles.agentText, { color: colors.text }]}>{item.content}</Text>
+        </View>
+      )}
     </Animated.View>
   );
 }
@@ -126,6 +138,8 @@ export function ChatScreen() {
     }
   };
 
+  const canSend = !loading && !!input.trim();
+
   return (
     <ScreenWrapper>
       <KeyboardAvoidingView
@@ -133,9 +147,17 @@ export function ChatScreen() {
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <View
+          style={[
+            styles.header,
+            {
+              backgroundColor: colors.surface,
+              borderBottomColor: colors.border,
+            },
+          ]}
+        >
           <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={42} />
-          <View style={{ marginLeft: 14 }}>
+          <View style={styles.headerInfo}>
             <Text style={[styles.agentName, { color: colors.text }]}>{agent.name}</Text>
             <Text style={[styles.agentMeta, { color: colors.textSecondary }]}>{agent.model}</Text>
           </View>
@@ -149,33 +171,77 @@ export function ChatScreen() {
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
         />
         {loading && (
-          <View style={[styles.typingRow, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <View style={[styles.typingRow, { paddingHorizontal: 16 }]}>
             <AvatarCircle name={agent.name} color={agent.avatarUrl || undefined} size={28} />
-            <View style={[styles.typingBubble, { borderColor: colors.border }]}>
+            <View
+              style={[
+                styles.typingBubble,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                },
+              ]}
+            >
               <TypingIndicator color={colors.primary} />
             </View>
           </View>
         )}
-        <View style={[styles.inputBar, { backgroundColor: colors.surface, borderTopColor: colors.border }]}>
+        <View
+          style={[
+            styles.inputBar,
+            {
+              backgroundColor: colors.surface,
+              borderTopColor: colors.border,
+            },
+          ]}
+        >
           <TextInput
             value={input}
             onChangeText={setInput}
             placeholder="输入消息..."
             placeholderTextColor={colors.textSecondary}
             multiline
-            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            disabled={loading || !input.trim()}
-            onPress={sendMessage}
             style={[
-              styles.sendButton,
-              { backgroundColor: loading || !input.trim() ? colors.border : colors.primary },
+              styles.input,
+              {
+                backgroundColor: colors.inputBackground,
+                color: colors.text,
+              },
             ]}
-          >
-            <SendIcon size={20} color={colors.textInverse} />
-          </TouchableOpacity>
+          />
+          {canSend ? (
+            <LinearGradient
+              colors={colors.gradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.sendButton}
+            >
+              <TouchableOpacity
+                activeOpacity={0.8}
+                disabled={false}
+                onPress={sendMessage}
+                style={styles.sendButtonTouch}
+              >
+                <SendIcon size={20} color={colors.textInverse} />
+              </TouchableOpacity>
+            </LinearGradient>
+          ) : (
+            <View
+              style={[
+                styles.sendButton,
+                { backgroundColor: colors.surfaceAlt },
+              ]}
+            >
+              <TouchableOpacity
+                activeOpacity={0.8}
+                disabled
+                onPress={sendMessage}
+                style={styles.sendButtonTouch}
+              >
+                <SendIcon size={20} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </KeyboardAvoidingView>
     </ScreenWrapper>
@@ -189,6 +255,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 14,
     borderBottomWidth: 1,
+  },
+  headerInfo: {
+    marginLeft: 14,
   },
   agentName: {
     fontSize: 17,
@@ -216,24 +285,40 @@ const styles = StyleSheet.create({
   },
   bubble: {
     maxWidth: '76%',
-    paddingHorizontal: 15,
-    paddingVertical: 11,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: 20,
+  },
+  userBubble: {
+    borderBottomRightRadius: 6,
+  },
+  userText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: '400',
+  },
+  agentBubble: {
+    borderBottomLeftRadius: 6,
+    borderWidth: 1,
+  },
+  agentText: {
+    fontSize: 15,
+    lineHeight: 22,
+    fontWeight: '400',
   },
   typingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
     paddingVertical: 8,
-    borderTopWidth: 1,
   },
   typingBubble: {
     marginLeft: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 18,
-    borderWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 20,
     borderBottomLeftRadius: 6,
+    borderWidth: 1,
   },
   inputBar: {
     flexDirection: 'row',
@@ -245,7 +330,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     maxHeight: 120,
-    borderWidth: 1,
     borderRadius: 22,
     paddingHorizontal: 18,
     paddingVertical: 11,
@@ -254,9 +338,16 @@ const styles = StyleSheet.create({
   sendButton: {
     width: 46,
     height: 46,
-    borderRadius: 23,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,
+    overflow: 'hidden',
+  },
+  sendButtonTouch: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

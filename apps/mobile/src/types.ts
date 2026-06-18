@@ -24,9 +24,14 @@ export interface ConversationMessage {
   createdAt: string;
 }
 
+// 最新模型预设（2026年6月更新）
+// DeepSeek V4 系列：deepseek-v4-pro（旗舰）、deepseek-v4-flash（轻量）
+//   deepseek-chat 仍可用（指向 V4-Flash 非思考模式）
+//   deepseek-reasoner 仍可用（指向 V4-Flash 思考模式）
+// Qwen 系列：qwen3-max（旗舰）、qwen-plus（均衡）、qwen-turbo（快速）
 export const PROVIDER_PRESETS: Record<Provider, { label: string; defaultModel: string; defaultApiUrl: string }> = {
   deepseek: { label: 'DeepSeek', defaultModel: 'deepseek-chat', defaultApiUrl: 'https://api.deepseek.com/v1/chat/completions' },
   nvidia: { label: 'NVIDIA', defaultModel: 'meta/llama3-70b-instruct', defaultApiUrl: 'https://integrate.api.nvidia.com/v1/chat/completions' },
-  qwen: { label: '通义千问', defaultModel: 'qwen-turbo', defaultApiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions' },
+  qwen: { label: '通义千问', defaultModel: 'qwen-plus', defaultApiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions' },
   custom: { label: '自定义', defaultModel: '', defaultApiUrl: '' },
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Alert, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ScreenWrapper } from '../components/ScreenWrapper';
 import { useTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -44,13 +45,30 @@ export function SplashScreen() {
 
   return (
     <ScreenWrapper style={{ justifyContent: 'center', alignItems: 'center' }}>
+      {/* 彩虹渐变光晕 */}
+      <View style={styles.haloLayer} pointerEvents="none">
+        <LinearGradient
+          colors={[colors.gradient[0], colors.gradient[1], colors.gradient[2], 'transparent']}
+          locations={[0, 0.35, 0.7, 1]}
+          style={styles.rainbowHalo}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        />
+      </View>
       <Animated.View
         style={[
-          styles.logoContainer,
-          { backgroundColor: colors.surfaceAlt, opacity: logoOpacity, transform: [{ scale: logoScale }] },
+          styles.logoWrapper,
+          { opacity: logoOpacity, transform: [{ scale: logoScale }] },
         ]}
       >
-        <BotIcon size={64} color={colors.primary} />
+        <LinearGradient
+          colors={colors.gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.logoContainer}
+        >
+          <BotIcon size={64} color="#FFFFFF" />
+        </LinearGradient>
       </Animated.View>
       <FadeIn delay={300} duration={500} translateY={12}>
         <Text style={[styles.title, { color: colors.text }]}>灵伴</Text>
@@ -59,10 +77,10 @@ export function SplashScreen() {
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>你的专属智能体助手</Text>
       </FadeIn>
       <FadeIn delay={600} duration={500} translateY={8}>
-        <View style={[styles.loader, { borderColor: colors.border }]}>
+        <View style={[styles.loader, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <View style={[styles.loaderDot, { backgroundColor: colors.primary }]} />
           <View style={[styles.loaderDot, { backgroundColor: colors.primaryLight }]} />
-          <View style={[styles.loaderDot, { backgroundColor: colors.border }]} />
+          <View style={[styles.loaderDot, { backgroundColor: colors.textTertiary }]} />
         </View>
       </FadeIn>
     </ScreenWrapper>
@@ -70,13 +88,33 @@ export function SplashScreen() {
 }
 
 const styles = StyleSheet.create({
+  haloLayer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rainbowHalo: {
+    width: 380,
+    height: 380,
+    borderRadius: 190,
+    opacity: 0.15,
+  },
+  logoWrapper: {
+    marginBottom: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.4,
+    shadowRadius: 28,
+    elevation: 10,
+  },
   logoContainer: {
     width: 120,
     height: 120,
     borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 28,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   title: {
     fontSize: 40,

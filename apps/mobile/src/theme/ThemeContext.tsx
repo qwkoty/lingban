@@ -1,45 +1,40 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ThemeColors, ThemeMode, getTheme } from './colors';
+import { AccentKey, ThemeColors, getThemeColors } from './colors';
 
-const THEME_STORAGE_KEY = '@lingban:theme';
+const THEME_STORAGE_KEY = '@lingban:accent';
 
 interface ThemeContextValue {
-  mode: ThemeMode;
+  accent: AccentKey;
   colors: ThemeColors;
-  setMode: (mode: ThemeMode) => Promise<void>;
-  toggle: () => Promise<void>;
+  setAccent: (accent: AccentKey) => Promise<void>;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>('warm');
+  const [accent, setAccentState] = useState<AccentKey>('aurora');
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(THEME_STORAGE_KEY)
       .then((stored) => {
-        if (stored === 'warm' || stored === 'cool') {
-          setModeState(stored);
+        if (stored && ['aurora', 'blue', 'cyan', 'green', 'amber', 'pink', 'violet'].includes(stored)) {
+          setAccentState(stored as AccentKey);
         }
       })
       .finally(() => setReady(true));
   }, []);
 
-  const setMode = async (next: ThemeMode) => {
-    setModeState(next);
+  const setAccent = async (next: AccentKey) => {
+    setAccentState(next);
     await AsyncStorage.setItem(THEME_STORAGE_KEY, next);
-  };
-
-  const toggle = async () => {
-    await setMode(mode === 'warm' ? 'cool' : 'warm');
   };
 
   if (!ready) return null;
 
   return (
-    <ThemeContext.Provider value={{ mode, colors: getTheme(mode), setMode, toggle }}>
+    <ThemeContext.Provider value={{ accent, colors: getThemeColors(accent), setAccent }}>
       {children}
     </ThemeContext.Provider>
   );
