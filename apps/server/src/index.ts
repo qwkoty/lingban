@@ -28,6 +28,32 @@ app.get('/health', async (_req, res) => {
 app.use('/api/users', usersRouter);
 app.use('/api/agents', agentsRouter);
 
+// 代理拉取 NVIDIA 可用模型列表（避免移动端 CORS）
+app.get('/api/models/nvidia', async (req, res) => {
+  const apiKey = req.headers.authorization?.replace('Bearer ', '');
+  if (!apiKey) {
+    res.status(401).json({ success: false, error: 'Missing API key' });
+    return;
+  }
+  try {
+    const resp = await fetch('https://integrate.api.nvidia.com/v1/models', {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      res.status(resp.status).json({ success: false, error: text });
+      return;
+    }
+    const data: any = await resp.json();
+    const models = (data.data || [])
+      .map((m: any) => m.id)
+      .filter((id: string) => typeof id === 'string');
+    res.json({ success: true, models });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e instanceof Error ? e.message : 'Failed to fetch models' });
+  }
+});
+
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ success: false, error: 'Internal server error' });

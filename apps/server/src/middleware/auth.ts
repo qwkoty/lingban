@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 
 export interface AuthRequest extends Request {
-  user?: { id: number; deviceId: string; token: string };
+  user?: { id: bigint; deviceId: string; token: string };
 }
 
 export async function authMiddleware(

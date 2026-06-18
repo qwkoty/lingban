@@ -23,6 +23,20 @@ const chatSchema = z.object({
   sessionId: z.string().max(64).default('default'),
 });
 
+// BigInt 安全序列化
+function serialize(obj: unknown): unknown {
+  return JSON.parse(JSON.stringify(obj, (_, v) => (typeof v === 'bigint' ? Number(v) : v)));
+}
+
+// 安全解析 BigInt，无效时返回 null
+function parseBigInt(s: string): bigint | null {
+  try {
+    return BigInt(s);
+  } catch {
+    return null;
+  }
+}
+
 router.use(authMiddleware);
 
 router.post('/', async (req: AuthRequest, res) => {
@@ -36,7 +50,7 @@ router.post('/', async (req: AuthRequest, res) => {
     const agent = await prisma.agent.create({
       data: { ...parse.data, userId: req.user!.id },
     });
-    res.json({ success: true, agent });
+    res.json({ success: true, agent: serialize(agent) });
   } catch (error) {
     console.error('Create agent error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
@@ -49,7 +63,7 @@ router.get('/', async (req: AuthRequest, res) => {
       where: { userId: req.user!.id },
       orderBy: { createdAt: 'desc' },
     });
-    res.json({ success: true, agents });
+    res.json({ success: true, agents: serialize(agents) });
   } catch (error) {
     console.error('List agents error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
@@ -57,8 +71,8 @@ router.get('/', async (req: AuthRequest, res) => {
 });
 
 router.get('/:id', async (req: AuthRequest, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
+  const id = parseBigInt(req.params.id);
+  if (id === null) {
     res.status(400).json({ success: false, error: 'Invalid agent id' });
     return;
   }
@@ -71,7 +85,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
       res.status(404).json({ success: false, error: 'Agent not found' });
       return;
     }
-    res.json({ success: true, agent });
+    res.json({ success: true, agent: serialize(agent) });
   } catch (error) {
     console.error('Get agent error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
@@ -79,8 +93,8 @@ router.get('/:id', async (req: AuthRequest, res) => {
 });
 
 router.put('/:id', async (req: AuthRequest, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
+  const id = parseBigInt(req.params.id);
+  if (id === null) {
     res.status(400).json({ success: false, error: 'Invalid agent id' });
     return;
   }
@@ -104,7 +118,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
       where: { id },
       data: { ...parse.data, updatedAt: new Date() },
     });
-    res.json({ success: true, agent });
+    res.json({ success: true, agent: serialize(agent) });
   } catch (error) {
     console.error('Update agent error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
@@ -112,8 +126,8 @@ router.put('/:id', async (req: AuthRequest, res) => {
 });
 
 router.delete('/:id', async (req: AuthRequest, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
+  const id = parseBigInt(req.params.id);
+  if (id === null) {
     res.status(400).json({ success: false, error: 'Invalid agent id' });
     return;
   }
@@ -136,8 +150,8 @@ router.delete('/:id', async (req: AuthRequest, res) => {
 });
 
 router.post('/:id/chat', async (req: AuthRequest, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
+  const id = parseBigInt(req.params.id);
+  if (id === null) {
     res.status(400).json({ success: false, error: 'Invalid agent id' });
     return;
   }
@@ -208,10 +222,10 @@ router.post('/:id/chat', async (req: AuthRequest, res) => {
 });
 
 router.get('/:id/conversations', async (req: AuthRequest, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseBigInt(req.params.id);
   const sessionId = (req.query.sessionId as string) || 'default';
 
-  if (isNaN(id)) {
+  if (id === null) {
     res.status(400).json({ success: false, error: 'Invalid agent id' });
     return;
   }
@@ -230,7 +244,7 @@ router.get('/:id/conversations', async (req: AuthRequest, res) => {
       orderBy: { createdAt: 'asc' },
     });
 
-    res.json({ success: true, conversations });
+    res.json({ success: true, conversations: serialize(conversations) });
   } catch (error) {
     console.error('Get conversations error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });

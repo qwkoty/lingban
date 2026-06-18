@@ -15,7 +15,7 @@ export interface ChatCompletionResponse {
 const PRESETS: Record<string, { apiUrl: string; defaultModel: string }> = {
   deepseek: {
     apiUrl: 'https://api.deepseek.com/v1/chat/completions',
-    defaultModel: 'deepseek-chat',
+    defaultModel: 'deepseek-v4-flash',
   },
   nvidia: {
     apiUrl: 'https://integrate.api.nvidia.com/v1/chat/completions',
@@ -23,7 +23,7 @@ const PRESETS: Record<string, { apiUrl: string; defaultModel: string }> = {
   },
   qwen: {
     apiUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
-    defaultModel: 'qwen-turbo',
+    defaultModel: 'qwen3.7-plus',
   },
 };
 

@@ -27,7 +27,7 @@ router.post('/anonymous', async (req, res) => {
 
     res.json({
       success: true,
-      user: { id: user.id, deviceId: user.deviceId, token: user.token },
+      user: { id: Number(user.id), deviceId: user.deviceId, token: user.token },
     });
   } catch (error) {
     console.error('Create anonymous user error:', error);
@@ -38,7 +38,7 @@ router.post('/anonymous', async (req, res) => {
 router.get('/me', authMiddleware, async (req: AuthRequest, res) => {
   res.json({
     success: true,
-    user: { id: req.user!.id, deviceId: req.user!.deviceId },
+    user: { id: Number(req.user!.id), deviceId: req.user!.deviceId },
   });
 });
 

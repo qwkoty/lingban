@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -41,6 +42,63 @@ export function AgentEditScreen() {
   const [maxTokens, setMaxTokens] = useState(String(existing?.maxTokens ?? 2048));
   const [avatarColor, setAvatarColor] = useState(existing?.avatarUrl || avatarGradients[0].id);
   const [saving, setSaving] = useState(false);
+
+  // NVIDIA 自动拉取模型
+  const [nvidiaModels, setNvidiaModels] = useState<string[]>([]);
+  const [fetchingModels, setFetchingModels] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const modelRef = useRef(model);
+  useEffect(() => { modelRef.current = model; }, [model]);
+
+  const fetchNvidiaModels = useCallback(
+    async (key: string) => {
+      if (!key.trim()) {
+        setNvidiaModels([]);
+        setFetchError(null);
+        return;
+      }
+      setFetchingModels(true);
+      setFetchError(null);
+      try {
+        const resp = await api.get('/api/models/nvidia', {
+          headers: { Authorization: `Bearer ${key.trim()}` },
+        });
+        const data = resp.data;
+        if (data.success && Array.isArray(data.models)) {
+          setNvidiaModels(data.models);
+          if (data.models.length > 0 && !data.models.includes(modelRef.current)) {
+            setModel(data.models[0]);
+          }
+        } else {
+          setNvidiaModels([]);
+          setFetchError(data.error || '拉取失败');
+        }
+      } catch (err: any) {
+        setNvidiaModels([]);
+        const msg = err?.response?.data?.error || err?.message || '拉取失败';
+        setFetchError(msg);
+      } finally {
+        setFetchingModels(false);
+      }
+    },
+    [api]
+  );
+
+  useEffect(() => {
+    if (provider !== 'nvidia') {
+      setNvidiaModels([]);
+      setFetchError(null);
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchNvidiaModels(apiKey);
+    }, 600);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [provider, apiKey, fetchNvidiaModels]);
 
   useEffect(() => {
     if (!existing) {
@@ -198,7 +256,85 @@ export function AgentEditScreen() {
           </View>
 
           <Text style={[styles.label, { color: colors.text }]}>模型</Text>
-          {provider !== 'custom' && PROVIDER_PRESETS[provider].models.length > 0 ? (
+          {provider === 'nvidia' ? (
+            // NVIDIA: 输入 API key 后自动拉取模型列表
+            !apiKey.trim() ? (
+              <View style={[styles.hintBox, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
+                <Text style={[styles.hintText, { color: colors.textSecondary }]}>
+                  请先输入 API Key，系统将自动拉取可用模型列表
+                </Text>
+              </View>
+            ) : fetchingModels ? (
+              <View style={[styles.hintBox, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
+                <ActivityIndicator color={colors.primary} size="small" />
+                <Text style={[styles.hintText, { color: colors.textSecondary, marginLeft: 8 }]}>
+                  正在拉取可用模型...
+                </Text>
+              </View>
+            ) : fetchError ? (
+              <View>
+                <View style={[styles.hintBox, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
+                  <Text style={[styles.hintText, { color: '#ff6b6b' }]}>
+                    拉取失败：{fetchError}
+                  </Text>
+                </View>
+                <Text style={[styles.label, { color: colors.textSecondary, fontSize: 12, marginTop: 8 }]}>
+                  手动输入模型名称
+                </Text>
+                <TextInput
+                  value={model}
+                  onChangeText={setModel}
+                  placeholder="meta/llama3-70b-instruct"
+                  placeholderTextColor={colors.textSecondary}
+                  style={inputStyle}
+                />
+              </View>
+            ) : nvidiaModels.length > 0 ? (
+              <View style={styles.modelList}>
+                {nvidiaModels.map((m, i) => {
+                  const selected = model === m;
+                  return (
+                    <StaggerItem key={m} index={i}>
+                      <ScalePress
+                        scale={0.96}
+                        onPress={() => setModel(m)}
+                        style={[
+                          styles.modelCard,
+                          selected
+                            ? { borderColor: colors.primary, borderWidth: 2 }
+                            : { backgroundColor: colors.inputBackground, borderColor: colors.border, borderWidth: 1 },
+                        ]}
+                      >
+                        <Text style={[styles.modelLabel, { color: colors.text, fontSize: 13 }]} numberOfLines={2}>
+                          {m}
+                        </Text>
+                        {selected && (
+                          <LinearGradient
+                            colors={colors.gradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={styles.modelCheck}
+                          >
+                            <Text style={[styles.modelCheckText, { color: colors.textInverse }]}>
+                              已选
+                            </Text>
+                          </LinearGradient>
+                        )}
+                      </ScalePress>
+                    </StaggerItem>
+                  );
+                })}
+              </View>
+            ) : (
+              <TextInput
+                value={model}
+                onChangeText={setModel}
+                placeholder="输入模型名称"
+                placeholderTextColor={colors.textSecondary}
+                style={inputStyle}
+              />
+            )
+          ) : provider !== 'custom' && PROVIDER_PRESETS[provider].models.length > 0 ? (
             <View style={styles.modelList}>
               {PROVIDER_PRESETS[provider].models.map((m, i) => {
                 const selected = model === m.id;
@@ -452,5 +588,16 @@ const styles = StyleSheet.create({
   modelCheckText: {
     fontSize: 10,
     fontWeight: '700',
+  },
+  hintBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+  },
+  hintText: {
+    fontSize: 13,
   },
 });
