@@ -17,6 +17,7 @@
 
 * {
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -26,25 +27,93 @@ html, body {
   color: #e8e8f0;
   min-height: 100vh;
   overscroll-behavior: none;
+  /* 去除浏览器原生滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* 滚动条样式 */
+/* 完全隐藏所有滚动条 */
 ::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
 }
 
-/* 毛玻璃卡片 */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+/* 去除 input/textarea 原生样式 */
+input, textarea, select, button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+/* 去除 number input 的箭头 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* 去除 range 原生样式,使用自定义 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f8cff, #a674ff);
+  box-shadow: 0 0 12px rgba(79,140,255,0.4);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #4f8cff, #a674ff);
+  box-shadow: 0 0 12px rgba(79,140,255,0.4);
+  cursor: pointer;
+}
+
+/* 毛玻璃卡片 - 更大圆角 */
 .glass {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.5rem;
+  border-radius: 2rem;
 }
 
 .glass-strong {
@@ -52,6 +121,7 @@ html, body {
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
 }
 
 .glass-nav {
@@ -59,6 +129,7 @@ html, body {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2rem;
 }
 
 /* 七彩渐变 */
@@ -138,34 +209,42 @@ html, body {
 
 /* 页面过渡 */
 .page-enter {
-  animation: fadeInUp 0.4s ease-out forwards;
-}
-
-/* 输入框样式 */
-input, textarea, select {
-  font-family: inherit;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* 按钮点击效果 */
 button {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* 隐藏滚动条但保持可滚动 */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+button:active {
+  transform: scale(0.95);
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+/* 卡片悬浮效果 */
+.hover-lift {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-lift:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
 }
 
 /* 安全区域 */
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 文本选择颜色 */
+::selection {
+  background: rgba(79, 140, 255, 0.3);
+  color: #fff;
+}
+
+/* 禁用图片拖拽 */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
 }

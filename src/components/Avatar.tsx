@@ -32,7 +32,7 @@ export default function Avatar({ src, name = '?', size = 48, className }: Avatar
       <img
         src={src}
         alt={name}
-        className={cn('rounded-2xl object-cover', className)}
+        className={cn('rounded-3xl object-cover', className)}
         style={{ width: size, height: size }}
       />
     )
@@ -44,7 +44,7 @@ export default function Avatar({ src, name = '?', size = 48, className }: Avatar
   return (
     <div
       className={cn(
-        'rounded-2xl flex items-center justify-center bg-gradient-to-br font-semibold text-white/90',
+        'rounded-3xl flex items-center justify-center bg-gradient-to-br font-semibold text-white/90',
         gradient,
         className,
       )}

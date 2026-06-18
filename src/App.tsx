@@ -19,9 +19,12 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (!initialized || (!user && loading)) {
     return (
       <div className="min-h-screen flex items-center justify-center aurora-bg">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl aurora-gradient flex items-center justify-center animate-breathing">
-            <span className="text-2xl font-bold text-white font-display">灵</span>
+        <div className="flex flex-col items-center gap-5">
+          <div className="relative">
+            <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-40 animate-breathing" />
+            <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float">
+              <span className="text-3xl font-bold text-white font-display">灵</span>
+            </div>
           </div>
           <p className="text-sm text-white/40 animate-pulse-soft">正在进入...</p>
         </div>
@@ -31,10 +34,16 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center aurora-bg">
+      <div className="min-h-screen flex flex-col items-center justify-center aurora-bg gap-8">
+        <div className="relative">
+          <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-40 animate-breathing" />
+          <div className="relative w-20 h-20 rounded-4xl aurora-gradient flex items-center justify-center animate-float">
+            <span className="text-3xl font-bold text-white font-display">灵</span>
+          </div>
+        </div>
         <button
           onClick={() => loginAnonymous()}
-          className="aurora-gradient text-white font-semibold px-8 py-4 rounded-2xl animate-bounce-soft"
+          className="aurora-gradient text-white font-semibold px-10 py-4 rounded-3xl animate-bounce-soft shadow-lg shadow-aurora-blue/20"
         >
           开始使用
         </button>

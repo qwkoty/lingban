@@ -24,9 +24,9 @@ model Agent {
   name          String
   avatar        String?
   persona       String   @default("")
-  modelProvider String   @default("openai")
-  apiBaseUrl   String   @default("https://api.openai.com/v1")
-  modelName    String   @default("gpt-4o-mini")
+  modelProvider String   @default("deepseek")
+  apiBaseUrl   String   @default("https://api.deepseek.com")
+  modelName    String   @default("deepseek-v4-flash")
   temperature  Float    @default(0.7)
   maxTokens    Int      @default(4096)
   apiKey       String   @default("")
