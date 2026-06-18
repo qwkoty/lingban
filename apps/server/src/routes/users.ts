@@ -36,9 +36,13 @@ router.post('/anonymous', async (req, res) => {
 });
 
 router.get('/me', authMiddleware, async (req: AuthRequest, res) => {
+  if (!req.user) {
+    res.status(401).json({ success: false, error: 'Unauthorized' });
+    return;
+  }
   res.json({
     success: true,
-    user: { id: Number(req.user!.id), deviceId: req.user!.deviceId },
+    user: { id: Number(req.user.id), deviceId: req.user.deviceId },
   });
 });
 

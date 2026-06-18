@@ -6,7 +6,7 @@ const USER_ID_KEY = 'lingban:userId';
 const API_BASE_KEY = 'lingban:apiBase';
 
 const defaultApiBase =
-  import.meta.env.VITE_API_BASE || 'https://lingban.onrender.com';
+  import.meta.env.VITE_API_BASE || (import.meta.env.DEV ? 'http://localhost:3001' : '');
 
 function getStoredBase() {
   return localStorage.getItem(API_BASE_KEY) || defaultApiBase;

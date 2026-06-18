@@ -1,42 +1,39 @@
 -- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
-    "device_id" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
+    "id" INT8 NOT NULL DEFAULT unique_rowid(),
+    "device_id" STRING NOT NULL,
+    "token" STRING NOT NULL DEFAULT gen_random_uuid(),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "agents" (
-    "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
-    "name" TEXT NOT NULL,
-    "provider" TEXT NOT NULL,
-    "model" TEXT NOT NULL,
-    "api_key" TEXT,
-    "api_url" TEXT,
-    "system_prompt" TEXT,
+    "id" INT8 NOT NULL DEFAULT unique_rowid(),
+    "user_id" INT8 NOT NULL,
+    "name" STRING NOT NULL,
+    "provider" STRING NOT NULL,
+    "model" STRING NOT NULL,
+    "api_key" STRING,
+    "api_url" STRING,
+    "system_prompt" STRING,
     "temperature" DOUBLE PRECISION NOT NULL DEFAULT 0.7,
-    "max_tokens" INTEGER NOT NULL DEFAULT 2048,
-    "avatar_url" TEXT,
+    "max_tokens" INT4 NOT NULL DEFAULT 2048,
+    "avatar_url" STRING,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-
     CONSTRAINT "agents_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "conversations" (
-    "id" SERIAL NOT NULL,
-    "agent_id" INTEGER NOT NULL,
-    "session_id" TEXT NOT NULL DEFAULT 'default',
-    "role" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "id" INT8 NOT NULL DEFAULT unique_rowid(),
+    "agent_id" INT8 NOT NULL,
+    "session_id" STRING NOT NULL DEFAULT 'default',
+    "role" STRING NOT NULL,
+    "content" STRING NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT "conversations_pkey" PRIMARY KEY ("id")
 );
 

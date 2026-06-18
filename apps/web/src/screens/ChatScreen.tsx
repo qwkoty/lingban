@@ -1,9 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { api } from '../api/client';
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../theme/useTheme';
 import { avatarGradients } from '../theme/colors';
 import type { Agent, Conversation } from '../types';
+
+let tempIdCounter = 0;
+function generateTempId(): number {
+  tempIdCounter += 1;
+  return -tempIdCounter;
+}
+
+function getErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.error || err.message;
+  }
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return 'Unknown error';
+}
 
 export function ChatScreen() {
   const navigate = useNavigate();
@@ -32,21 +49,30 @@ export function ChatScreen() {
     setInput('');
     setSending(true);
 
-    // 乐观更新
+    // 乐观更新，使用负数临时 ID 避免与后端返回的正数 ID 冲突
     const optimistic: Conversation = {
-      id: Date.now(), agentId: Number(id), sessionId: 'default', role: 'user', content: text, createdAt: new Date().toISOString(),
+      id: generateTempId(),
+      agentId: Number(id),
+      sessionId: 'default',
+      role: 'user',
+      content: text,
+      createdAt: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, optimistic]);
 
     try {
       const res = await api.post(`/api/agents/${id}/chat`, { message: text, sessionId: 'default' });
       const reply: Conversation = {
-        id: Date.now() + 1, agentId: Number(id), sessionId: 'default', role: 'assistant',
-        content: res.data.reply, createdAt: new Date().toISOString(),
+        id: generateTempId(),
+        agentId: Number(id),
+        sessionId: 'default',
+        role: 'assistant',
+        content: res.data.reply,
+        createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, reply]);
-    } catch (err: any) {
-      alert('发送失败: ' + (err?.response?.data?.error || err?.message));
+    } catch (err: unknown) {
+      alert('发送失败: ' + getErrorMessage(err));
     } finally {
       setSending(false);
     }

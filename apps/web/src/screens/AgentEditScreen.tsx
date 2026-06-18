@@ -1,10 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import { api } from '../api/client';
-import { useTheme } from '../theme/ThemeContext';
+import { useTheme } from '../theme/useTheme';
 import { avatarGradients } from '../theme/colors';
 import { PROVIDER_PRESETS } from '../types';
 import type { Agent, Provider } from '../types';
+
+function getErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.error || err.message;
+  }
+  if (err instanceof Error) return err.message;
+  return 'Unknown error';
+}
 
 export function AgentEditScreen() {
   const navigate = useNavigate();
@@ -13,7 +22,7 @@ export function AgentEditScreen() {
   const isEdit = Boolean(id);
 
   const [name, setName] = useState('');
-  const [provider, setProvider] = useState<Provider>('deepseek');
+  const [provider, setProviderState] = useState<Provider>('deepseek');
   const [model, setModel] = useState(PROVIDER_PRESETS.deepseek.defaultModel);
   const [apiKey, setApiKey] = useState('');
   const [apiUrl, setApiUrl] = useState('');
@@ -28,16 +37,21 @@ export function AgentEditScreen() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modelRef = useRef(model);
-  useEffect(() => { modelRef.current = model; }, [model]);
 
+  useEffect(() => {
+    modelRef.current = model;
+  }, [model]);
+
+  // 加载编辑数据
   useEffect(() => {
     if (isEdit && id) {
       api.get(`/api/agents/${id}`).then((res) => {
         const a: Agent = res.data.agent;
         setName(a.name);
-        setProvider(a.provider);
+        setProviderState(a.provider);
         setModel(a.model);
-        setApiKey(a.apiKey);
+        // 后端不再返回 apiKey，编辑时需要重新输入才能更新
+        setApiKey('');
         setApiUrl(a.apiUrl || '');
         setSystemPrompt(a.systemPrompt || '');
         setTemperature(String(a.temperature));
@@ -47,33 +61,46 @@ export function AgentEditScreen() {
     }
   }, [isEdit, id]);
 
-  useEffect(() => {
+  const setProvider = useCallback((p: Provider) => {
+    setProviderState(p);
     if (!isEdit) {
-      const preset = PROVIDER_PRESETS[provider];
-      setModel(preset.defaultModel);
-      if (provider === 'custom') setApiUrl('');
-      else setApiUrl(preset.defaultApiUrl);
+      setModel(PROVIDER_PRESETS[p].defaultModel);
+      setApiUrl(p === 'custom' ? '' : PROVIDER_PRESETS[p].defaultApiUrl);
     }
-  }, [provider, isEdit]);
+    setNvidiaModels([]);
+    setFetchError(null);
+  }, [isEdit]);
 
   const fetchNvidiaModels = useCallback(async (key: string) => {
-    if (!key.trim()) { setNvidiaModels([]); setFetchError(null); return; }
-    setFetchingModels(true); setFetchError(null);
+    setNvidiaModels([]);
+    setFetchError(null);
+    if (!key.trim()) {
+      setFetchingModels(false);
+      return;
+    }
+    setFetchingModels(true);
     try {
       const resp = await api.get('/api/models/nvidia', { headers: { Authorization: `Bearer ${key.trim()}` } });
       const data = resp.data;
       if (data.success && Array.isArray(data.models)) {
         setNvidiaModels(data.models);
-        if (data.models.length > 0 && !data.models.includes(modelRef.current)) setModel(data.models[0]);
-      } else { setNvidiaModels([]); setFetchError(data.error || '拉取失败'); }
-    } catch (err: any) {
+        if (data.models.length > 0 && !data.models.includes(modelRef.current)) {
+          setModel(data.models[0]);
+        }
+      } else {
+        setNvidiaModels([]);
+        setFetchError(data.error || '拉取失败');
+      }
+    } catch (err: unknown) {
       setNvidiaModels([]);
-      setFetchError(err?.response?.data?.error || err?.message || '拉取失败');
-    } finally { setFetchingModels(false); }
+      setFetchError(getErrorMessage(err));
+    } finally {
+      setFetchingModels(false);
+    }
   }, []);
 
   useEffect(() => {
-    if (provider !== 'nvidia') { setNvidiaModels([]); setFetchError(null); return; }
+    if (provider !== 'nvidia') return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => fetchNvidiaModels(apiKey), 600);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
@@ -82,7 +109,7 @@ export function AgentEditScreen() {
   const validate = () => {
     if (!name.trim()) return '请输入智能体名称';
     if (!model.trim()) return '请输入模型名称';
-    if (!apiKey.trim()) return '请输入 API Key';
+    if (!isEdit && !apiKey.trim()) return '请输入 API Key';
     if (provider === 'custom' && !apiUrl.trim()) return '自定义 provider 必须填写 API URL';
     const t = parseFloat(temperature);
     if (isNaN(t) || t < 0 || t > 2) return 'Temperature 必须在 0-2 之间';
@@ -95,21 +122,29 @@ export function AgentEditScreen() {
     const error = validate();
     if (error) { alert(error); return; }
     setSaving(true);
-    const payload = {
-      name: name.trim(), provider, model: model.trim(),
-      apiKey: apiKey.trim(),
-      apiUrl: provider === 'custom' ? apiUrl.trim() : undefined,
+
+    const payload: Record<string, unknown> = {
+      name: name.trim(),
+      provider,
+      model: model.trim(),
       systemPrompt: systemPrompt.trim() || undefined,
       temperature: parseFloat(temperature),
       maxTokens: parseInt(maxTokens, 10),
       avatarUrl: avatarColor,
     };
+    if (apiKey.trim()) {
+      payload.apiKey = apiKey.trim();
+    }
+    if (provider === 'custom') {
+      payload.apiUrl = apiUrl.trim();
+    }
+
     try {
       if (isEdit) await api.put(`/api/agents/${id}`, payload);
       else await api.post('/api/agents', payload);
       navigate('/agents');
-    } catch (err: any) {
-      alert('保存失败: ' + (err?.message || '未知错误'));
+    } catch (err: unknown) {
+      alert('保存失败: ' + getErrorMessage(err));
     } finally { setSaving(false); }
   };
 
@@ -211,7 +246,7 @@ export function AgentEditScreen() {
       ) : <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="输入模型名称" style={inputStyle} />}
 
       <label style={labelStyle}>API Key</label>
-      <input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="sk-..." type="password" style={inputStyle} />
+      <input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder={isEdit ? '留空表示不更新' : 'sk-...'} type="password" style={inputStyle} />
 
       {provider === 'custom' && (
         <>

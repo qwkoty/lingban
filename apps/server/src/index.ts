@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import type { RequestHandler } from 'express';
 import path from 'path';
 import fs from 'fs';
 import usersRouter from './routes/users';
@@ -10,16 +12,62 @@ import { prisma } from './lib/prisma';
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
 
-app.use(cors());
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
+  'http://localhost:5173,http://localhost:3000,http://localhost:3001')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: '2mb' }));
+
+// 全局 API 速率限制：每 IP 15 分钟最多 100 次
+app.use(
+  '/api',
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler(_req, res) {
+      res.status(429).json({ success: false, error: 'Too many requests, please try again later.' });
+    },
+  }) as unknown as RequestHandler
+);
+
+// 聊天接口更严格：每 IP 1 分钟最多 30 次
+app.use(
+  '/api/agents/:id/chat',
+  rateLimit({
+    windowMs: 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler(_req, res) {
+      res.status(429).json({ success: false, error: 'Chat rate limit exceeded, please slow down.' });
+    },
+  }) as unknown as RequestHandler
+);
 
 app.get('/health', async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ok', db: 'connected', time: new Date().toISOString() });
   } catch (e) {
-    res.status(500).json({
-      status: 'ok',
+    res.status(503).json({
+      status: 'error',
       db: 'error',
       error: e instanceof Error ? e.message : String(e),
       time: new Date().toISOString(),
@@ -30,7 +78,15 @@ app.get('/health', async (_req, res) => {
 app.use('/api/users', usersRouter);
 app.use('/api/agents', agentsRouter);
 
-// 代理拉取 NVIDIA 可用模型列表（避免移动端 CORS）
+// 代理拉取 NVIDIA 可用模型列表（避免前端 CORS）
+interface NvidiaModelItem {
+  id?: string;
+}
+
+interface NvidiaModelsResponse {
+  data?: NvidiaModelItem[];
+}
+
 app.get('/api/models/nvidia', async (req, res) => {
   const apiKey = req.headers.authorization?.replace('Bearer ', '');
   if (!apiKey) {
@@ -46,10 +102,10 @@ app.get('/api/models/nvidia', async (req, res) => {
       res.status(resp.status).json({ success: false, error: text });
       return;
     }
-    const data: any = await resp.json();
+    const data = (await resp.json()) as NvidiaModelsResponse;
     const models = (data.data || [])
-      .map((m: any) => m.id)
-      .filter((id: string) => typeof id === 'string');
+      .map((m) => m.id)
+      .filter((id): id is string => typeof id === 'string');
     res.json({ success: true, models });
   } catch (e) {
     res.status(500).json({ success: false, error: e instanceof Error ? e.message : 'Failed to fetch models' });
@@ -58,9 +114,9 @@ app.get('/api/models/nvidia', async (req, res) => {
 
 // 静态文件服务：web 前端构建产物
 const possiblePublicPaths = [
-  path.join(__dirname, '../public'),     // dist/../public (production)
-  path.join(__dirname, '../../public'),  // dist/src/../../public (alt)
-  path.join(__dirname, 'public'),        // dev fallback
+  path.join(__dirname, '../public'), // dist/../public (production)
+  path.join(__dirname, '../../public'), // dist/src/../../public (alt)
+  path.join(__dirname, 'public'), // dev fallback
   path.join(process.cwd(), 'apps/server/public'),
   path.join(process.cwd(), 'public'),
 ];

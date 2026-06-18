@@ -1,14 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ThemeContext } from './theme-context';
 import { getColors } from './colors';
-import type { AccentKey, ThemeColors } from './colors';
-
-interface ThemeContextValue {
-  accent: AccentKey;
-  colors: ThemeColors;
-  setAccent: (a: AccentKey) => void;
-}
-
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+import type { AccentKey } from './colors';
 
 const STORAGE_KEY = 'lingban:accent';
 
@@ -35,10 +28,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       {children}
     </ThemeContext.Provider>
   );
-}
-
-export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
 }
