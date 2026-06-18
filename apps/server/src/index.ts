@@ -14,7 +14,19 @@ app.use(express.json({ limit: '2mb' }));
 app.get('/health', async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    res.json({ status: 'ok', db: 'connected', time: new Date().toISOString() });
+    let migrations: unknown = null;
+    let tableCheck: unknown = null;
+    try {
+      migrations = await prisma.$queryRaw`SELECT migration_name, finished_at FROM _prisma_migrations ORDER BY finished_at DESC LIMIT 5`;
+    } catch (e) {
+      migrations = `migrations table error: ${e instanceof Error ? e.message : String(e)}`;
+    }
+    try {
+      tableCheck = await prisma.$queryRaw`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('users', 'agents', 'conversations')`;
+    } catch (e) {
+      tableCheck = `table check error: ${e instanceof Error ? e.message : String(e)}`;
+    }
+    res.json({ status: 'ok', db: 'connected', migrations, tables: tableCheck, time: new Date().toISOString() });
   } catch (e) {
     res.status(500).json({
       status: 'ok',
