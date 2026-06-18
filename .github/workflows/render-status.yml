@@ -35,7 +35,7 @@ jobs:
             COMMIT=$(echo "$DEPLOY_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['deploy']['commit']['id'][:7])")
             echo "[$i] commit=$COMMIT status=$STATUS"
             case "$STATUS" in
-              build_in_progress|deploy_in_progress|created|updating) sleep 15;;
+              build_in_progress|deploy_in_progress|update_in_progress|created|updating) sleep 15;;
               *) echo ""; echo "=== Final deploy status: $STATUS ==="; echo "$DEPLOY_JSON" | python3 -m json.tool; break;;
             esac
           done
