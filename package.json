@@ -5,11 +5,8 @@
   "workspaces": ["apps/*"],
   "scripts": {
     "dev:server": "npm run dev --workspace=apps/server",
-    "dev:mobile": "npm run start --workspace=apps/mobile",
-    "web:mobile": "npm run web --workspace=apps/mobile",
-    "android:mobile": "npm run android --workspace=apps/mobile",
-    "ios:mobile": "npm run ios --workspace=apps/mobile",
-    "build:web": "cd apps/mobile && npx expo export --platform web --output-dir ../server/public",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build:web": "cd apps/web && npm run build",
     "build:server": "cd apps/server && npm run db:generate && npm run build",
     "build": "npm run build:web && npm run build:server"
   }
