@@ -198,13 +198,54 @@ export function AgentEditScreen() {
           </View>
 
           <Text style={[styles.label, { color: colors.text }]}>模型</Text>
-          <TextInput
-            value={model}
-            onChangeText={setModel}
-            placeholder="例如 deepseek-chat"
-            placeholderTextColor={colors.textSecondary}
-            style={inputStyle}
-          />
+          {provider !== 'custom' && PROVIDER_PRESETS[provider].models.length > 0 ? (
+            <View style={styles.modelList}>
+              {PROVIDER_PRESETS[provider].models.map((m, i) => {
+                const selected = model === m.id;
+                return (
+                  <StaggerItem key={m.id} index={i}>
+                    <ScalePress
+                      scale={0.96}
+                      onPress={() => setModel(m.id)}
+                      style={[
+                        styles.modelCard,
+                        selected
+                          ? { borderColor: colors.primary, borderWidth: 2 }
+                          : { backgroundColor: colors.inputBackground, borderColor: colors.border, borderWidth: 1 },
+                      ]}
+                    >
+                      <Text style={[styles.modelLabel, { color: colors.text }]}>
+                        {m.label}
+                      </Text>
+                      <Text style={[styles.modelDesc, { color: colors.textSecondary }]}>
+                        {m.desc}
+                      </Text>
+                      {selected && (
+                        <LinearGradient
+                          colors={colors.gradient}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={styles.modelCheck}
+                        >
+                          <Text style={[styles.modelCheckText, { color: colors.textInverse }]}>
+                            已选
+                          </Text>
+                        </LinearGradient>
+                      )}
+                    </ScalePress>
+                  </StaggerItem>
+                );
+              })}
+            </View>
+          ) : (
+            <TextInput
+              value={model}
+              onChangeText={setModel}
+              placeholder="输入模型名称"
+              placeholderTextColor={colors.textSecondary}
+              style={inputStyle}
+            />
+          )}
 
           <Text style={[styles.label, { color: colors.text }]}>API Key</Text>
           <TextInput
@@ -379,5 +420,37 @@ const styles = StyleSheet.create({
   saveText: {
     fontSize: 16,
     fontWeight: '800',
+  },
+  modelList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  modelCard: {
+    width: '48%',
+    flexGrow: 1,
+    borderRadius: 16,
+    padding: 14,
+    position: 'relative',
+  },
+  modelLabel: {
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  modelDesc: {
+    fontSize: 12,
+  },
+  modelCheck: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  modelCheckText: {
+    fontSize: 10,
+    fontWeight: '700',
   },
 });
