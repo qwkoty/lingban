@@ -9,6 +9,7 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -220,6 +221,7 @@ export function AgentEditScreen() {
           <View style={styles.providerRow}>
             {(Object.keys(PROVIDER_PRESETS) as Provider[]).map((p, i) => {
               const selected = provider === p;
+              const isQwen = p === 'qwen';
               return (
                 <StaggerItem key={p} index={i}>
                   <ScalePress
@@ -240,14 +242,30 @@ export function AgentEditScreen() {
                         end={{ x: 1, y: 0 }}
                         style={styles.providerChipGradient}
                       >
-                        <Text style={[styles.providerChipText, { color: colors.textInverse }]}>
-                          {PROVIDER_PRESETS[p].label}
-                        </Text>
+                        {isQwen ? (
+                          <Image
+                            source={require('../../assets/qwen-logo.png')}
+                            style={styles.providerChipLogo}
+                            resizeMode="contain"
+                          />
+                        ) : (
+                          <Text style={[styles.providerChipText, { color: colors.textInverse }]}>
+                            {PROVIDER_PRESETS[p].label}
+                          </Text>
+                        )}
                       </LinearGradient>
                     ) : (
-                      <Text style={[styles.providerChipText, { color: colors.text }]}>
-                        {PROVIDER_PRESETS[p].label}
-                      </Text>
+                      isQwen ? (
+                        <Image
+                          source={require('../../assets/qwen-logo.png')}
+                          style={styles.providerChipLogo}
+                          resizeMode="contain"
+                        />
+                      ) : (
+                        <Text style={[styles.providerChipText, { color: colors.text }]}>
+                          {PROVIDER_PRESETS[p].label}
+                        </Text>
+                      )
                     )}
                   </ScalePress>
                 </StaggerItem>
@@ -538,6 +556,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  providerChipLogo: {
+    width: 20,
+    height: 20,
   },
   row: {
     flexDirection: 'row',

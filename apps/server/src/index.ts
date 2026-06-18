@@ -11,6 +11,10 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
+app.get('/', (_req, res) => {
+  res.json({ status: 'ok', service: 'lingban-api', time: new Date().toISOString() });
+});
+
 app.get('/health', async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
