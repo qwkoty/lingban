@@ -25,7 +25,7 @@ interface AuthContextValue {
 }
 
 const defaultApiBase =
-  process.env.EXPO_PUBLIC_API_BASE || Constants.expoConfig?.extra?.apiBase || 'http://localhost:3001';
+  process.env.EXPO_PUBLIC_API_BASE || Constants.expoConfig?.extra?.apiBase || 'https://lingban.onrender.com';
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
