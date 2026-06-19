@@ -1,14 +1,14 @@
-import { create } from 'zustand'
-import type { Agent, AgentFormData } from '../types'
-import { agentApi } from '../lib/api'
+import { create } from 'zustand';
+import type { Agent } from '../types.js';
+import { agentsApi } from '../lib/api.js';
 
 interface AgentsState {
-  agents: Agent[]
-  loading: boolean
-  fetchAgents: () => Promise<void>
-  createAgent: (data: AgentFormData) => Promise<Agent>
-  updateAgent: (id: number, data: Partial<AgentFormData>) => Promise<Agent>
-  deleteAgent: (id: number) => Promise<void>
+  agents: Agent[];
+  loading: boolean;
+  fetchAgents: () => Promise<void>;
+  createAgent: (data: Partial<Agent>) => Promise<Agent>;
+  updateAgent: (id: number, data: Partial<Agent>) => Promise<Agent>;
+  deleteAgent: (id: number) => Promise<void>;
 }
 
 export const useAgentsStore = create<AgentsState>((set, get) => ({
@@ -16,29 +16,31 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
   loading: false,
 
   fetchAgents: async () => {
-    set({ loading: true })
+    set({ loading: true });
     try {
-      const { agents } = await agentApi.list()
-      set({ agents, loading: false })
-    } catch {
-      set({ loading: false })
+      const { agents } = await agentsApi.list();
+      set({ agents });
+    } finally {
+      set({ loading: false });
     }
   },
 
-  createAgent: async (data: AgentFormData) => {
-    const { agent } = await agentApi.create(data)
-    set({ agents: [agent, ...get().agents] })
-    return agent
+  createAgent: async (data) => {
+    const { agent } = await agentsApi.create(data);
+    set({ agents: [agent, ...get().agents] });
+    return agent;
   },
 
-  updateAgent: async (id: number, data: Partial<AgentFormData>) => {
-    const { agent } = await agentApi.update(id, data)
-    set({ agents: get().agents.map((a) => (a.id === id ? agent : a)) })
-    return agent
+  updateAgent: async (id, data) => {
+    const { agent } = await agentsApi.update(id, data);
+    set({
+      agents: get().agents.map((a) => (a.id === id ? agent : a)),
+    });
+    return agent;
   },
 
-  deleteAgent: async (id: number) => {
-    await agentApi.delete(id)
-    set({ agents: get().agents.filter((a) => a.id !== id) })
+  deleteAgent: async (id) => {
+    await agentsApi.delete(id);
+    set({ agents: get().agents.filter((a) => a.id !== id) });
   },
-}))
+}));

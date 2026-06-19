@@ -1,26 +1,21 @@
-import { type ReactNode } from 'react'
-import { cn } from '../lib/utils'
+import { cn } from '../lib/utils.js';
 
-interface GlassCardProps {
-  children: ReactNode
-  className?: string
-  onClick?: () => void
-  strong?: boolean
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+  hover?: boolean;
 }
 
-export default function GlassCard({ children, className, onClick, strong }: GlassCardProps) {
+export function GlassCard({ children, className, hover = false, ...props }: GlassCardProps) {
   return (
     <div
-      onClick={onClick}
       className={cn(
-        strong ? 'glass-strong' : 'glass',
-        'transition-all duration-400',
-        onClick && 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]',
-        className,
+        'glass p-4 transition-all duration-300',
+        hover && 'hover:bg-white/10 hover:scale-[1.01] cursor-pointer',
+        className
       )}
-      style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+      {...props}
     >
       {children}
     </div>
-  )
+  );
 }

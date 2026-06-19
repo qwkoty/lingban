@@ -1,89 +1,82 @@
-import { create } from 'zustand'
-import type { ChatMessage } from '../types'
-import { chatApi } from '../lib/api'
+import { create } from 'zustand';
+import type { ChatMessage, ChatSession } from '../types.js';
+import { chatApi } from '../lib/api.js';
 
 interface ChatState {
-  messages: ChatMessage[]
-  loading: boolean
-  streaming: boolean
-  agentInfo: { id: number; name: string; avatar: string | null; persona: string } | null
-  fetchMessages: (agentId: number) => Promise<void>
-  sendMessage: (agentId: number, message: string) => Promise<void>
-  clearMessages: () => void
+  sessions: ChatSession[];
+  messages: ChatMessage[];
+  loading: boolean;
+  streaming: boolean;
+  fetchSessions: () => Promise<void>;
+  fetchHistory: (agentId: number) => Promise<void>;
+  sendMessage: (
+    agentId: number,
+    message: string,
+    onUpdate: () => void
+  ) => Promise<void>;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
+  sessions: [],
   messages: [],
   loading: false,
   streaming: false,
-  agentInfo: null,
 
-  fetchMessages: async (agentId: number) => {
-    set({ loading: true, messages: [] })
+  fetchSessions: async () => {
+    const { sessions } = await chatApi.sessions();
+    set({ sessions });
+  },
+
+  fetchHistory: async (agentId) => {
+    set({ loading: true });
     try {
-      const { agent, messages } = await chatApi.messages(agentId)
-      set({ agentInfo: agent, messages, loading: false })
-    } catch {
-      set({ loading: false })
+      const { messages } = await chatApi.history(agentId);
+      set({ messages });
+    } finally {
+      set({ loading: false });
     }
   },
 
-  sendMessage: async (agentId: number, message: string) => {
-    set({ streaming: true })
-
-    // 添加用户消息
-    const userMsg: ChatMessage = {
+  sendMessage: async (agentId, message, onUpdate) => {
+    const userMessage: ChatMessage = {
       id: Date.now(),
       agentId,
       userId: 0,
       role: 'user',
       content: message,
       createdAt: new Date().toISOString(),
-    }
-    set({ messages: [...get().messages, userMsg] })
+    };
 
-    // 添加空的助手消息用于流式填充
-    const assistantMsg: ChatMessage = {
+    set({ messages: [...get().messages, userMessage], streaming: true });
+    onUpdate();
+
+    const assistantMessage: ChatMessage = {
       id: Date.now() + 1,
       agentId,
       userId: 0,
       role: 'assistant',
       content: '',
       createdAt: new Date().toISOString(),
-    }
-    set({ messages: [...get().messages, assistantMsg] })
+    };
 
-    await new Promise<void>((resolve) => {
-      chatApi.sendMessage(
-        agentId,
-        message,
-        (chunk) => {
-          const msgs = get().messages
-          const last = msgs[msgs.length - 1]
-          if (last && last.role === 'assistant') {
-            const updated = [...msgs]
-            updated[updated.length - 1] = { ...last, content: last.content + chunk }
-            set({ messages: updated })
-          }
-        },
-        (error) => {
-          const msgs = get().messages
-          const last = msgs[msgs.length - 1]
-          if (last && last.role === 'assistant') {
-            const updated = [...msgs]
-            updated[updated.length - 1] = { ...last, content: `错误: ${error}` }
-            set({ messages: updated })
-          }
-          set({ streaming: false })
-          resolve()
-        },
-        () => {
-          set({ streaming: false })
-          resolve()
-        },
-      )
-    })
+    set({ messages: [...get().messages, assistantMessage] });
+
+    await chatApi.send(
+      agentId,
+      message,
+      (chunk) => {
+        if (chunk.error) {
+          assistantMessage.content = chunk.error;
+        } else if (chunk.content) {
+          assistantMessage.content += chunk.content;
+        }
+        set({ messages: [...get().messages] });
+        onUpdate();
+      },
+      () => {
+        set({ streaming: false });
+        get().fetchSessions();
+      }
+    );
   },
-
-  clearMessages: () => set({ messages: [], agentInfo: null }),
-}))
+}));

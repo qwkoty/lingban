@@ -1,24 +1,14 @@
-import { PrismaClient } from '../../generated/prisma/client.ts'
-import { PrismaPg } from '@prisma/adapter-pg'
-import pg from 'pg'
-import dotenv from 'dotenv'
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 
-dotenv.config()
+const { Pool } = pg;
 
-const isProduction = process.env.NODE_ENV === 'production'
-
-// 生产环境（Koyeb / Render 等托管 PostgreSQL）通常强制 SSL，
-// 本地开发可保持不启用以避免自签名证书问题。
-const ssl = isProduction
-  ? { rejectUnauthorized: false }
-  : false
-
-const pool = new pg.Pool({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl,
-})
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+});
 
-const adapter = new PrismaPg(pool)
-const prisma = new PrismaClient({ adapter })
+const adapter = new PrismaPg(pool);
 
-export default prisma
+export const prisma = new PrismaClient({ adapter });

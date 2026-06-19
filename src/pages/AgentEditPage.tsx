@@ -1,333 +1,210 @@
-import { useEffect, useState, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useAgentsStore } from '../store/agents'
-import { uploadApi } from '../lib/api'
-import { MODEL_PROVIDERS } from '../types'
-import type { AgentFormData } from '../types'
-import Avatar from '../components/Avatar'
-import { ArrowLeft, Camera, Check, ChevronDown, Thermometer, Hash, Key, Cpu } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, Upload } from 'lucide-react';
+import { useAgentsStore } from '../store/agents.js';
+import { uploadApi, agentsApi } from '../lib/api.js';
+import { Avatar } from '../components/Avatar.js';
+import { GlassCard } from '../components/GlassCard.js';
+import type { Agent } from '../types.js';
 
-const defaultForm: AgentFormData = {
+const providers = [
+  { value: 'openai', label: 'OpenAI' },
+  { value: 'anthropic', label: 'Anthropic' },
+  { value: 'deepseek', label: 'DeepSeek' },
+  { value: 'custom', label: '自定义' },
+];
+
+const defaultAgent: Partial<Agent> = {
   name: '',
-  avatar: null,
   persona: '',
   modelProvider: 'deepseek',
-  apiBaseUrl: 'https://api.deepseek.com',
-  modelName: 'deepseek-v4-flash',
+  modelName: 'deepseek-chat',
   temperature: 0.7,
   maxTokens: 4096,
   apiKey: '',
-}
+};
 
-export default function AgentEditPage() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { createAgent, updateAgent, agents } = useAgentsStore()
-  const isEdit = id !== 'new'
-  const [form, setForm] = useState<AgentFormData>(defaultForm)
-  const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+export function AgentEditPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { createAgent, updateAgent } = useAgentsStore();
+  const [form, setForm] = useState<Partial<Agent>>(defaultAgent);
+  const [loading, setLoading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const isEdit = id && id !== 'new';
 
   useEffect(() => {
-    if (isEdit && id) {
-      const agent = agents.find((a) => a.id === Number(id))
-      if (agent) {
-        setForm({
-          name: agent.name,
-          avatar: agent.avatar,
-          persona: agent.persona,
-          modelProvider: agent.modelProvider,
-          apiBaseUrl: agent.apiBaseUrl,
-          modelName: agent.modelName,
-          temperature: agent.temperature,
-          maxTokens: agent.maxTokens,
-          apiKey: agent.apiKey,
-        })
-      }
+    if (isEdit) {
+      agentsApi.get(Number(id)).then(({ agent }) => setForm(agent));
     }
-  }, [id, isEdit, agents])
+  }, [id, isEdit]);
 
-  const update = (field: keyof AgentFormData, value: unknown) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-  }
+  const handleChange = (
+    key: keyof Agent,
+    value: string | number
+  ) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-  const handleProviderChange = (providerId: string) => {
-    const provider = MODEL_PROVIDERS.find((p) => p.id === providerId)
-    setForm((prev) => ({
-      ...prev,
-      modelProvider: providerId,
-      apiBaseUrl: provider?.baseUrl || prev.apiBaseUrl,
-      modelName: provider?.models[0] || prev.modelName,
-    }))
-  }
+  const handleAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const { url } = await uploadApi.avatar(file);
+    setForm((prev) => ({ ...prev, avatar: url }));
+  };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setUploading(true)
+  const handleSubmit = async () => {
+    if (!form.name?.trim()) return;
+    setLoading(true);
     try {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const base64 = reader.result as string
-        try {
-          const { url } = await uploadApi.avatar(base64)
-          update('avatar', url)
-        } catch {
-          update('avatar', base64)
-        }
-        setUploading(false)
-      }
-      reader.readAsDataURL(file)
-    } catch {
-      setUploading(false)
-    }
-  }
-
-  const handleSave = async () => {
-    if (!form.name.trim()) return
-    setSaving(true)
-    try {
-      if (isEdit && id) {
-        await updateAgent(Number(id), form)
+      if (isEdit) {
+        await updateAgent(Number(id), form);
       } else {
-        await createAgent(form)
+        await createAgent(form);
       }
-      navigate('/agents')
-    } catch {
-      setSaving(false)
+      navigate('/agents');
+    } finally {
+      setLoading(false);
     }
-  }
-
-  const currentProvider = MODEL_PROVIDERS.find((p) => p.id === form.modelProvider)
+  };
 
   return (
-    <div className="min-h-screen pb-32 page-enter">
-      {/* 顶部导航 */}
-      <div className="px-4 pt-14 pb-2 flex items-center gap-3 animate-fade-in-down">
+    <div className="p-4 pb-28 max-w-md mx-auto">
+      <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate('/agents')}
-          className="p-2.5 rounded-2xl glass text-white/60 hover:text-white/90 transition-all active:scale-90"
+          className="p-2 rounded-full hover:bg-white/10 transition-colors"
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className="text-lg font-semibold text-white/90">
+        <h1 className="text-2xl font-bold gradient-text">
           {isEdit ? '编辑智能体' : '创建智能体'}
         </h1>
       </div>
 
-      <div className="px-4 space-y-4">
-        {/* 头像预览 */}
-        <div className="flex flex-col items-center py-6 animate-scale-in">
-          <div className="relative">
-            <div className="absolute inset-0 aurora-gradient rounded-4xl blur-xl opacity-20 animate-breathing" />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="relative w-24 h-24 rounded-4xl overflow-hidden glass-strong flex items-center justify-center group transition-transform active:scale-90"
-            >
-              {form.avatar ? (
-                <img src={form.avatar} alt="avatar" className="w-full h-full object-cover" />
-              ) : (
-                <Avatar name={form.name || '?'} size={96} />
-              )}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <Camera size={24} className="text-white" />
-              </div>
-            </button>
-          </div>
+      <div className="space-y-4">
+        <GlassCard className="flex flex-col items-center py-6">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="relative group"
+          >
+            <Avatar
+              src={form.avatar}
+              name={form.name || 'AI'}
+              size="xl"
+            />
+            <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Upload size={24} />
+            </div>
+          </button>
           <input
-            ref={fileInputRef}
+            ref={fileRef}
             type="file"
             accept="image/*"
-            onChange={handleAvatarUpload}
             className="hidden"
+            onChange={handleAvatar}
           />
-          <p className="text-xs text-white/30 mt-3 animate-pulse-soft">
-            {uploading ? '上传中...' : '点击上传头像'}
-          </p>
-        </div>
+          <p className="text-white/40 text-sm mt-3">点击上传头像</p>
+        </GlassCard>
 
-        {/* 名称 */}
-        <Field label="名称" delay={50}>
-          <input
-            value={form.name}
-            onChange={(e) => update('name', e.target.value)}
-            placeholder="给你的智能体起个名字"
-            className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 placeholder-white/30 focus:border-aurora-blue/50 transition-all"
-          />
-        </Field>
-
-        {/* 人设 */}
-        <Field label="人设 / 系统提示词" delay={100}>
-          <textarea
-            value={form.persona}
-            onChange={(e) => update('persona', e.target.value)}
-            placeholder="描述智能体的性格、能力、行为准则..."
-            rows={4}
-            className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 placeholder-white/30 focus:border-aurora-blue/50 transition-all resize-none"
-          />
-        </Field>
-
-        {/* 模型提供商 */}
-        <Field label="模型提供商" delay={150}>
-          <div className="flex flex-wrap gap-2">
-            {MODEL_PROVIDERS.map((provider) => {
-              const selected = form.modelProvider === provider.id
-              return (
-                <button
-                  key={provider.id}
-                  onClick={() => handleProviderChange(provider.id)}
-                  className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-400 flex items-center gap-2 ${
-                    selected
-                      ? 'aurora-gradient text-white scale-105 shadow-lg shadow-aurora-blue/20'
-                      : 'glass text-white/50 hover:text-white/70 hover:scale-102'
-                  }`}
-                  style={{ transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
-                >
-                  {provider.id === 'deepseek' && (
-                    <img src="/images/deepseek-icon.svg" alt="DeepSeek" className="w-5 h-5 rounded-full bg-[#1a5cff] p-0.5" />
-                  )}
-                  {provider.name}
-                </button>
-              )
-            })}
+        <GlassCard className="space-y-4">
+          <div>
+            <label className="block text-sm text-white/60 mb-1">名称</label>
+            <input
+              value={form.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+              placeholder="给你的智能体起个名字"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+            />
           </div>
-        </Field>
 
-        {/* 模型选择 */}
-        {currentProvider && currentProvider.models.length > 0 && (
-          <Field label="模型" delay={200}>
-            <div className="relative">
-              <button
-                onClick={() => setModelDropdownOpen(!modelDropdownOpen)}
-                className="w-full glass border border-white/10 rounded-3xl px-4 py-3.5 flex items-center justify-between text-white/90 transition-all active:scale-[0.98]"
-              >
-                <span className="flex items-center gap-2">
-                  <Cpu size={16} className="text-white/40" />
-                  {form.modelName}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={`text-white/40 transition-transform duration-300 ${modelDropdownOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
-              {modelDropdownOpen && (
-                <div className="absolute top-full mt-2 w-full glass-strong rounded-3xl overflow-hidden z-20 animate-scale-in">
-                  {currentProvider.models.map((model, i) => (
-                    <button
-                      key={model}
-                      onClick={() => {
-                        update('modelName', model)
-                        setModelDropdownOpen(false)
-                      }}
-                      className={`w-full px-4 py-3.5 text-left text-sm hover:bg-white/5 transition-all animate-fade-in-up ${
-                        form.modelName === model ? 'text-aurora-cyan' : 'text-white/70'
-                      }`}
-                      style={{ animationDelay: `${i * 50}ms`, opacity: 0 }}
-                    >
-                      {model}
-                    </button>
-                  ))}
-                </div>
-              )}
+          <div>
+            <label className="block text-sm text-white/60 mb-1">人设 / 系统提示词</label>
+            <textarea
+              value={form.persona}
+              onChange={(e) => handleChange('persona', e.target.value)}
+              placeholder="描述这个智能体的角色、语气和能力..."
+              rows={4}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-white/60 mb-2">模型提供商</label>
+            <div className="flex flex-wrap gap-2">
+              {providers.map((p) => (
+                <button
+                  key={p.value}
+                  onClick={() => handleChange('modelProvider', p.value)}
+                  className={`px-4 py-2 rounded-full text-sm border transition-all ${
+                    form.modelProvider === p.value
+                      ? 'border-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white'
+                      : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
             </div>
-          </Field>
-        )}
+          </div>
 
-        {/* 自定义模型名 */}
-        {form.modelProvider === 'custom' && (
-          <Field label="模型名称" delay={200}>
+          <div>
+            <label className="block text-sm text-white/60 mb-1">模型名称</label>
             <input
               value={form.modelName}
-              onChange={(e) => update('modelName', e.target.value)}
-              placeholder="如 deepseek-v4-flash"
-              className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 placeholder-white/30 focus:border-aurora-blue/50 transition-all"
+              onChange={(e) => handleChange('modelName', e.target.value)}
+              placeholder="例如 deepseek-chat / gpt-4o-mini"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
             />
-          </Field>
-        )}
-
-        {/* API Base URL */}
-        <Field label="API Base URL" delay={250}>
-          <input
-            value={form.apiBaseUrl}
-            onChange={(e) => update('apiBaseUrl', e.target.value)}
-            placeholder="https://api.deepseek.com"
-            className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 placeholder-white/30 focus:border-aurora-blue/50 transition-all text-sm"
-          />
-        </Field>
-
-        {/* 温度 */}
-        <Field label="温度" icon={<Thermometer size={14} />} delay={300}>
-          <div className="flex items-center gap-4">
-            <input
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              value={form.temperature}
-              onChange={(e) => update('temperature', Number(e.target.value))}
-              className="flex-1"
-            />
-            <span className="text-sm text-white/60 w-10 text-right font-mono">
-              {form.temperature.toFixed(1)}
-            </span>
           </div>
-        </Field>
 
-        {/* 最大 Token */}
-        <Field label="最大 Token" icon={<Hash size={14} />} delay={350}>
-          <input
-            type="number"
-            value={form.maxTokens}
-            onChange={(e) => update('maxTokens', Number(e.target.value))}
-            min="1"
-            max="128000"
-            className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 focus:border-aurora-blue/50 transition-all"
-          />
-        </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-white/60 mb-1">温度</label>
+              <input
+                type="number"
+                min={0}
+                max={2}
+                step={0.1}
+                value={form.temperature}
+                onChange={(e) => handleChange('temperature', Number(e.target.value))}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-white/60 mb-1">最大 Token</label>
+              <input
+                type="number"
+                min={1}
+                max={128000}
+                step={1}
+                value={form.maxTokens}
+                onChange={(e) => handleChange('maxTokens', Number(e.target.value))}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+          </div>
 
-        {/* API Key */}
-        <Field label="API Key" icon={<Key size={14} />} delay={400}>
-          <input
-            type="password"
-            value={form.apiKey}
-            onChange={(e) => update('apiKey', e.target.value)}
-            placeholder="sk-..."
-            className="w-full bg-white/5 border border-white/10 rounded-3xl px-4 py-3.5 text-white/90 placeholder-white/30 focus:border-aurora-blue/50 transition-all"
-          />
-        </Field>
-      </div>
+          <div>
+            <label className="block text-sm text-white/60 mb-1">API Key</label>
+            <input
+              type="password"
+              value={form.apiKey}
+              onChange={(e) => handleChange('apiKey', e.target.value)}
+              placeholder="输入你的 LLM API Key"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+        </GlassCard>
 
-      {/* 底部保存按钮 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] p-4 safe-bottom z-50">
         <button
-          onClick={handleSave}
-          disabled={!form.name.trim() || saving}
-          className="w-full aurora-gradient text-white font-semibold py-4 rounded-3xl flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98] transition-transform shadow-lg shadow-aurora-blue/20"
+          onClick={handleSubmit}
+          disabled={loading || !form.name?.trim()}
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 font-medium shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {saving ? (
-            <span className="animate-pulse-soft">保存中...</span>
-          ) : (
-            <>
-              <Check size={20} />
-              {isEdit ? '保存修改' : '创建智能体'}
-            </>
-          )}
+          {loading ? '保存中...' : isEdit ? '保存修改' : '创建智能体'}
         </button>
       </div>
     </div>
-  )
-}
-
-function Field({ label, icon, children, delay = 0 }: { label: string; icon?: React.ReactNode; children: React.ReactNode; delay?: number }) {
-  return (
-    <div className="animate-fade-in-up" style={{ animationDelay: `${delay}ms`, opacity: 0 }}>
-      <label className="flex items-center gap-1.5 text-xs font-medium text-white/40 mb-2 px-1">
-        {icon}
-        {label}
-      </label>
-      {children}
-    </div>
-  )
+  );
 }

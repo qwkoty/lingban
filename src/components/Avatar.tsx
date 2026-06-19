@@ -1,56 +1,34 @@
-import { Bot } from 'lucide-react'
-import { cn } from '../lib/utils'
+import { cn, getInitials } from '../lib/utils.js';
 
 interface AvatarProps {
-  src?: string | null
-  name?: string
-  size?: number
-  className?: string
+  src?: string | null;
+  name: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
 }
 
-// 根据名字生成渐变色
-function getGradient(name: string): string {
-  const gradients = [
-    'from-aurora-blue to-aurora-cyan',
-    'from-aurora-cyan to-aurora-green',
-    'from-aurora-green to-aurora-yellow',
-    'from-aurora-yellow to-aurora-orange',
-    'from-aurora-orange to-aurora-pink',
-    'from-aurora-pink to-aurora-purple',
-    'from-aurora-purple to-aurora-blue',
-  ]
-  let hash = 0
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  return gradients[Math.abs(hash) % gradients.length]
-}
+const sizeClasses = {
+  sm: 'w-8 h-8 text-xs',
+  md: 'w-12 h-12 text-sm',
+  lg: 'w-16 h-16 text-base',
+  xl: 'w-24 h-24 text-xl',
+};
 
-export default function Avatar({ src, name = '?', size = 48, className }: AvatarProps) {
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={name}
-        className={cn('rounded-3xl object-cover', className)}
-        style={{ width: size, height: size }}
-      />
-    )
-  }
-
-  const initial = name.charAt(0).toUpperCase()
-  const gradient = getGradient(name)
-
+export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
   return (
     <div
       className={cn(
-        'rounded-3xl flex items-center justify-center bg-gradient-to-br font-semibold text-white/90',
-        gradient,
-        className,
+        'rounded-full flex items-center justify-center font-medium overflow-hidden shrink-0',
+        'bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white',
+        sizeClasses[size],
+        className
       )}
-      style={{ width: size, height: size, fontSize: size * 0.4 }}
     >
-      {initial || <Bot size={size * 0.5} />}
+      {src ? (
+        <img src={src} alt={name} className="w-full h-full object-cover" />
+      ) : (
+        getInitials(name)
+      )}
     </div>
-  )
+  );
 }

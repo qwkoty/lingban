@@ -1,69 +1,34 @@
-import express, {
-  type Request,
-  type Response,
-  type NextFunction,
-} from 'express'
-import cors from 'cors'
-import path from 'path'
-import dotenv from 'dotenv'
-import authRoutes from './routes/auth.js'
-import agentRoutes from './routes/agents.js'
-import chatRoutes from './routes/chat.js'
-import uploadRoutes from './routes/upload.js'
-import prisma from './lib/prisma.js'
+import express from 'express';
+import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-dotenv.config()
+import { authRouter } from './routes/auth.js';
+import { agentsRouter } from './routes/agents.js';
+import { chatRouter } from './routes/chat.js';
+import { uploadRouter } from './routes/upload.js';
 
-const app: express.Application = express()
-const isProduction = process.env.NODE_ENV === 'production'
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-app.use(cors())
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+export const app = express();
 
-// 静态文件服务 (上传的图片) - 用 process.cwd() 确保路径正确
-app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')))
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
 
-// API 路由
-app.use('/api/auth', authRoutes)
-app.use('/api/agents', agentRoutes)
-app.use('/api/chat', chatRoutes)
-app.use('/api/upload', uploadRoutes)
+app.use('/api/auth', authRouter);
+app.use('/api/agents', agentsRouter);
+app.use('/api/chat', chatRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// 健康检查（包含数据库连通性校验）
-app.get('/api/health', async (_req: Request, res: Response): Promise<void> => {
-  try {
-    await prisma.$queryRaw`SELECT 1`
-    res.status(200).json({ success: true, message: 'ok', database: 'connected' })
-  } catch (error) {
-    console.error('[health] database check failed:', error)
-    res.status(503).json({ success: false, message: 'database unavailable' })
-  }
-})
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
 
-// 生产环境: 服务前端静态文件
-if (isProduction) {
-  const distPath = path.join(process.cwd(), 'dist')
-  app.use(express.static(distPath))
-  // SPA 回退: 所有非 API 路由返回 index.html
-  app.use((req: Request, res: Response, next: NextFunction): void => {
-    if (req.path.startsWith('/api')) {
-      next()
-      return
-    }
-    res.sendFile(path.join(distPath, 'index.html'))
-  })
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
 }
-
-// API 404 (放在所有路由之后)
-app.use('/api', (_req: Request, res: Response): void => {
-  res.status(404).json({ success: false, error: 'API 不存在' })
-})
-
-// 错误处理
-app.use((error: Error, _req: Request, res: Response, _next: NextFunction): void => {
-  console.error('服务器错误:', error)
-  res.status(500).json({ success: false, error: '服务器内部错误' })
-})
-
-export default app

@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -10,33 +9,34 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   token     String   @unique
-  nickname  String   @default("")
+  nickname  String
   avatar    String?
   createdAt DateTime @default(now())
 
   agents   Agent[]
   messages ChatMessage[]
+
+  @@map("users")
 }
 
 model Agent {
-  id            Int      @id @default(autoincrement())
-  userId        Int
-  name          String
-  avatar        String?
-  persona       String   @default("")
-  modelProvider String   @default("deepseek")
-  apiBaseUrl   String   @default("https://api.deepseek.com")
-  modelName    String   @default("deepseek-v4-flash")
-  temperature  Float    @default(0.7)
-  maxTokens    Int      @default(4096)
-  apiKey       String   @default("")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  name           String
+  avatar         String?
+  persona        String   @default("")
+  modelProvider  String   @default("openai")
+  modelName      String   @default("gpt-4o-mini")
+  temperature    Float    @default(0.7)
+  maxTokens      Int      @default(4096)
+  apiKey         String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages ChatMessage[]
 
-  @@index([userId])
+  @@map("agents")
 }
 
 model ChatMessage {
@@ -50,6 +50,5 @@ model ChatMessage {
   agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([agentId])
-  @@index([userId])
+  @@map("chat_messages")
 }

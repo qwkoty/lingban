@@ -1,116 +1,123 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAgentsStore } from '../store/agents'
-import Avatar from '../components/Avatar'
-import GlassCard from '../components/GlassCard'
-import EmptyState from '../components/EmptyState'
-import { Plus, Pencil, Trash2, Bot, Cpu } from 'lucide-react'
-import type { Agent } from '../types'
+import { useEffect, useState } from 'react';
+import { Plus, Trash2, Edit, Bot } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAgentsStore } from '../store/agents.js';
+import { Avatar } from '../components/Avatar.js';
+import { GlassCard } from '../components/GlassCard.js';
+import { EmptyState } from '../components/EmptyState.js';
+import { Modal } from '../components/Modal.js';
 
-export default function AgentsPage() {
-  const navigate = useNavigate()
-  const { agents, loading, fetchAgents, deleteAgent } = useAgentsStore()
+export function AgentsPage() {
+  const navigate = useNavigate();
+  const { agents, loading, fetchAgents, deleteAgent } = useAgentsStore();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchAgents()
-  }, [fetchAgents])
+    fetchAgents();
+  }, [fetchAgents]);
 
-  const handleDelete = async (e: React.MouseEvent, agent: Agent) => {
-    e.stopPropagation()
-    if (confirm(`确定删除「${agent.name}」吗?`)) {
-      await deleteAgent(agent.id)
-    }
-  }
+  const handleDelete = async () => {
+    if (deletingId === null) return;
+    await deleteAgent(deletingId);
+    setDeletingId(null);
+  };
 
   return (
-    <div className="min-h-screen pb-28 page-enter">
-      {/* 顶部标题 */}
-      <div className="px-6 pt-14 pb-4 flex items-center justify-between animate-fade-in-down">
-        <h1 className="text-2xl font-bold font-display text-white/90">我的智能体</h1>
-        <span className="text-xs text-white/30 glass px-3 py-1.5 rounded-full">{agents.length} 个</span>
-      </div>
-
-      {/* 智能体列表 */}
-      <div className="px-4 space-y-3">
-        {loading ? (
-          <>
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="glass rounded-4xl p-4 flex items-center gap-4">
-                <div className="skeleton w-14 h-14 rounded-3xl" />
-                <div className="flex-1 space-y-2">
-                  <div className="skeleton h-4 w-24 rounded-full" />
-                  <div className="skeleton h-3 w-32 rounded-full" />
-                </div>
-              </div>
-            ))}
-          </>
-        ) : agents.length === 0 ? (
-          <EmptyState
-            icon={<Bot size={32} className="text-white/30" />}
-            title="还没有智能体"
-            description="创建你的第一个智能体,开始对话之旅"
-            action={
-              <button
-                onClick={() => navigate('/agents/new')}
-                className="aurora-gradient text-white text-sm font-semibold px-6 py-3.5 rounded-3xl flex items-center gap-2 animate-bounce-soft"
-              >
-                <Plus size={18} />
-                创建智能体
-              </button>
-            }
-          />
-        ) : (
-          agents.map((agent, i) => (
-            <div
-              key={agent.id}
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${i * 80}ms`, opacity: 0 }}
-            >
-              <GlassCard
-                onClick={() => navigate(`/agents/${agent.id}/edit`)}
-                className="p-4 flex items-center gap-4 hover-lift"
-              >
-                <Avatar src={agent.avatar} name={agent.name} size={56} />
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white/90 truncate">{agent.name}</h3>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Cpu size={12} className="text-white/30" />
-                    <span className="text-xs text-white/40 truncate">{agent.modelName}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      navigate(`/agents/${agent.id}/edit`)
-                    }}
-                    className="p-2.5 rounded-2xl hover:bg-white/10 transition-all text-white/40 hover:text-white/70 active:scale-90"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    onClick={(e) => handleDelete(e, agent)}
-                    className="p-2.5 rounded-2xl hover:bg-red-500/10 transition-all text-white/40 hover:text-red-400 active:scale-90"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </GlassCard>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* 悬浮创建按钮 */}
-      {agents.length > 0 && (
+    <div className="p-4 pb-28 max-w-md mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold gradient-text">智能体</h1>
         <button
           onClick={() => navigate('/agents/new')}
-          className="fixed bottom-24 right-4 max-w-[480px] w-14 h-14 rounded-3xl aurora-gradient flex items-center justify-center shadow-lg shadow-aurora-blue/20 active:scale-90 transition-transform z-40 animate-bounce-soft"
-          style={{ left: 'calc(50% + 240px - 64px)' }}
+          className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
         >
-          <Plus size={24} className="text-white" />
+          <Plus size={20} />
         </button>
+      </div>
+
+      {loading && agents.length === 0 ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="glass h-24 animate-pulse bg-white/5"
+            />
+          ))}
+        </div>
+      ) : agents.length === 0 ? (
+        <EmptyState
+          icon={<Bot size={48} />}
+          title="还没有智能体"
+          description="创建一个智能体，开始你的 AI 对话"
+          action={
+            <button
+              onClick={() => navigate('/agents/new')}
+              className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/15 transition-colors"
+            >
+              创建智能体
+            </button>
+          }
+        />
+      ) : (
+        <div className="space-y-3">
+          {agents.map((agent, index) => (
+            <GlassCard
+              key={agent.id}
+              hover
+              className="flex items-center gap-4 animate-fade-in-up"
+              style={{ animationDelay: `${index * 0.05}s` }}
+              onClick={() => navigate(`/agents/${agent.id}/edit`)}
+            >
+              <Avatar src={agent.avatar} name={agent.name} />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium truncate">{agent.name}</h3>
+                <p className="text-white/40 text-sm truncate">{agent.modelName}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/agents/${agent.id}/edit`);
+                  }}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                >
+                  <Edit size={18} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeletingId(agent.id);
+                  }}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors text-red-400"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
       )}
+
+      <Modal
+        open={deletingId !== null}
+        onClose={() => setDeletingId(null)}
+        title="删除智能体"
+      >
+        <p className="text-white/60 mb-6">确定要删除这个智能体吗？相关的对话记录也会被删除。</p>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setDeletingId(null)}
+            className="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/15 transition-colors"
+          >
+            取消
+          </button>
+          <button
+            onClick={handleDelete}
+            className="flex-1 py-3 rounded-xl bg-red-500/20 text-red-300 hover:bg-red-500/30 transition-colors"
+          >
+            删除
+          </button>
+        </div>
+      </Modal>
     </div>
-  )
+  );
 }
