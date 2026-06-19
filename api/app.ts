@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js'
 import agentRoutes from './routes/agents.js'
 import chatRoutes from './routes/chat.js'
 import uploadRoutes from './routes/upload.js'
+import prisma from './lib/prisma.js'
 
 dotenv.config()
 
@@ -29,9 +30,15 @@ app.use('/api/agents', agentRoutes)
 app.use('/api/chat', chatRoutes)
 app.use('/api/upload', uploadRoutes)
 
-// 健康检查
-app.get('/api/health', (_req: Request, res: Response): void => {
-  res.status(200).json({ success: true, message: 'ok' })
+// 健康检查（包含数据库连通性校验）
+app.get('/api/health', async (_req: Request, res: Response): Promise<void> => {
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    res.status(200).json({ success: true, message: 'ok', database: 'connected' })
+  } catch (error) {
+    console.error('[health] database check failed:', error)
+    res.status(503).json({ success: false, message: 'database unavailable' })
+  }
 })
 
 // 生产环境: 服务前端静态文件
