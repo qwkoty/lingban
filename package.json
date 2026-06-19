@@ -9,7 +9,7 @@
   },
   "scripts": {
     "client:dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npx prisma generate && tsc --noEmit && vite build",
     "start": "tsx api/server.ts",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -40,7 +40,8 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "prisma",
-      "esbuild"
+      "esbuild",
+      "@prisma/engines"
     ]
   },
   "devDependencies": {

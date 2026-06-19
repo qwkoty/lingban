@@ -33,7 +33,7 @@ jobs:
           service-name: web
           git-branch: main
           git-builder: buildpack
-          git-build-command: pnpm install --frozen-lockfile && npx prisma generate && pnpm run build
+          git-build-command: pnpm install --frozen-lockfile && pnpm run build
           git-run-command: npx prisma generate && npx prisma migrate deploy && pnpm run start
           service-instance-type: nano
           service-regions: fra

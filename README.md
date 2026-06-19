@@ -75,7 +75,7 @@ NODE_ENV=production pnpm run start
 
 部署参数：
 
-- 构建命令：`pnpm install --frozen-lockfile && npx prisma generate && pnpm run build`
+- 构建命令：`pnpm install --frozen-lockfile && pnpm run build`
 - 启动命令：`npx prisma generate && npx prisma migrate deploy && pnpm run start`
 - 监听端口：`8000`
 - 健康检查：`/api/health`
