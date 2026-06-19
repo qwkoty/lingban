@@ -34,7 +34,7 @@ app.use('/api/chat', chatRoutes)
 app.use('/api/upload', uploadRoutes)
 
 // 健康检查
-app.use('/api/health', (_req: Request, res: Response): void => {
+app.get('/api/health', (_req: Request, res: Response): void => {
   res.status(200).json({ success: true, message: 'ok' })
 })
 
@@ -43,20 +43,24 @@ if (isProduction) {
   const distPath = path.join(__dirname, '..', 'dist')
   app.use(express.static(distPath))
   // SPA 回退: 所有非 API 路由返回 index.html
-  app.get('*', (_req: Request, res: Response): void => {
+  app.use((req: Request, res: Response, next: NextFunction): void => {
+    if (req.path.startsWith('/api')) {
+      next()
+      return
+    }
     res.sendFile(path.join(distPath, 'index.html'))
   })
 }
+
+// API 404 (放在所有路由之后)
+app.use('/api', (_req: Request, res: Response): void => {
+  res.status(404).json({ success: false, error: 'API 不存在' })
+})
 
 // 错误处理
 app.use((error: Error, _req: Request, res: Response, _next: NextFunction): void => {
   console.error('服务器错误:', error)
   res.status(500).json({ success: false, error: '服务器内部错误' })
-})
-
-// 404 (仅 API 路由)
-app.use('/api/*', (_req: Request, res: Response): void => {
-  res.status(404).json({ success: false, error: 'API 不存在' })
 })
 
 export default app
