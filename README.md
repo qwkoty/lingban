@@ -13,12 +13,28 @@
 
 - **前端**：React 18 + TypeScript + Vite + Tailwind CSS + Zustand
 - **后端**：Express 4 + TypeScript（ESM）
-- **数据库**：SQLite + Prisma ORM
+- **数据库**：PostgreSQL + Prisma ORM
 - **LLM 代理**：OpenAI 兼容格式，默认 DeepSeek
 
 ## 本地开发
 
+### 前置条件
+
+- Node.js 22.x
+- pnpm 10.x
+- 本地 PostgreSQL（或用 Docker 启动）
+
 ```bash
+# 启动本地 PostgreSQL（可选）
+docker run -d --name lingban-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=lingban \
+  -p 5432:5432 postgres:16
+
+# 复制环境变量并修改
+cp .env.example .env
+
 # 安装依赖
 pnpm install
 
@@ -46,21 +62,37 @@ NODE_ENV=production pnpm run start
 
 生产模式下，Express 会同时提供 API 与前端静态文件（`dist/`）。
 
-## Render 部署
+## Koyeb 部署
 
-项目已配置 `render.yaml`，支持一键部署到 Render：
+项目已配置 `.github/workflows/koyeb.yaml`，使用 GitHub Actions 自动部署到 Koyeb：
 
-1. 将代码推送到 GitHub
-2. 在 Render 创建 "Blueprint"，选择该仓库
-3. Render 会自动读取 `render.yaml` 完成部署
+1. 在 Koyeb 控制台创建 **Database Service**（PostgreSQL），记下连接字符串
+2. 在 GitHub 仓库设置中添加两个 Secrets：
+   - `KOYEB_API_TOKEN`：从 [Koyeb API 设置](https://app.koyeb.com/settings/api) 生成
+   - `DATABASE_URL`：PostgreSQL 连接字符串
+3. 将代码推送到 `main` 分支，GitHub Actions 会自动构建并部署
+4. 部署完成后，访问 Koyeb 生成的 `*.koyeb.app` 地址即可使用
 
-部署完成后，访问 Render 生成的 URL 即可使用。
+部署参数：
+
+- 构建命令：`pnpm install --frozen-lockfile && npx prisma generate && pnpm run build`
+- 启动命令：`npx prisma generate && npx prisma migrate deploy && pnpm run start`
+- 监听端口：`8000`
+- 健康检查：`/api/health`
 
 ### 部署注意事项
 
-- `prisma` 与 `tsx` 已放在 `dependencies` 中，确保 Render 生产环境安装时可用
-- `startCommand` 已包含 `npx prisma generate && npx prisma migrate deploy`，每次启动都会生成 Prisma 客户端并应用迁移
-- SQLite 数据库文件存储在 `prisma/dev.db`，Render 免费版文件系统会在重新部署后重置；如需持久化数据，请考虑使用 Render PostgreSQL 或外部数据库
+- `prisma`、`tsx`、`@prisma/adapter-pg`、`pg` 等运行必需依赖已放在 `dependencies` 中
+- 生产环境 Prisma 客户端会自动启用 SSL（`rejectUnauthorized: false`），适配 Koyeb 托管 PostgreSQL
+- 首次部署前请确保 PostgreSQL 数据库已存在且连接字符串正确
+
+## Render 部署（可选）
+
+项目仍保留 `render.yaml`，可一键部署到 Render：
+
+1. 将代码推送到 GitHub
+2. 在 Render 创建 "Blueprint"，选择该仓库
+3. Render 会自动创建免费的 PostgreSQL 数据库并部署应用
 
 ## 环境变量
 
@@ -68,7 +100,7 @@ NODE_ENV=production pnpm run start
 
 | 变量名 | 说明 | 默认值 |
 |--------|------|--------|
-| `DATABASE_URL` | SQLite 数据库文件路径 | `file:./prisma/dev.db` |
+| `DATABASE_URL` | PostgreSQL 连接字符串 | `postgresql://postgres:postgres@localhost:5432/lingban?schema=public` |
 | `NODE_ENV` | 运行环境 | `development` |
 | `PORT` | 后端服务端口 | `3001` |
 
@@ -82,13 +114,14 @@ NODE_ENV=production pnpm run start
 │   ├── lib/prisma.ts   # Prisma 客户端
 │   ├── middleware/     # 中间件
 │   └── routes/         # API 路由
-├── prisma/             # Prisma  schema 与迁移
+├── prisma/             # Prisma schema 与迁移
 ├── public/             # 静态资源
 ├── src/                # React 前端
 │   ├── pages/          # 页面组件
 │   ├── components/     # 通用组件
 │   ├── store/          # Zustand 状态管理
 │   └── lib/api.ts      # API 请求封装
+├── .github/workflows/  # CI/CD 工作流
 ├── render.yaml         # Render 部署配置
 └── vite.config.ts      # Vite 配置
 ```

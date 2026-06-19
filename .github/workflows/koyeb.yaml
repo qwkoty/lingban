@@ -1,0 +1,43 @@
+name: Deploy to Koyeb
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: koyeb-deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install and configure the Koyeb CLI
+        uses: koyeb-community/koyeb-actions@v2
+        with:
+          api_token: ${{ secrets.KOYEB_API_TOKEN }}
+
+      # 将 GitHub Secret 同步为 Koyeb Secret，供 service-env 引用。
+      # 如需其他密钥，可在此添加更多 secret 步骤。
+      - name: Sync DATABASE_URL secret to Koyeb
+        uses: koyeb/action-git-deploy/secret@v1
+        with:
+          secret-name: DATABASE_URL
+          secret-value: ${{ secrets.DATABASE_URL }}
+
+      - name: Build and deploy to Koyeb
+        uses: koyeb/action-git-deploy@v1
+        with:
+          app-name: lingban
+          service-name: web
+          git-branch: main
+          git-builder: buildpack
+          git-build-command: pnpm install --frozen-lockfile && npx prisma generate && pnpm run build
+          git-run-command: npx prisma generate && npx prisma migrate deploy && pnpm run start
+          service-instance-type: nano
+          service-regions: fra
+          service-ports: "8000:http"
+          service-routes: "/:8000"
+          service-env: "NODE_ENV=production,PORT=8000,DATABASE_URL=@DATABASE_URL"
+          service-checks: "8000:http:/api/health"

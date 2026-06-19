@@ -1,7 +1,7 @@
 services:
   - type: web
     name: lingban
-    env: node
+    runtime: node
     plan: free
     buildCommand: pnpm install --frozen-lockfile && npx prisma generate && pnpm run build
     startCommand: npx prisma generate && npx prisma migrate deploy && pnpm run start
@@ -10,5 +10,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
       - key: DATABASE_URL
-        value: file:./prisma/dev.db
+        fromDatabase:
+          name: lingban-db
+          property: connectionString
+
+databases:
+  - name: lingban-db
+    plan: free
+    databaseName: lingban
+    user: lingban
