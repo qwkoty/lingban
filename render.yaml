@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: lingban
+    env: node
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && npx prisma generate && npx prisma migrate deploy && pnpm run build
+    startCommand: pnpm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./prisma/dev.db
