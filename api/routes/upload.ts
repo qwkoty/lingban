@@ -1,14 +1,11 @@
 import { Router, type Request, type Response } from 'express'
 import { authMiddleware } from '../middleware/auth.js'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import fs from 'fs'
 
 const router = Router()
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const uploadDir = path.join(__dirname, '..', '..', 'public', 'uploads')
+const uploadDir = path.join(process.cwd(), 'public', 'uploads')
 
 // 确保上传目录存在
 function ensureUploadDir() {
