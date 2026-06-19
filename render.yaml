@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: lingban
+    name: lingban-web
     runtime: node
     plan: free
     buildCommand: pnpm install --frozen-lockfile && pnpm run build

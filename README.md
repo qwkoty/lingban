@@ -88,11 +88,15 @@ NODE_ENV=production pnpm run start
 
 ## Render 部署（可选）
 
-项目仍保留 `render.yaml`，可一键部署到 Render：
+项目已配置 `render.yaml`，可一键部署到 Render：
 
-1. 将代码推送到 GitHub
-2. 在 Render 创建 "Blueprint"，选择该仓库
-3. Render 会自动创建免费的 PostgreSQL 数据库并部署应用
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/qwkoty/lingban)
+
+1. 点击上方 **Deploy to Render** 按钮
+2. 登录 Render 账号并连接 GitHub
+3. Render 会自动创建 Web Service + 免费 PostgreSQL + 环境变量并部署
+
+> 如果之前已经手动创建过 `lingban` 服务，建议先在 Render 控制台删除旧服务，再用 Blueprint 部署，避免命名冲突。
 
 ## 环境变量
 
