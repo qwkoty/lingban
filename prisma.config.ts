@@ -21,9 +21,15 @@ function getDatabaseUrl(): string {
 
   const parsed = new URL(url);
   const params = parsed.searchParams;
+
   if (!params.has('sslmode')) {
-    params.set('sslmode', 'no-verify');
+    params.set('sslmode', 'require');
   }
+
+  if (!params.has('sslaccept')) {
+    params.set('sslaccept', 'accept_invalid_certs');
+  }
+
   return parsed.toString();
 }
 

@@ -3,8 +3,10 @@ services:
     name: lingban
     runtime: node
     plan: starter
+    region: singapore
     buildCommand: pnpm install --frozen-lockfile && pnpm run build
-    startCommand: npx prisma generate && npx prisma migrate deploy && pnpm run start
+    preDeployCommand: npx prisma migrate deploy
+    startCommand: pnpm run start
     envVars:
       - key: NODE_ENV
         value: production

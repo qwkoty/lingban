@@ -5,6 +5,7 @@ node_modules
 # Build output
 dist
 build
+src/generated/prisma
 
 # Environment
 .env
@@ -14,6 +15,7 @@ build
 # Database
 *.db
 *.db-journal
+pgdata/
 
 # IDE
 .vscode

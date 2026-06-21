@@ -2,7 +2,7 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import { prisma } from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.js';
-import type { User } from '@prisma/client';
+import type { User } from '../../src/generated/prisma/client.js';
 
 export const authRouter = Router();
 
