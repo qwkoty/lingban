@@ -9,23 +9,40 @@ interface ThemeState {
   initTheme: (theme?: Theme) => void;
 }
 
+function getStoredTheme(): Theme | null {
+  try {
+    return localStorage.getItem(THEME_KEY) as Theme | null;
+  } catch {
+    return null;
+  }
+}
+
+function setStoredTheme(theme: Theme) {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch {
+    // ignore
+  }
+}
+
 function applyTheme(theme: Theme) {
+  if (typeof document === 'undefined') return;
   document.body.classList.remove('theme-aurora', 'theme-colorful');
   document.body.classList.add(`theme-${theme}`);
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme: (localStorage.getItem(THEME_KEY) as Theme) || 'aurora',
+  theme: getStoredTheme() || 'aurora',
 
   setTheme: (theme) => {
-    localStorage.setItem(THEME_KEY, theme);
+    setStoredTheme(theme);
     applyTheme(theme);
     set({ theme });
   },
 
   initTheme: (theme) => {
-    const resolved = theme || (localStorage.getItem(THEME_KEY) as Theme) || 'aurora';
-    localStorage.setItem(THEME_KEY, resolved);
+    const resolved = theme || getStoredTheme() || 'aurora';
+    setStoredTheme(resolved);
     applyTheme(resolved);
     set({ theme: resolved });
   },

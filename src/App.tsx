@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth.js';
 import { useThemeStore } from './store/theme.js';
 import { BottomNav } from './components/BottomNav.js';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { ChatPage } from './pages/ChatPage.js';
 import { AgentsPage } from './pages/AgentsPage.js';
 import { AgentEditPage } from './pages/AgentEditPage.js';
@@ -33,15 +34,17 @@ export default function App() {
   return (
     <div className="h-full aurora-bg">
       <main className="h-full overflow-y-auto scrollbar-thin">
-        <Routes>
-          <Route path="/" element={<Navigate to="/chat" replace />} />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/agents" element={<AgentsPage />} />
-          <Route path="/agents/new" element={<AgentEditPage />} />
-          <Route path="/agents/:id/edit" element={<AgentEditPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="*" element={<Navigate to="/chat" replace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Navigate to="/chat" replace />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/agents" element={<AgentsPage />} />
+            <Route path="/agents/new" element={<AgentEditPage />} />
+            <Route path="/agents/:id/edit" element={<AgentEditPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="*" element={<Navigate to="/chat" replace />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
       <BottomNav />
     </div>
