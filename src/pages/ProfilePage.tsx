@@ -1,14 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useAuthStore } from '../store/auth.js';
+import { useThemeStore } from '../store/theme.js';
 import { Avatar } from '../components/Avatar.js';
 import { GlassCard } from '../components/GlassCard.js';
 import { uploadApi } from '../lib/api.js';
+import type { Theme } from '../types.js';
+
+const themes: { value: Theme; label: string; preview: string }[] = [
+  {
+    value: 'aurora',
+    label: '极光渐变',
+    preview: 'from-indigo-900 via-blue-900 to-slate-900',
+  },
+  {
+    value: 'colorful',
+    label: '七彩渐变',
+    preview: 'from-purple-900 via-pink-900 to-orange-900',
+  },
+];
 
 export function ProfilePage() {
   const { user, init, updateUser } = useAuthStore();
+  const { setTheme, theme } = useThemeStore();
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(user?.nickname || '');
+  const [persona, setPersona] = useState(user?.persona || '');
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -16,11 +33,14 @@ export function ProfilePage() {
   }, [init]);
 
   useEffect(() => {
-    if (user) setNickname(user.nickname);
+    if (user) {
+      setNickname(user.nickname);
+      setPersona(user.persona);
+    }
   }, [user]);
 
   const handleSave = async () => {
-    await updateUser({ nickname });
+    await updateUser({ nickname, persona });
     setEditing(false);
   };
 
@@ -29,6 +49,11 @@ export function ProfilePage() {
     if (!file) return;
     const { url } = await uploadApi.avatar(file);
     await updateUser({ avatar: url });
+  };
+
+  const handleThemeChange = async (value: Theme) => {
+    setTheme(value);
+    await updateUser({ theme: value });
   };
 
   if (!user) {
@@ -86,23 +111,62 @@ export function ProfilePage() {
               {user.nickname}
             </button>
           )}
-
-          <p className="text-white/40 text-sm mt-2">ID: {user.id}</p>
         </GlassCard>
       </div>
 
-      <GlassCard className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Sparkles className="text-yellow-400" size={20} />
+      <div className="space-y-4">
+        <GlassCard className="space-y-4">
           <div>
-            <p className="font-medium">灵伴 AI 智能体</p>
-            <p className="text-white/40 text-sm">v1.0.0</p>
+            <label className="block text-sm text-white/60 mb-2">我的人设</label>
+            <textarea
+              value={persona}
+              onChange={(e) => setPersona(e.target.value)}
+              onBlur={() => updateUser({ persona })}
+              placeholder="描述你自己，比如身份、性格、说话方式…智能体会根据你的人设与你对话"
+              rows={4}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors resize-none text-sm"
+            />
           </div>
-        </div>
-        <p className="text-white/40 text-sm leading-relaxed">
-          创建属于你的 AI 智能体，随时随地开启对话。所有数据安全存储，无需注册即可使用。
-        </p>
-      </GlassCard>
+        </GlassCard>
+
+        <GlassCard className="space-y-4">
+          <label className="block text-sm text-white/60">主题色</label>
+          <div className="grid grid-cols-2 gap-3">
+            {themes.map(({ value, label, preview }) => (
+              <button
+                key={value}
+                onClick={() => handleThemeChange(value)}
+                className={`relative overflow-hidden rounded-2xl p-4 text-left border transition-all ${
+                  theme === value
+                    ? 'border-white/40 ring-2 ring-white/20'
+                    : 'border-white/10 hover:border-white/30'
+                }`}
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${preview} opacity-60`}
+                />
+                <div className="relative z-10">
+                  <div className="w-full h-12 rounded-xl bg-gradient-to-r from-white/20 via-white/10 to-white/20 mb-3" />
+                  <span className="text-sm font-medium">{label}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Sparkles className="text-yellow-400" size={20} />
+            <div>
+              <p className="font-medium">灵伴 AI 智能体</p>
+              <p className="text-white/40 text-sm">v1.0.0</p>
+            </div>
+          </div>
+          <p className="text-white/40 text-sm leading-relaxed">
+            创建属于你的 AI 智能体，随时随地开启对话。设置你的人设和主题色，让每次聊天都更贴合你的风格。
+          </p>
+        </GlassCard>
+      </div>
     </div>
   );
 }

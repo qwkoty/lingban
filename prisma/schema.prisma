@@ -11,6 +11,8 @@ model User {
   token     String   @unique
   nickname  String
   avatar    String?
+  persona   String   @default("")
+  theme     String   @default("aurora")
   createdAt DateTime @default(now())
 
   agents   Agent[]

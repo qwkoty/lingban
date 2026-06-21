@@ -1,7 +1,11 @@
+export type Theme = 'aurora' | 'colorful';
+
 export interface User {
   id: number;
   nickname: string;
   avatar: string | null;
+  persona: string;
+  theme: Theme;
   createdAt: string;
 }
 

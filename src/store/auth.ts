@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User } from '../types.js';
+import type { User, Theme } from '../types.js';
 import { authApi } from '../lib/api.js';
 
 interface AuthState {
@@ -7,7 +7,7 @@ interface AuthState {
   loading: boolean;
   initialized: boolean;
   init: () => Promise<void>;
-  updateUser: (data: { nickname?: string; avatar?: string }) => Promise<void>;
+  updateUser: (data: { nickname?: string; avatar?: string; persona?: string; theme?: Theme }) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({

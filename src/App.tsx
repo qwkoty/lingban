@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth.js';
+import { useThemeStore } from './store/theme.js';
 import { BottomNav } from './components/BottomNav.js';
 import { ChatPage } from './pages/ChatPage.js';
 import { AgentsPage } from './pages/AgentsPage.js';
@@ -8,11 +9,18 @@ import { AgentEditPage } from './pages/AgentEditPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
 
 export default function App() {
-  const { init, initialized } = useAuthStore();
+  const { init, initialized, user } = useAuthStore();
+  const { initTheme } = useThemeStore();
 
   useEffect(() => {
     init();
   }, [init]);
+
+  useEffect(() => {
+    if (user) {
+      initTheme(user.theme);
+    }
+  }, [user, initTheme]);
 
   if (!initialized) {
     return (

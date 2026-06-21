@@ -67,6 +67,13 @@ chatRouter.post('/:agentId', async (req, res) => {
     messagesPayload.unshift({ role: 'system', content: agent.persona });
   }
 
+  if (req.user!.persona) {
+    messagesPayload.unshift({
+      role: 'system',
+      content: `用户人设：${req.user!.persona}`,
+    });
+  }
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');

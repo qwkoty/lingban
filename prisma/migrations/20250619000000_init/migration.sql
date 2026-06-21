@@ -4,6 +4,8 @@ CREATE TABLE "users" (
     "token" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "avatar" TEXT,
+    "persona" TEXT NOT NULL DEFAULT '',
+    "theme" TEXT NOT NULL DEFAULT 'aurora',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

@@ -1,4 +1,4 @@
-import type { User, Agent, ChatMessage, ChatSession } from '../types.js';
+import type { User, Agent, ChatMessage, ChatSession, Theme } from '../types.js';
 
 const API_BASE = '';
 
@@ -28,7 +28,7 @@ export const authApi = {
   anonymous: () =>
     request<{ token: string; user: User }>('/api/auth/anonymous', { method: 'POST' }),
   me: () => request<{ user: User }>('/api/auth/me'),
-  updateMe: (data: { nickname?: string; avatar?: string }) =>
+  updateMe: (data: { nickname?: string; avatar?: string; persona?: string; theme?: Theme }) =>
     request<{ user: User }>('/api/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
 };
 
