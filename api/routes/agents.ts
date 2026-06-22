@@ -6,23 +6,33 @@ export const agentsRouter = Router();
 agentsRouter.use(authMiddleware);
 
 agentsRouter.get('/', async (req, res) => {
-  const agents = await prisma.agent.findMany({
-    where: { userId: req.user!.id },
-    orderBy: { createdAt: 'desc' },
-  });
-  res.json({ agents });
+  try {
+    const agents = await prisma.agent.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json({ agents });
+  } catch (error) {
+    console.error('List agents error:', error);
+    res.status(500).json({ error: '获取智能体失败' });
+  }
 });
 
 agentsRouter.get('/:id', async (req, res) => {
   const id = Number(req.params.id);
-  const agent = await prisma.agent.findFirst({
-    where: { id, userId: req.user!.id },
-  });
-  if (!agent) {
-    res.status(404).json({ error: 'Not found' });
-    return;
+  try {
+    const agent = await prisma.agent.findFirst({
+      where: { id, userId: req.user!.id },
+    });
+    if (!agent) {
+      res.status(404).json({ error: 'Not found' });
+      return;
+    }
+    res.json({ agent });
+  } catch (error) {
+    console.error('Get agent error:', error);
+    res.status(500).json({ error: '获取智能体失败' });
   }
-  res.json({ agent });
 });
 
 agentsRouter.post('/', async (req, res) => {
@@ -48,7 +58,7 @@ agentsRouter.post('/', async (req, res) => {
         persona: persona ?? '',
         greeting: greeting ?? '',
         modelProvider: modelProvider ?? 'deepseek',
-        modelName: modelName ?? 'deepseek-chat',
+        modelName: modelName ?? 'deepseek-v4-pro',
         apiEndpoint: apiEndpoint ?? '',
         temperature: temperature ?? 0.7,
         maxTokens: maxTokens ?? 4096,

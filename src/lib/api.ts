@@ -18,13 +18,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const text = await res.text();
+    let msg = text;
     try {
       const body = JSON.parse(text);
-      const msg = body.detail || body.error || text;
-      throw new Error(msg || `Request failed: ${res.status}`);
+      msg = body.detail || body.error || text;
     } catch {
-      throw new Error(text || `Request failed: ${res.status}`);
+      // keep raw text
     }
+    throw new Error(msg || `Request failed: ${res.status}`);
   }
 
   return res.json() as Promise<T>;
@@ -69,6 +70,20 @@ export const chatApi = {
       body: JSON.stringify({ message }),
     })
       .then(async (response) => {
+        if (!response.ok) {
+          const text = await response.text();
+          let msg = text;
+          try {
+            const body = JSON.parse(text);
+            msg = body.detail || body.error || text;
+          } catch {
+            // keep raw text
+          }
+          onChunk({ error: `请求失败: ${msg || response.status}` });
+          onDone();
+          return;
+        }
+
         const reader = response.body?.getReader();
         if (!reader) {
           onChunk({ error: '无法读取响应' });
