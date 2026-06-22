@@ -11,7 +11,7 @@ import { ToastContainer } from './components/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 export function App() {
-  const { user, initialized, init } = useAuthStore();
+  const { user, initialized, error, init } = useAuthStore();
   const initTheme = useThemeStore((s) => s.initTheme);
 
   useEffect(() => {
@@ -31,12 +31,26 @@ export function App() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center gap-4">
         <p className="text-white/60">无法获取用户信息</p>
-        <button
-          onClick={init}
-          className="px-5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white text-sm font-medium transition-colors"
-        >
-          重试
-        </button>
+        {error && (
+          <p className="text-xs text-red-300/80 max-w-xs break-all">{error}</p>
+        )}
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={init}
+            className="px-5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white text-sm font-medium transition-colors"
+          >
+            重试
+          </button>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+            className="px-5 py-2.5 rounded-2xl text-white/60 hover:text-white text-sm transition-colors"
+          >
+            清除本地数据并刷新
+          </button>
+        </div>
       </div>
     );
   }
