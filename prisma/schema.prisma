@@ -33,7 +33,7 @@ model Agent {
   persona       String   @default("")
   greeting      String   @default("")
   modelProvider String   @default("deepseek")
-  modelName     String   @default("deepseek-chat")
+  modelName     String   @default("deepseek-v4-pro")
   apiEndpoint   String   @default("")
   temperature   Float    @default(0.7)
   maxTokens     Int      @default(4096)

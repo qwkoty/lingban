@@ -10,8 +10,6 @@ import type { Agent } from '../types';
 
 const providers = [
   { value: 'deepseek', label: 'DeepSeek' },
-  { value: 'openai', label: 'OpenAI' },
-  { value: 'anthropic', label: 'Anthropic' },
   { value: 'custom', label: '自定义' },
 ];
 
@@ -22,7 +20,7 @@ const templates = [
     persona: '你是用户的知心好友，善于倾听，说话温柔、真诚。会在用户失落时安慰，开心时一起笑。你懂得保持距离，也会适时调侃。',
     greeting: '嗨，最近怎么样？想聊点什么都可以跟我说～',
     modelProvider: 'deepseek' as const,
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-v4-pro',
     temperature: 0.8,
   },
   {
@@ -31,7 +29,7 @@ const templates = [
     persona: '你是个游戏宅好友，对各种游戏了如指掌。说话直接、爱吐槽，但技术过硬。会推荐游戏、分析战绩，也接受用户炫耀。',
     greeting: '上线了吗？今天准备冲分还是娱乐？',
     modelProvider: 'deepseek' as const,
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-v4-pro',
     temperature: 0.9,
   },
   {
@@ -40,7 +38,7 @@ const templates = [
     persona: '你是用户的学习伙伴，耐心、有条理。会帮助拆解问题、鼓励用户，但不会直接给答案，而是引导用户思考。',
     greeting: '今天想学什么？我陪你一起攻克它。',
     modelProvider: 'deepseek' as const,
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-v4-pro',
     temperature: 0.6,
   },
   {
@@ -49,7 +47,7 @@ const templates = [
     persona: '你是用户的损友，说话幽默毒舌但心地善良。喜欢开玩笑、斗嘴，但关键时刻会认真。经常用网络流行语。',
     greeting: '哟，来了？今天又有什么好戏？',
     modelProvider: 'deepseek' as const,
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-v4-pro',
     temperature: 1.0,
   },
   {
@@ -58,7 +56,7 @@ const templates = [
     persona: '你是一位温柔安静的倾听者。不急着给建议，更多陪伴和共情。说话简短、治愈，让用户感到被接纳。',
     greeting: '嗯，我在这儿。你想说什么，我都听着。',
     modelProvider: 'deepseek' as const,
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-v4-pro',
     temperature: 0.7,
   },
 ];
@@ -72,7 +70,7 @@ function getInitialForm(agent?: Agent | null): AgentForm {
     persona: agent?.persona ?? '',
     greeting: agent?.greeting ?? '',
     modelProvider: agent?.modelProvider ?? 'deepseek',
-    modelName: agent?.modelName ?? 'deepseek-chat',
+    modelName: agent?.modelName ?? 'deepseek-v4-pro',
     apiEndpoint: agent?.apiEndpoint ?? '',
     temperature: agent?.temperature ?? 0.7,
     maxTokens: agent?.maxTokens ?? 4096,
@@ -257,7 +255,7 @@ export function AgentEditPage() {
                 type="text"
                 value={form.modelName}
                 onChange={(e) => update('modelName', e.target.value)}
-                placeholder="deepseek-chat"
+                placeholder="deepseek-v4-pro"
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
               />
             </div>

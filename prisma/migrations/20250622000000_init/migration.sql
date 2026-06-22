@@ -21,7 +21,7 @@ CREATE TABLE "agents" (
     "persona" TEXT NOT NULL DEFAULT '',
     "greeting" TEXT NOT NULL DEFAULT '',
     "model_provider" TEXT NOT NULL DEFAULT 'deepseek',
-    "model_name" TEXT NOT NULL DEFAULT 'deepseek-chat',
+    "model_name" TEXT NOT NULL DEFAULT 'deepseek-v4-pro',
     "api_endpoint" TEXT NOT NULL DEFAULT '',
     "temperature" DOUBLE PRECISION NOT NULL DEFAULT 0.7,
     "max_tokens" INTEGER NOT NULL DEFAULT 4096,

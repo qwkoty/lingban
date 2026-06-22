@@ -7,12 +7,8 @@ chatRouter.use(authMiddleware);
 
 function getModelEndpoint(provider: string, customEndpoint: string) {
   switch (provider) {
-    case 'openai':
-      return 'https://api.openai.com/v1/chat/completions';
     case 'deepseek':
       return 'https://api.deepseek.com/chat/completions';
-    case 'anthropic':
-      return 'https://api.anthropic.com/v1/messages';
     case 'custom':
       return customEndpoint || '';
     default:
