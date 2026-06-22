@@ -31,10 +31,16 @@ authRouter.post('/anonymous', async (_req, res) => {
     res.json({ token: user.token, user: serializeUser(user) });
   } catch (error) {
     console.error('Anonymous login error:', error);
-    const message = error instanceof Error ? error.message : String(error);
+    let cause = (error as Error).cause;
+    let causeMsg = '';
+    while (cause instanceof Error) {
+      causeMsg += ` | ${cause.message}`;
+      cause = cause.cause;
+    }
+    const message = (error instanceof Error ? error.message : String(error)) + causeMsg;
     res.status(500).json({
       error: '创建用户失败',
-      detail: process.env.NODE_ENV === 'production' ? message : message,
+      detail: message,
     });
   }
 });

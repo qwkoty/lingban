@@ -7,6 +7,7 @@ import { authRouter } from './routes/auth.js';
 import { agentsRouter } from './routes/agents.js';
 import { chatRouter } from './routes/chat.js';
 import { uploadRouter } from './routes/upload.js';
+import { pool } from './lib/prisma.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,8 +23,24 @@ app.use('/api/chat', chatRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+app.get('/api/health', async (_req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ status: 'ok', db: 'connected' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', db: 'disconnected', error: (err as Error).message });
+  }
+});
+
+app.get('/api/health/db', async (_req, res) => {
+  try {
+    const tables = await pool.query(
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+    );
+    res.json({ tables: tables.rows.map((r) => r.table_name) });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
