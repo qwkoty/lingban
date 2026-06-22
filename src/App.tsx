@@ -29,8 +29,14 @@ export function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 text-center">
-        <p className="text-white/60">无法获取用户信息，请刷新重试</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center gap-4">
+        <p className="text-white/60">无法获取用户信息</p>
+        <button
+          onClick={init}
+          className="px-5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white text-sm font-medium transition-colors"
+        >
+          重试
+        </button>
       </div>
     );
   }

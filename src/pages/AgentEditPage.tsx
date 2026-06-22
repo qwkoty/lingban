@@ -9,9 +9,16 @@ import { cn } from '../lib/utils';
 import type { Agent } from '../types';
 
 const providers = [
-  { value: 'deepseek', label: 'DeepSeek' },
-  { value: 'custom', label: '自定义' },
+  { value: 'deepseek-pro', label: 'DeepSeek V4 Pro', modelProvider: 'deepseek' as const, modelName: 'deepseek-v4-pro' },
+  { value: 'deepseek-flash', label: 'DeepSeek V4 Flash', modelProvider: 'deepseek' as const, modelName: 'deepseek-v4-flash' },
+  { value: 'custom', label: '自定义', modelProvider: 'custom' as const, modelName: '' },
 ];
+
+function getProviderValue(modelProvider: string, modelName: string) {
+  if (modelProvider === 'custom') return 'custom';
+  if (modelName === 'deepseek-v4-flash') return 'deepseek-flash';
+  return 'deepseek-pro';
+}
 
 const templates = [
   {
@@ -238,8 +245,12 @@ export function AgentEditPage() {
             <div>
               <label className="block text-sm text-white/70 mb-1">提供商</label>
               <select
-                value={form.modelProvider}
-                onChange={(e) => update('modelProvider', e.target.value as Agent['modelProvider'])}
+                value={getProviderValue(form.modelProvider, form.modelName)}
+                onChange={(e) => {
+                  const selected = providers.find((p) => p.value === e.target.value)!;
+                  update('modelProvider', selected.modelProvider);
+                  update('modelName', selected.modelName);
+                }}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:border-white/30 transition-colors"
               >
                 {providers.map((p) => (
@@ -256,7 +267,10 @@ export function AgentEditPage() {
                 value={form.modelName}
                 onChange={(e) => update('modelName', e.target.value)}
                 placeholder="deepseek-v4-pro"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
+                readOnly={form.modelProvider !== 'custom'}
+                className={`w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 transition-colors ${
+                  form.modelProvider === 'custom' ? 'focus:border-white/30' : 'opacity-60 cursor-not-allowed'
+                }`}
               />
             </div>
           </div>

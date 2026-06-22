@@ -15,14 +15,22 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   init: async () => {
     try {
-      let token = localStorage.getItem('lingban_token');
+      const token = localStorage.getItem('lingban_token');
       if (!token) {
         const res = await authApi.anonymous();
-        token = res.token;
-        localStorage.setItem('lingban_token', token);
+        localStorage.setItem('lingban_token', res.token);
         set({ user: res.user, initialized: true });
-      } else {
+        return;
+      }
+
+      try {
         const res = await authApi.me();
+        set({ user: res.user, initialized: true });
+      } catch {
+        // token 失效或数据库已清空，自动重新匿名登录
+        localStorage.removeItem('lingban_token');
+        const res = await authApi.anonymous();
+        localStorage.setItem('lingban_token', res.token);
         set({ user: res.user, initialized: true });
       }
     } catch {
