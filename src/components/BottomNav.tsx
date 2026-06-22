@@ -1,34 +1,37 @@
-import { NavLink } from 'react-router-dom';
-import { MessageSquare, Bot, User } from 'lucide-react';
-import { cn } from '../lib/utils.js';
+import { Link, useLocation } from 'react-router-dom';
+import { MessageCircle, Users, UserCircle } from 'lucide-react';
+import { cn } from '../lib/utils';
 
-const items = [
-  { to: '/chat', icon: MessageSquare, label: '对话' },
-  { to: '/agents', icon: Bot, label: '智能体' },
-  { to: '/profile', icon: User, label: '我的' },
+const navItems = [
+  { to: '/', icon: MessageCircle, label: '聊天' },
+  { to: '/agents', icon: Users, label: '好友' },
+  { to: '/profile', icon: UserCircle, label: '我的' },
 ];
 
 export function BottomNav() {
+  const location = useLocation();
+
   return (
-    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-md">
-      <div className="glass-strong px-2 py-2 flex items-center justify-around">
-        {items.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              cn(
-                'flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all duration-300',
-                isActive
-                  ? 'text-white bg-white/15'
-                  : 'text-white/50 hover:text-white/80'
-              )
-            }
-          >
-            <Icon size={20} />
-            <span className="text-[10px]">{label}</span>
-          </NavLink>
-        ))}
+    <nav className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-4 mb-4 rounded-3xl glass border border-white/10 shadow-2xl">
+        <div className="flex items-center justify-around h-14">
+          {navItems.map((item) => {
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  'flex flex-col items-center justify-center flex-1 h-full transition-all duration-200',
+                  active ? 'text-white scale-105' : 'text-white/50 hover:text-white/80'
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-[10px] mt-0.5">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );

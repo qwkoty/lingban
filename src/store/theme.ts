@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Theme } from '../types.js';
+import type { Theme } from '../types';
 
 const THEME_KEY = 'lingban_theme';
 
@@ -11,7 +11,9 @@ interface ThemeState {
 
 function getStoredTheme(): Theme | null {
   try {
-    return localStorage.getItem(THEME_KEY) as Theme | null;
+    const value = localStorage.getItem(THEME_KEY);
+    if (value === 'aurora' || value === 'colorful') return value;
+    return null;
   } catch {
     return null;
   }

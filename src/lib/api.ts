@@ -1,4 +1,4 @@
-import type { User, Agent, ChatMessage, ChatSession, Theme } from '../types.js';
+import type { User, Agent, ChatMessage, ChatSession } from '../types';
 
 const API_BASE = '';
 
@@ -25,10 +25,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const authApi = {
-  anonymous: () =>
-    request<{ token: string; user: User }>('/api/auth/anonymous', { method: 'POST' }),
+  anonymous: () => request<{ token: string; user: User }>('/api/auth/anonymous', { method: 'POST' }),
   me: () => request<{ user: User }>('/api/auth/me'),
-  updateMe: (data: { nickname?: string; avatar?: string; persona?: string; theme?: Theme }) =>
+  updateMe: (data: Partial<User>) =>
     request<{ user: User }>('/api/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
 };
 
@@ -47,25 +46,29 @@ export const chatApi = {
   sessions: () => request<{ sessions: ChatSession[] }>('/api/chat/sessions'),
   history: (agentId: number) =>
     request<{ messages: ChatMessage[] }>(`/api/chat/sessions/${agentId}`),
+  clear: (agentId: number) =>
+    request<{ success: boolean }>(`/api/chat/sessions/${agentId}`, { method: 'DELETE' }),
   send: (
     agentId: number,
     message: string,
     onChunk: (chunk: { content?: string; error?: string }) => void,
     onDone: () => void
   ) => {
-    const res = fetch(`${API_BASE}/api/chat/${agentId}`, {
+    fetch(`${API_BASE}/api/chat/${agentId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify({ message }),
-    });
-
-    res
+    })
       .then(async (response) => {
         const reader = response.body?.getReader();
-        if (!reader) return;
+        if (!reader) {
+          onChunk({ error: '无法读取响应' });
+          onDone();
+          return;
+        }
 
         const decoder = new TextDecoder();
         while (true) {
@@ -97,8 +100,6 @@ export const chatApi = {
         onChunk({ error: err.message });
         onDone();
       });
-
-    return res;
   },
 };
 

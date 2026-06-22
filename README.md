@@ -1,56 +1,62 @@
-# 灵伴 - AI 智能体应用
+# 灵伴 - AI 好友
 
-纯网页端 AI 智能体应用，支持匿名登录、自定义智能体、多轮对话与历史记录持久化。
-
-## 功能特性
-
-- 匿名登录：首次访问自动创建用户
-- 智能体管理：创建、编辑、删除智能体，配置头像/人设/模型/API Key
-- 多轮对话：选择智能体进行流式对话，历史记录自动保存
-- 移动端优先：极光渐变 + 毛玻璃拟态设计
+一个像 Character.AI 那样拥有鲜明性格、能主动开口、持续陪伴的 AI 好友应用。第一阶段已实现网页端核心功能，并准备部署在 Render。
 
 ## 技术栈
 
 - 前端：React 18 + TypeScript + Vite + Tailwind CSS + Zustand
 - 后端：Express 4 + TypeScript（ESM）
-- 数据库：PostgreSQL + Prisma ORM
-- LLM：OpenAI 兼容格式，用户自填 API Key
+- 数据库：PostgreSQL + Prisma ORM v7
+- 部署：Render
 
 ## 本地开发
 
 ```bash
-# 复制环境变量
-cp .env.example .env
-
 # 安装依赖
 pnpm install
 
-# 生成 Prisma 客户端并应用迁移
-npx prisma generate
-npx prisma migrate deploy
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env，填入本地 PostgreSQL 连接字符串
 
-# 启动开发服务器
-pnpm run dev
+# 生成 Prisma Client 并运行迁移
+npx prisma generate
+npx prisma migrate dev
+
+# 启动前后端
+pnpm dev
 ```
 
-前端运行在 `http://localhost:5173`，后端 API 代理到 `http://localhost:3001`。
+访问 http://localhost:5173。
 
-## 生产构建
+## 第一阶段特性
+
+- 匿名登录，无需注册
+- 创建多个 AI 好友，支持头像上传
+- AI 好友模板（知心好友、游戏搭子、学习伙伴等）
+- 主动开场白，进入聊天页自动问候
+- 角色一致性：人设 + 用户人设 + 长期记忆注入系统提示
+- 多模型支持：DeepSeek / OpenAI / Anthropic / 自定义端点
+- 流式对话、重新生成、清空对话、复制消息
+- 自适应高度输入框，Enter 发送 / Shift+Enter 换行
+- 全局 Toast 错误提示
+- 极光 / 七彩双主题
+- Render Blueprint 部署配置
+
+## 部署到 Render
+
+项目已包含 `render.yaml`，使用 Render Blueprint 即可一键部署：
+
+1. 将代码推送到 GitHub。
+2. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**。
+3. 选择仓库，Render 会自动创建 Web Service 和 PostgreSQL 数据库。
+4. 部署完成后访问分配的域名即可。
+
+## 常用命令
 
 ```bash
-pnpm run build
-NODE_ENV=production pnpm run start
+pnpm lint        # ESLint 检查
+pnpm check       # TypeScript 类型检查
+pnpm build       # 生产构建
+pnpm start       # 生产启动
 ```
-
-生产模式下 Express 同时提供 API 与前端静态文件（`dist/`）。
-
-## Render 部署
-
-项目已配置 `render.yaml`，在 Render Dashboard 中使用 Blueprint 导入即可自动创建 Web Service + PostgreSQL。
-
-部署参数：
-
-- 构建命令：`pnpm install --frozen-lockfile && pnpm run build`
-- 启动命令：`npx prisma generate && npx prisma migrate deploy && pnpm run start`
-- 监听端口：`8000`
-- 健康检查：`/api/health`

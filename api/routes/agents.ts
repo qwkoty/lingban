@@ -3,7 +3,6 @@ import { prisma } from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.js';
 
 export const agentsRouter = Router();
-
 agentsRouter.use(authMiddleware);
 
 agentsRouter.get('/', async (req, res) => {
@@ -31,28 +30,37 @@ agentsRouter.post('/', async (req, res) => {
     name,
     avatar,
     persona,
+    greeting,
     modelProvider,
     modelName,
+    apiEndpoint,
     temperature,
     maxTokens,
     apiKey,
   } = req.body;
 
-  const agent = await prisma.agent.create({
-    data: {
-      userId: req.user!.id,
-      name,
-      avatar: avatar ?? null,
-      persona: persona ?? '',
-      modelProvider: modelProvider ?? 'openai',
-      modelName: modelName ?? 'gpt-4o-mini',
-      temperature: temperature ?? 0.7,
-      maxTokens: maxTokens ?? 4096,
-      apiKey: apiKey ?? '',
-    },
-  });
+  try {
+    const agent = await prisma.agent.create({
+      data: {
+        userId: req.user!.id,
+        name,
+        avatar: avatar ?? null,
+        persona: persona ?? '',
+        greeting: greeting ?? '',
+        modelProvider: modelProvider ?? 'deepseek',
+        modelName: modelName ?? 'deepseek-chat',
+        apiEndpoint: apiEndpoint ?? '',
+        temperature: temperature ?? 0.7,
+        maxTokens: maxTokens ?? 4096,
+        apiKey: apiKey ?? '',
+      },
+    });
 
-  res.status(201).json({ agent });
+    res.status(201).json({ agent });
+  } catch (error) {
+    console.error('Create agent error:', error);
+    res.status(500).json({ error: '创建智能体失败' });
+  }
 });
 
 agentsRouter.patch('/:id', async (req, res) => {
@@ -65,12 +73,16 @@ agentsRouter.patch('/:id', async (req, res) => {
     return;
   }
 
-  const agent = await prisma.agent.update({
-    where: { id },
-    data: req.body,
-  });
-
-  res.json({ agent });
+  try {
+    const agent = await prisma.agent.update({
+      where: { id },
+      data: req.body,
+    });
+    res.json({ agent });
+  } catch (error) {
+    console.error('Update agent error:', error);
+    res.status(500).json({ error: '更新智能体失败' });
+  }
 });
 
 agentsRouter.delete('/:id', async (req, res) => {
@@ -83,6 +95,11 @@ agentsRouter.delete('/:id', async (req, res) => {
     return;
   }
 
-  await prisma.agent.delete({ where: { id } });
-  res.json({ success: true });
+  try {
+    await prisma.agent.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete agent error:', error);
+    res.status(500).json({ error: '删除智能体失败' });
+  }
 });

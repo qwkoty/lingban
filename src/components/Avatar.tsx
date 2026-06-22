@@ -1,4 +1,4 @@
-import { cn, getInitials } from '../lib/utils.js';
+import { cn } from '../lib/utils';
 
 interface AvatarProps {
   src?: string | null;
@@ -11,15 +11,16 @@ const sizeClasses = {
   sm: 'w-8 h-8 text-xs',
   md: 'w-12 h-12 text-sm',
   lg: 'w-16 h-16 text-base',
-  xl: 'w-24 h-24 text-xl',
+  xl: 'w-24 h-24 text-2xl',
 };
 
 export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
+  const initial = name?.[0] || '?';
+
   return (
     <div
       className={cn(
-        'rounded-full flex items-center justify-center font-medium overflow-hidden shrink-0',
-        'bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white',
+        'relative rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 text-white font-bold',
         sizeClasses[size],
         className
       )}
@@ -27,7 +28,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
       {src ? (
         <img src={src} alt={name} className="w-full h-full object-cover" />
       ) : (
-        getInitials(name)
+        <span>{initial}</span>
       )}
     </div>
   );

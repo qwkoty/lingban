@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { Agent } from '../types.js';
-import { agentsApi } from '../lib/api.js';
+import type { Agent } from '../types';
+import { agentsApi } from '../lib/api';
 
 interface AgentsState {
   agents: Agent[];

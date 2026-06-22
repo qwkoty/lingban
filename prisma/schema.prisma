@@ -9,33 +9,37 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  nickname  String
-  avatar    String?
-  persona   String   @default("")
-  theme     String   @default("aurora")
-  createdAt DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  token          String   @unique
+  nickname       String
+  avatar         String?
+  persona        String   @default("")
+  theme          String   @default("aurora")
+  memorySnapshot String   @default("")
+  createdAt      DateTime @default(now())
 
   agents   Agent[]
   messages ChatMessage[]
+  memories Memory[]
 
   @@map("users")
 }
 
 model Agent {
-  id             Int      @id @default(autoincrement())
-  userId         Int
-  name           String
-  avatar         String?
-  persona        String   @default("")
-  modelProvider  String   @default("openai")
-  modelName      String   @default("gpt-4o-mini")
-  temperature    Float    @default(0.7)
-  maxTokens      Int      @default(4096)
-  apiKey         String   @default("")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  name          String
+  avatar        String?
+  persona       String   @default("")
+  greeting      String   @default("")
+  modelProvider String   @default("deepseek")
+  modelName     String   @default("deepseek-chat")
+  apiEndpoint   String   @default("")
+  temperature   Float    @default(0.7)
+  maxTokens     Int      @default(4096)
+  apiKey        String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages ChatMessage[]
@@ -55,4 +59,16 @@ model ChatMessage {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("chat_messages")
+}
+
+model Memory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("memories")
 }

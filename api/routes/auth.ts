@@ -13,27 +13,26 @@ function serializeUser(user: User) {
     avatar: user.avatar,
     persona: user.persona,
     theme: user.theme,
+    memorySnapshot: user.memorySnapshot,
     createdAt: user.createdAt.toISOString(),
   };
 }
 
 authRouter.post('/anonymous', async (_req, res) => {
-  const count = await prisma.user.count();
-  const id = count + 1;
-  const token = crypto.randomUUID();
+  try {
+    const count = await prisma.user.count();
+    const user = await prisma.user.create({
+      data: {
+        token: crypto.randomUUID(),
+        nickname: `用户${count + 1}`,
+      },
+    });
 
-  const user = await prisma.user.create({
-    data: {
-      id,
-      token,
-      nickname: `用户${id}`,
-    },
-  });
-
-  res.json({
-    token: user.token,
-    user: serializeUser(user),
-  });
+    res.json({ token: user.token, user: serializeUser(user) });
+  } catch (error) {
+    console.error('Anonymous login error:', error);
+    res.status(500).json({ error: '创建用户失败' });
+  }
 });
 
 authRouter.get('/me', authMiddleware, async (req, res) => {
@@ -41,16 +40,23 @@ authRouter.get('/me', authMiddleware, async (req, res) => {
 });
 
 authRouter.patch('/me', authMiddleware, async (req, res) => {
-  const { nickname, avatar, persona, theme } = req.body;
-  const user = await prisma.user.update({
-    where: { id: req.user!.id },
-    data: {
-      ...(nickname !== undefined && { nickname }),
-      ...(avatar !== undefined && { avatar }),
-      ...(persona !== undefined && { persona }),
-      ...(theme !== undefined && { theme }),
-    },
-  });
+  const { nickname, avatar, persona, theme, memorySnapshot } = req.body;
 
-  res.json({ user: serializeUser(user) });
+  try {
+    const user = await prisma.user.update({
+      where: { id: req.user!.id },
+      data: {
+        ...(nickname !== undefined && { nickname }),
+        ...(avatar !== undefined && { avatar }),
+        ...(persona !== undefined && { persona }),
+        ...(theme !== undefined && { theme }),
+        ...(memorySnapshot !== undefined && { memorySnapshot }),
+      },
+    });
+
+    res.json({ user: serializeUser(user) });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ error: '更新用户失败' });
+  }
 });

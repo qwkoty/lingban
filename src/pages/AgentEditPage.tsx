@@ -1,210 +1,359 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Upload } from 'lucide-react';
-import { useAgentsStore } from '../store/agents.js';
-import { uploadApi, agentsApi } from '../lib/api.js';
-import { Avatar } from '../components/Avatar.js';
-import { GlassCard } from '../components/GlassCard.js';
-import type { Agent } from '../types.js';
+import { ChevronLeft, Camera, Wand2 } from 'lucide-react';
+import { useAgentsStore } from '../store/agents';
+import { useToastStore } from '../store/toast';
+import { uploadApi } from '../lib/api';
+import { Avatar } from '../components/Avatar';
+import { cn } from '../lib/utils';
+import type { Agent } from '../types';
 
 const providers = [
+  { value: 'deepseek', label: 'DeepSeek' },
   { value: 'openai', label: 'OpenAI' },
   { value: 'anthropic', label: 'Anthropic' },
-  { value: 'deepseek', label: 'DeepSeek' },
   { value: 'custom', label: '自定义' },
 ];
 
-const defaultAgent: Partial<Agent> = {
-  name: '',
-  persona: '',
-  modelProvider: 'deepseek',
-  modelName: 'deepseek-chat',
-  temperature: 0.7,
-  maxTokens: 4096,
-  apiKey: '',
-};
+const templates = [
+  {
+    label: '知心好友',
+    name: '小知',
+    persona: '你是用户的知心好友，善于倾听，说话温柔、真诚。会在用户失落时安慰，开心时一起笑。你懂得保持距离，也会适时调侃。',
+    greeting: '嗨，最近怎么样？想聊点什么都可以跟我说～',
+    modelProvider: 'deepseek' as const,
+    modelName: 'deepseek-chat',
+    temperature: 0.8,
+  },
+  {
+    label: '游戏搭子',
+    name: '阿游',
+    persona: '你是个游戏宅好友，对各种游戏了如指掌。说话直接、爱吐槽，但技术过硬。会推荐游戏、分析战绩，也接受用户炫耀。',
+    greeting: '上线了吗？今天准备冲分还是娱乐？',
+    modelProvider: 'deepseek' as const,
+    modelName: 'deepseek-chat',
+    temperature: 0.9,
+  },
+  {
+    label: '学习伙伴',
+    name: '小助',
+    persona: '你是用户的学习伙伴，耐心、有条理。会帮助拆解问题、鼓励用户，但不会直接给答案，而是引导用户思考。',
+    greeting: '今天想学什么？我陪你一起攻克它。',
+    modelProvider: 'deepseek' as const,
+    modelName: 'deepseek-chat',
+    temperature: 0.6,
+  },
+  {
+    label: '幽默损友',
+    name: '阿损',
+    persona: '你是用户的损友，说话幽默毒舌但心地善良。喜欢开玩笑、斗嘴，但关键时刻会认真。经常用网络流行语。',
+    greeting: '哟，来了？今天又有什么好戏？',
+    modelProvider: 'deepseek' as const,
+    modelName: 'deepseek-chat',
+    temperature: 1.0,
+  },
+  {
+    label: '温柔倾听者',
+    name: '静静',
+    persona: '你是一位温柔安静的倾听者。不急着给建议，更多陪伴和共情。说话简短、治愈，让用户感到被接纳。',
+    greeting: '嗯，我在这儿。你想说什么，我都听着。',
+    modelProvider: 'deepseek' as const,
+    modelName: 'deepseek-chat',
+    temperature: 0.7,
+  },
+];
+
+type AgentForm = Omit<Agent, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
+
+function getInitialForm(agent?: Agent | null): AgentForm {
+  return {
+    name: agent?.name ?? '',
+    avatar: agent?.avatar ?? '',
+    persona: agent?.persona ?? '',
+    greeting: agent?.greeting ?? '',
+    modelProvider: agent?.modelProvider ?? 'deepseek',
+    modelName: agent?.modelName ?? 'deepseek-chat',
+    apiEndpoint: agent?.apiEndpoint ?? '',
+    temperature: agent?.temperature ?? 0.7,
+    maxTokens: agent?.maxTokens ?? 4096,
+    apiKey: agent?.apiKey ?? '',
+  };
+}
 
 export function AgentEditPage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { createAgent, updateAgent } = useAgentsStore();
-  const [form, setForm] = useState<Partial<Agent>>(defaultAgent);
-  const [loading, setLoading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const isEdit = id && id !== 'new';
+  const { id } = useParams<{ id?: string }>();
+  const agentId = id ? Number(id) : null;
+  const isEdit = Boolean(agentId);
+
+  const { agents, createAgent, updateAgent, fetchAgents } = useAgentsStore();
+  const showToast = useToastStore((s) => s.show);
+  const existing = agents.find((a) => a.id === agentId);
+
+  const [form, setForm] = useState(getInitialForm(existing));
+  const [saving, setSaving] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isEdit) {
-      agentsApi.get(Number(id)).then(({ agent }) => setForm(agent));
-    }
-  }, [id, isEdit]);
+    if (agents.length === 0) fetchAgents();
+  }, [agents.length, fetchAgents]);
 
-  const handleChange = (
-    key: keyof Agent,
-    value: string | number
-  ) => {
+  useEffect(() => {
+    if (existing) setForm(getInitialForm(existing));
+  }, [existing]);
+
+  const update = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarClick = () => fileInputRef.current?.click();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { url } = await uploadApi.avatar(file);
-    setForm((prev) => ({ ...prev, avatar: url }));
+    try {
+      const { url } = await uploadApi.avatar(file);
+      update('avatar', url);
+      showToast('头像上传成功', 'success');
+    } catch (err) {
+      showToast((err as Error).message, 'error');
+    }
   };
 
-  const handleSubmit = async () => {
-    if (!form.name?.trim()) return;
-    setLoading(true);
+  const applyTemplate = (tpl: (typeof templates)[0]) => {
+    setForm((prev) => ({
+      ...prev,
+      name: prev.name || tpl.name,
+      persona: tpl.persona,
+      greeting: tpl.greeting,
+      modelProvider: tpl.modelProvider,
+      modelName: tpl.modelName,
+      temperature: tpl.temperature,
+    }));
+    setShowTemplates(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim()) {
+      showToast('请填写好友名称', 'error');
+      return;
+    }
+
+    setSaving(true);
     try {
-      if (isEdit) {
-        await updateAgent(Number(id), form);
+      if (isEdit && agentId) {
+        await updateAgent(agentId, form);
+        showToast('已保存', 'success');
       } else {
-        await createAgent(form);
+        const agent = await createAgent(form);
+        showToast('创建成功', 'success');
+        navigate(`/?agent=${agent.id}`);
+        return;
       }
       navigate('/agents');
+    } catch (err) {
+      showToast((err as Error).message, 'error');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div className="p-4 pb-28 max-w-md mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => navigate('/agents')}
-          className="p-2 rounded-full hover:bg-white/10 transition-colors"
-        >
-          <ArrowLeft size={20} />
+    <div className="min-h-full p-4 pb-28">
+      <header className="flex items-center gap-3 mb-6 max-w-2xl mx-auto">
+        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-white/10">
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold gradient-text">
-          {isEdit ? '编辑智能体' : '创建智能体'}
-        </h1>
-      </div>
+        <h1 className="text-xl font-bold text-white">{isEdit ? '编辑 AI 好友' : '新建 AI 好友'}</h1>
+      </header>
 
-      <div className="space-y-4">
-        <GlassCard className="flex flex-col items-center py-6">
+      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-5">
+        <div className="flex flex-col items-center gap-3">
           <button
-            onClick={() => fileRef.current?.click()}
+            type="button"
+            onClick={handleAvatarClick}
             className="relative group"
           >
-            <Avatar
-              src={form.avatar}
-              name={form.name || 'AI'}
-              size="xl"
-            />
-            <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Upload size={24} />
+            <Avatar src={form.avatar} name={form.name || '?'} size="xl" />
+            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera className="w-6 h-6 text-white" />
             </div>
           </button>
           <input
-            ref={fileRef}
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleAvatar}
+            onChange={handleFileChange}
           />
-          <p className="text-white/40 text-sm mt-3">点击上传头像</p>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="space-y-4">
+        <div className="glass rounded-2xl border border-white/10 p-4 space-y-4">
           <div>
-            <label className="block text-sm text-white/60 mb-1">名称</label>
+            <label className="block text-sm text-white/70 mb-1">名称 *</label>
             <input
+              type="text"
               value={form.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              placeholder="给你的智能体起个名字"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+              onChange={(e) => update('name', e.target.value)}
+              placeholder="给 TA 取个名字"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-white/60 mb-1">人设 / 系统提示词</label>
+            <label className="block text-sm text-white/70 mb-1">开场白</label>
+            <textarea
+              value={form.greeting}
+              onChange={(e) => update('greeting', e.target.value)}
+              placeholder="用户进入聊天时，TA 会主动说的第一句话"
+              rows={2}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-white/70 mb-1">角色设定</label>
             <textarea
               value={form.persona}
-              onChange={(e) => handleChange('persona', e.target.value)}
-              placeholder="描述这个智能体的角色、语气和能力..."
+              onChange={(e) => update('persona', e.target.value)}
+              placeholder="性格、背景、说话方式、和用户的关係等"
               rows={4}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors resize-none"
             />
           </div>
 
-          <div>
-            <label className="block text-sm text-white/60 mb-2">模型提供商</label>
-            <div className="flex flex-wrap gap-2">
-              {providers.map((p) => (
-                <button
-                  key={p.value}
-                  onClick={() => handleChange('modelProvider', p.value)}
-                  className={`px-4 py-2 rounded-full text-sm border transition-all ${
-                    form.modelProvider === p.value
-                      ? 'border-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white'
-                      : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
+          <button
+            type="button"
+            onClick={() => setShowTemplates(true)}
+            className="flex items-center gap-2 text-sm text-blue-300 hover:text-blue-200 transition-colors"
+          >
+            <Wand2 className="w-4 h-4" /> 从模板开始
+          </button>
+        </div>
+
+        <div className="glass rounded-2xl border border-white/10 p-4 space-y-4">
+          <h2 className="text-sm font-semibold text-white/90">模型配置</h2>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-white/70 mb-1">提供商</label>
+              <select
+                value={form.modelProvider}
+                onChange={(e) => update('modelProvider', e.target.value as Agent['modelProvider'])}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:border-white/30 transition-colors"
+              >
+                {providers.map((p) => (
+                  <option key={p.value} value={p.value} className="bg-gray-900">
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm text-white/70 mb-1">模型名</label>
+              <input
+                type="text"
+                value={form.modelName}
+                onChange={(e) => update('modelName', e.target.value)}
+                placeholder="deepseek-chat"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
+              />
             </div>
           </div>
 
+          {form.modelProvider === 'custom' && (
+            <div>
+              <label className="block text-sm text-white/70 mb-1">自定义端点</label>
+              <input
+                type="text"
+                value={form.apiEndpoint}
+                onChange={(e) => update('apiEndpoint', e.target.value)}
+                placeholder="https://.../v1/chat/completions"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
+              />
+            </div>
+          )}
+
           <div>
-            <label className="block text-sm text-white/60 mb-1">模型名称</label>
+            <label className="block text-sm text-white/70 mb-1">API Key</label>
             <input
-              value={form.modelName}
-              onChange={(e) => handleChange('modelName', e.target.value)}
-              placeholder="例如 deepseek-chat / gpt-4o-mini"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+              type="password"
+              value={form.apiKey}
+              onChange={(e) => update('apiKey', e.target.value)}
+              placeholder="sk-..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-white/60 mb-1">温度</label>
+              <label className="block text-sm text-white/70 mb-1">
+                温度: {form.temperature}
+              </label>
               <input
-                type="number"
+                type="range"
                 min={0}
                 max={2}
                 step={0.1}
                 value={form.temperature}
-                onChange={(e) => handleChange('temperature', Number(e.target.value))}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+                onChange={(e) => update('temperature', Number(e.target.value))}
+                className="w-full"
               />
             </div>
             <div>
-              <label className="block text-sm text-white/60 mb-1">最大 Token</label>
+              <label className="block text-sm text-white/70 mb-1">Max Tokens</label>
               <input
                 type="number"
                 min={1}
-                max={128000}
-                step={1}
+                max={8192}
                 value={form.maxTokens}
-                onChange={(e) => handleChange('maxTokens', Number(e.target.value))}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
+                onChange={(e) => update('maxTokens', Number(e.target.value))}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:border-white/30 transition-colors"
               />
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm text-white/60 mb-1">API Key</label>
-            <input
-              type="password"
-              value={form.apiKey}
-              onChange={(e) => handleChange('apiKey', e.target.value)}
-              placeholder="输入你的 LLM API Key"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white/30 transition-colors"
-            />
-          </div>
-        </GlassCard>
+        </div>
 
         <button
-          onClick={handleSubmit}
-          disabled={loading || !form.name?.trim()}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 font-medium shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          type="submit"
+          disabled={saving}
+          className={cn(
+            'w-full py-3 rounded-2xl font-medium text-white transition-all active:scale-[0.98]',
+            saving ? 'bg-white/20 cursor-not-allowed' : 'bg-white/15 hover:bg-white/25'
+          )}
         >
-          {loading ? '保存中...' : isEdit ? '保存修改' : '创建智能体'}
+          {saving ? '保存中…' : isEdit ? '保存' : '创建并聊天'}
         </button>
-      </div>
+      </form>
+
+      {showTemplates && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 animate-fade-in-up"
+          onClick={() => setShowTemplates(false)}
+        >
+          <div
+            className="w-full max-w-md glass rounded-3xl border border-white/10 p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold text-white mb-4">选择 AI 好友模板</h2>
+            <div className="grid gap-2 max-h-[60vh] overflow-y-auto scrollbar-thin">
+              {templates.map((tpl) => (
+                <button
+                  key={tpl.label}
+                  type="button"
+                  onClick={() => applyTemplate(tpl)}
+                  className="text-left p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                >
+                  <div className="font-medium text-white mb-1">{tpl.label}</div>
+                  <div className="text-xs text-white/50 line-clamp-2">{tpl.persona}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

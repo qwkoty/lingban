@@ -20,7 +20,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/agents', agentsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/upload', uploadRouter);
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

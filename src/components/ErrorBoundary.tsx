@@ -5,30 +5,32 @@ interface Props {
 }
 
 interface State {
-  error: Error | null;
+  hasError: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { error: null };
+  state: State = { hasError: false };
+
+  static getDerivedStateFromError(): State {
+    return { hasError: true };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return { error };
+  componentDidCatch(error: Error) {
+    console.error('ErrorBoundary caught:', error);
   }
 
   render() {
-    if (this.state.error) {
+    if (this.state.hasError) {
       return (
-        <div className="min-h-full flex flex-col items-center justify-center p-6 text-center">
-          <h2 className="text-xl font-bold mb-4">页面出错了</h2>
-          <pre className="text-left text-sm text-white/70 bg-black/30 rounded-xl p-4 max-w-full overflow-auto whitespace-pre-wrap">
-            {this.state.error.stack || this.state.error.message}
-          </pre>
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-20 h-20 rounded-full glass flex items-center justify-center text-white/70 mb-4 text-2xl">
+            😵
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">出错了</h2>
+          <p className="text-white/50 text-sm mb-6">页面遇到了一点小问题</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-6 px-6 py-2 rounded-full bg-white/15 hover:bg-white/20 transition-colors"
+            className="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-colors"
           >
             刷新页面
           </button>

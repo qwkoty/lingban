@@ -1,18 +1,16 @@
 import { create } from 'zustand';
-import type { User, Theme } from '../types.js';
-import { authApi } from '../lib/api.js';
+import type { User } from '../types';
+import { authApi } from '../lib/api';
 
 interface AuthState {
   user: User | null;
-  loading: boolean;
   initialized: boolean;
   init: () => Promise<void>;
-  updateUser: (data: { nickname?: string; avatar?: string; persona?: string; theme?: Theme }) => Promise<void>;
+  updateUser: (data: Partial<User>) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  loading: true,
   initialized: false,
 
   init: async () => {
@@ -22,14 +20,14 @@ export const useAuthStore = create<AuthState>((set) => ({
         const res = await authApi.anonymous();
         token = res.token;
         localStorage.setItem('lingban_token', token);
-        set({ user: res.user, loading: false, initialized: true });
+        set({ user: res.user, initialized: true });
       } else {
         const res = await authApi.me();
-        set({ user: res.user, loading: false, initialized: true });
+        set({ user: res.user, initialized: true });
       }
     } catch {
       localStorage.removeItem('lingban_token');
-      set({ user: null, loading: false, initialized: true });
+      set({ user: null, initialized: true });
     }
   },
 
