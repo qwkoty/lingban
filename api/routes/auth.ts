@@ -31,7 +31,11 @@ authRouter.post('/anonymous', async (_req, res) => {
     res.json({ token: user.token, user: serializeUser(user) });
   } catch (error) {
     console.error('Anonymous login error:', error);
-    res.status(500).json({ error: '创建用户失败' });
+    const message = error instanceof Error ? error.message : String(error);
+    res.status(500).json({
+      error: '创建用户失败',
+      detail: process.env.NODE_ENV === 'production' ? message : message,
+    });
   }
 });
 

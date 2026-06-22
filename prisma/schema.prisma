@@ -15,8 +15,8 @@ model User {
   avatar         String?
   persona        String   @default("")
   theme          String   @default("aurora")
-  memorySnapshot String   @default("")
-  createdAt      DateTime @default(now())
+  memorySnapshot String   @default("") @map("memory_snapshot")
+  createdAt      DateTime @default(now()) @map("created_at")
 
   agents   Agent[]
   messages ChatMessage[]
@@ -27,19 +27,19 @@ model User {
 
 model Agent {
   id            Int      @id @default(autoincrement())
-  userId        Int
+  userId        Int      @map("user_id")
   name          String
   avatar        String?
   persona       String   @default("")
   greeting      String   @default("")
-  modelProvider String   @default("deepseek")
-  modelName     String   @default("deepseek-v4-pro")
-  apiEndpoint   String   @default("")
+  modelProvider String   @default("deepseek") @map("model_provider")
+  modelName     String   @default("deepseek-v4-pro") @map("model_name")
+  apiEndpoint   String   @default("") @map("api_endpoint")
   temperature   Float    @default(0.7)
-  maxTokens     Int      @default(4096)
-  apiKey        String   @default("")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  maxTokens     Int      @default(4096) @map("max_tokens")
+  apiKey        String   @default("") @map("api_key")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages ChatMessage[]
@@ -49,11 +49,11 @@ model Agent {
 
 model ChatMessage {
   id        Int      @id @default(autoincrement())
-  agentId   Int
-  userId    Int
+  agentId   Int      @map("agent_id")
+  userId    Int      @map("user_id")
   role      String
   content   String
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
 
   agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -63,10 +63,10 @@ model ChatMessage {
 
 model Memory {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    Int      @map("user_id")
   content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
