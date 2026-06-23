@@ -1,324 +1,174 @@
 import { Router } from 'express';
-import { prisma } from '../lib/prisma.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { prisma } from '../lib/prisma';
+import { authMiddleware } from '../middleware/auth';
+import { streamChat, buildSystemPrompt, type LLMMessage } from '../lib/llm';
 
-export const chatRouter = Router();
-chatRouter.use(authMiddleware);
+const router = Router();
 
-function getModelEndpoint(provider: string, customEndpoint: string) {
-  switch (provider) {
-    case 'deepseek':
-      return 'https://api.deepseek.com/chat/completions';
-    case 'custom':
-      return customEndpoint || '';
-    default:
-      return '';
-  }
-}
+router.use(authMiddleware);
 
-function buildSystemPrompt(agent: {
-  persona: string;
-  greeting: string;
-  name: string;
-}, user: { nickname: string; persona: string; memorySnapshot: string }) {
-  const parts: string[] = [];
-
-  parts.push(
-    `你是用户的 AI 好友，名字叫「${agent.name}」。你要始终保持角色一致性，用自然、有温度的语气聊天。`
-  );
-
-  if (agent.persona) {
-    parts.push(`角色设定：${agent.persona}`);
-  }
-
-  if (agent.greeting) {
-    parts.push(`你的开场白风格参考：${agent.greeting}`);
-  }
-
-  parts.push(`用户昵称：${user.nickname || '朋友'}`);
-
-  if (user.persona) {
-    parts.push(`用户人设：${user.persona}`);
-  }
-
-  if (user.memorySnapshot) {
-    parts.push(`你记得关于用户的事：${user.memorySnapshot}`);
-  }
-
-  parts.push(
-    `注意：不要暴露你是 AI 或程序。回复尽量口语化、简短自然，像朋友微信聊天一样。`
-  );
-
-  return parts.join('\n');
-}
-
-async function extractMemorySnapshot(
-  agent: { name: string; persona: string },
-  user: { id: number; nickname: string; memorySnapshot: string },
-  history: { role: string; content: string }[],
-  apiKey: string,
-  modelName: string,
-  endpoint: string
-) {
+// 最近会话列表：按最后互动时间排序的智能体 + 最后一条消息
+router.get('/sessions', async (req, res, next) => {
   try {
-    const recentMessages = history.slice(-20);
-    const conversation = recentMessages
-      .map((m) => `${m.role === 'user' ? '用户' : agent.name}：${m.content}`)
-      .join('\n');
-
-    const prompt = `你是记忆整理助手。请从以下对话中提取关于用户的关键事实（喜好、最近状态、重要事件等），用 3-5 条简短中文bullet列出。如果没有新事实，返回空字符串。
-
-已有记忆：${user.memorySnapshot || '无'}
-
-对话：
-${conversation}
-
-只输出记忆事实，每条一行，不要有多余解释。`;
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+    const agents = await prisma.agent.findMany({
+      where: { userId: req.userId! },
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
-      body: JSON.stringify({
-        model: modelName,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.3,
-        max_tokens: 512,
-        stream: false,
-      }),
     });
 
-    if (!response.ok) return;
-
-    const data = (await response.json()) as { choices?: { message?: { content?: string } }[] };
-    const extracted = data.choices?.[0]?.message?.content?.trim();
-
-    if (!extracted) return;
-
-    const newSnapshot = [user.memorySnapshot, extracted].filter(Boolean).join('\n');
-    const trimmed = newSnapshot.split('\n').slice(-20).join('\n');
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { memorySnapshot: trimmed },
-    });
-  } catch (error) {
-    console.error('Memory extraction error:', error);
-  }
-}
-
-chatRouter.get('/sessions', async (req, res) => {
-  try {
-    const messages = await prisma.chatMessage.findMany({
-      where: { userId: req.user!.id },
-      orderBy: { createdAt: 'desc' },
-      distinct: ['agentId'],
-      include: { agent: true },
-    });
-
-    const sessions = messages.map((m) => ({
-      agentId: m.agentId,
-      agent: m.agent,
-      lastMessageAt: m.createdAt.toISOString(),
+    const sessions = agents.map((agent) => ({
+      id: agent.id,
+      name: agent.name,
+      avatar: agent.avatar,
+      updatedAt: agent.updatedAt,
+      lastMessage: agent.messages[0]?.content || agent.greeting || '',
     }));
 
     res.json({ sessions });
-  } catch (error) {
-    console.error('Fetch sessions error:', error);
-    res.status(500).json({ error: '获取会话失败' });
+  } catch (err) {
+    next(err);
   }
 });
 
-chatRouter.get('/sessions/:agentId', async (req, res) => {
-  const agentId = Number(req.params.agentId);
-
+// 某智能体的历史消息
+router.get('/sessions/:agentId', async (req, res, next) => {
   try {
-    let messages = await prisma.chatMessage.findMany({
-      where: { agentId, userId: req.user!.id },
-      orderBy: { createdAt: 'asc' },
-    });
-
-    if (messages.length === 0) {
-      const agent = await prisma.agent.findFirst({
-        where: { id: agentId, userId: req.user!.id },
-      });
-      if (agent?.greeting) {
-        const greeting = await prisma.chatMessage.create({
-          data: {
-            agentId,
-            userId: req.user!.id,
-            role: 'assistant',
-            content: agent.greeting,
-          },
-        });
-        messages = [greeting];
-      }
-    }
-
-    res.json({ messages });
-  } catch (error) {
-    console.error('Fetch history error:', error);
-    res.status(500).json({ error: '获取历史记录失败' });
-  }
-});
-
-chatRouter.delete('/sessions/:agentId', async (req, res) => {
-  const agentId = Number(req.params.agentId);
-
-  try {
-    await prisma.chatMessage.deleteMany({
-      where: { agentId, userId: req.user!.id },
-    });
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Clear history error:', error);
-    res.status(500).json({ error: '清空历史失败' });
-  }
-});
-
-chatRouter.post('/:agentId', async (req, res) => {
-  const agentId = Number(req.params.agentId);
-  const { message } = req.body;
-  const user = req.user!;
-
-  try {
+    const agentId = Number(req.params.agentId);
     const agent = await prisma.agent.findFirst({
-      where: { id: agentId, userId: user.id },
+      where: { id: agentId, userId: req.userId! },
     });
     if (!agent) {
-      res.status(404).json({ error: 'Not found' });
+      res.status(404).json({ error: '智能体不存在' });
       return;
     }
 
+    const messages = await prisma.chatMessage.findMany({
+      where: { agentId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    res.json({ agent, messages });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 流式发送消息
+router.post('/:agentId', async (req, res, next) => {
+  try {
+    const agentId = Number(req.params.agentId);
+    const { message } = req.body as { message?: string };
+
+    const agent = await prisma.agent.findFirst({
+      where: { id: agentId, userId: req.userId! },
+    });
+    if (!agent) {
+      res.status(404).json({ error: '智能体不存在' });
+      return;
+    }
+
+    if (!message || !message.trim()) {
+      res.status(400).json({ error: '消息不能为空' });
+      return;
+    }
+
+    // 保存用户消息
     await prisma.chatMessage.create({
       data: {
         agentId,
-        userId: user.id,
+        userId: req.userId!,
         role: 'user',
-        content: message,
+        content: message.trim(),
       },
     });
 
+    // 获取历史消息
     const history = await prisma.chatMessage.findMany({
-      where: { agentId, userId: user.id },
+      where: { agentId },
       orderBy: { createdAt: 'asc' },
+      take: 20,
     });
 
-    const messagesPayload: { role: 'system' | 'user' | 'assistant'; content: string }[] =
-      history.map((m) => ({
-        role: m.role as 'system' | 'user' | 'assistant',
+    // 获取用户人设
+    const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+
+    // 构建消息列表
+    const systemPrompt = buildSystemPrompt(agent, user?.persona || '');
+    const llmMessages: LLMMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...history.map((m) => ({
+        role: m.role as 'user' | 'assistant',
         content: m.content,
-      }));
+      })),
+    ];
 
-    messagesPayload.unshift({
-      role: 'system',
-      content: buildSystemPrompt(agent, user),
-    });
-
-    const endpoint = getModelEndpoint(agent.modelProvider, agent.apiEndpoint);
-    if (!endpoint) {
-      res.status(400).json({ error: '未配置有效的模型端点' });
-      return;
-    }
-
-    if (!agent.apiKey) {
-      res.status(400).json({ error: '该智能体未配置 API Key' });
-      return;
-    }
-
+    // 设置 SSE 响应头
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
 
-    const llmResponse = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${agent.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: agent.modelName,
-        messages: messagesPayload,
-        temperature: agent.temperature,
-        max_tokens: agent.maxTokens,
-        stream: true,
-      }),
-    });
+    let fullText = '';
 
-    if (!llmResponse.ok) {
-      const errorText = await llmResponse.text();
-      res.write(`data: ${JSON.stringify({ error: `LLM 请求失败: ${llmResponse.status}` })}\n\n`);
-      res.write('data: [DONE]\n\n');
-      res.end();
-      console.error('LLM error:', errorText);
-      return;
-    }
-
-    const reader = llmResponse.body?.getReader();
-    if (!reader) {
-      res.write(`data: ${JSON.stringify({ error: '无法读取流响应' })}\n\n`);
-      res.write('data: [DONE]\n\n');
+    try {
+      fullText = await streamChat({
+        agent,
+        messages: llmMessages,
+        onChunk: (chunk) => {
+          res.write(`data: ${JSON.stringify({ type: 'chunk', content: chunk })}\n\n`);
+        },
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '生成回复失败';
+      res.write(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`);
       res.end();
       return;
     }
 
-    let fullContent = '';
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith('data:')) continue;
-
-        const data = trimmed.slice(5).trim();
-        if (data === '[DONE]') continue;
-
-        try {
-          const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta?.content;
-          if (delta) {
-            fullContent += delta;
-            res.write(`data: ${JSON.stringify({ content: delta })}\n\n`);
-          }
-        } catch {
-          // ignore malformed JSON
-        }
-      }
+    // 保存 assistant 回复
+    if (fullText.trim()) {
+      const saved = await prisma.chatMessage.create({
+        data: {
+          agentId,
+          userId: req.userId!,
+          role: 'assistant',
+          content: fullText,
+        },
+      });
+      res.write(`data: ${JSON.stringify({ type: 'done', messageId: saved.id, content: fullText })}\n\n`);
+    } else {
+      res.write(`data: ${JSON.stringify({ type: 'done', content: '' })}\n\n`);
     }
 
-    await prisma.chatMessage.create({
-      data: {
-        agentId,
-        userId: user.id,
-        role: 'assistant',
-        content: fullContent,
-      },
-    });
-
-    res.write('data: [DONE]\n\n');
     res.end();
-
-    // 异步更新记忆，不阻塞响应
-    extractMemorySnapshot(
-      agent,
-      user,
-      messagesPayload,
-      agent.apiKey,
-      agent.modelName,
-      endpoint
-    );
-  } catch (error) {
-    console.error('Chat error:', error);
-    res.write(`data: ${JSON.stringify({ error: '对话请求失败' })}\n\n`);
-    res.write('data: [DONE]\n\n');
-    res.end();
+  } catch (err) {
+    next(err);
   }
 });
+
+// 清空某智能体的历史消息
+router.delete('/:agentId', async (req, res, next) => {
+  try {
+    const agentId = Number(req.params.agentId);
+    const agent = await prisma.agent.findFirst({
+      where: { id: agentId, userId: req.userId! },
+    });
+    if (!agent) {
+      res.status(404).json({ error: '智能体不存在' });
+      return;
+    }
+
+    await prisma.chatMessage.deleteMany({ where: { agentId } });
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+export default router;

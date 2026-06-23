@@ -1,45 +1,47 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'node:path';
-import fs from 'node:fs';
-import crypto from 'node:crypto';
-import { authMiddleware } from '../middleware/auth.js';
+import { extname, join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { mkdir } from 'node:fs/promises';
+import { authMiddleware } from '../middleware/auth';
 
-export const uploadRouter = Router();
+const router = Router();
 
-const uploadsDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+const UPLOAD_DIR = join(process.cwd(), 'uploads', 'avatars');
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  destination: async (_req, _file, cb) => {
+    await mkdir(UPLOAD_DIR, { recursive: true });
+    cb(null, UPLOAD_DIR);
+  },
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${ext}`;
-    cb(null, name);
+    const ext = extname(file.originalname) || '.png';
+    cb(null, `${randomUUID()}${ext}`);
   },
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+    if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      cb(new Error('仅支持 PNG / JPEG / WebP / GIF 格式'));
     }
   },
 });
 
-uploadRouter.use(authMiddleware);
+router.use(authMiddleware);
 
-uploadRouter.post('/avatar', upload.single('file'), (req, res) => {
+router.post('/avatar', upload.single('file'), (req, res) => {
   if (!req.file) {
-    res.status(400).json({ error: 'No file uploaded' });
+    res.status(400).json({ error: '请选择要上传的图片' });
     return;
   }
-  const url = `/uploads/${req.file.filename}`;
+  const url = `/uploads/avatars/${req.file.filename}`;
   res.json({ url });
 });
+
+export default router;

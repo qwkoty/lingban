@@ -1,145 +1,175 @@
-import type { User, Agent, ChatMessage, ChatSession } from '../types';
+import type { User, Agent, ChatMessage, Session } from '../types';
 
-const API_BASE = '';
+const TOKEN_KEY = 'lingban_token';
 
-function getToken() {
-  return localStorage.getItem('lingban_token') || '';
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setToken(token: string) {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-      ...options.headers,
-    },
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    let msg = text;
-    try {
-      const body = JSON.parse(text);
-      msg = body.detail || body.error || text;
-    } catch {
-      // keep raw text
-    }
-    throw new Error(msg || `Request failed: ${res.status}`);
+  const token = getToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
 
-  return res.json() as Promise<T>;
+  const res = await fetch(path, { ...options, headers });
+
+  if (!res.ok) {
+    let error = `请求失败 (${res.status})`;
+    try {
+      const body = await res.json();
+      error = body.error || error;
+    } catch {
+      // ignore
+    }
+    throw new Error(error);
+  }
+
+  return res.json();
 }
 
-export const authApi = {
-  anonymous: () => request<{ token: string; user: User }>('/api/auth/anonymous', { method: 'POST' }),
-  me: () => request<{ user: User }>('/api/auth/me'),
-  updateMe: (data: Partial<User>) =>
+// Auth
+export const api = {
+  anonymousLogin: () =>
+    request<{ token: string; user: User }>('/api/auth/anonymous', { method: 'POST' }),
+
+  getMe: () => request<{ user: User }>('/api/auth/me'),
+
+  updateMe: (data: Partial<Pick<User, 'nickname' | 'avatar' | 'persona' | 'theme'>>) =>
     request<{ user: User }>('/api/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
-};
 
-export const agentsApi = {
-  list: () => request<{ agents: Agent[] }>('/api/agents'),
-  get: (id: number) => request<{ agent: Agent }>(`/api/agents/${id}`),
-  create: (data: Partial<Agent>) =>
+  // Agents
+  getAgents: () => request<{ agents: Agent[] }>('/api/agents'),
+
+  getAgent: (id: number) => request<{ agent: Agent }>(`/api/agents/${id}`),
+
+  createAgent: (data: Partial<Agent>) =>
     request<{ agent: Agent }>('/api/agents', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: number, data: Partial<Agent>) =>
+
+  updateAgent: (id: number, data: Partial<Agent>) =>
     request<{ agent: Agent }>(`/api/agents/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
-  delete: (id: number) =>
+
+  deleteAgent: (id: number) =>
     request<{ success: boolean }>(`/api/agents/${id}`, { method: 'DELETE' }),
-};
 
-export const chatApi = {
-  sessions: () => request<{ sessions: ChatSession[] }>('/api/chat/sessions'),
-  history: (agentId: number) =>
-    request<{ messages: ChatMessage[] }>(`/api/chat/sessions/${agentId}`),
-  clear: (agentId: number) =>
-    request<{ success: boolean }>(`/api/chat/sessions/${agentId}`, { method: 'DELETE' }),
-  send: (
-    agentId: number,
-    message: string,
-    onChunk: (chunk: { content?: string; error?: string }) => void,
-    onDone: () => void
-  ) => {
-    fetch(`${API_BASE}/api/chat/${agentId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify({ message }),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const text = await response.text();
-          let msg = text;
-          try {
-            const body = JSON.parse(text);
-            msg = body.detail || body.error || text;
-          } catch {
-            // keep raw text
-          }
-          onChunk({ error: `请求失败: ${msg || response.status}` });
-          onDone();
-          return;
-        }
+  // Chat
+  getSessions: () => request<{ sessions: Session[] }>('/api/chat/sessions'),
 
-        const reader = response.body?.getReader();
-        if (!reader) {
-          onChunk({ error: '无法读取响应' });
-          onDone();
-          return;
-        }
+  getHistory: (agentId: number) =>
+    request<{ agent: Agent; messages: ChatMessage[] }>(`/api/chat/sessions/${agentId}`),
 
-        const decoder = new TextDecoder();
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+  clearHistory: (agentId: number) =>
+    request<{ success: boolean }>(`/api/chat/${agentId}`, { method: 'DELETE' }),
 
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n');
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed.startsWith('data:')) continue;
-
-            const data = trimmed.slice(5).trim();
-            if (data === '[DONE]') {
-              onDone();
-              return;
-            }
-
-            try {
-              onChunk(JSON.parse(data));
-            } catch {
-              // ignore
-            }
-          }
-        }
-        onDone();
-      })
-      .catch((err) => {
-        onChunk({ error: err.message });
-        onDone();
-      });
-  },
-};
-
-export const uploadApi = {
-  avatar: async (file: File) => {
+  // Upload
+  uploadAvatar: async (file: File) => {
+    const token = getToken();
     const formData = new FormData();
     formData.append('file', file);
 
     const res = await fetch('/api/upload/avatar', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: formData,
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || 'Upload failed');
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || '上传失败');
     }
 
     return res.json() as Promise<{ url: string }>;
   },
 };
+
+// 流式聊天：返回一个可取消的流式读取器
+export interface StreamChatHandlers {
+  onChunk: (text: string) => void;
+  onError: (error: string) => void;
+  onDone: (content: string, messageId?: number) => void;
+}
+
+export async function streamChat(
+  agentId: number,
+  message: string,
+  handlers: StreamChatHandlers,
+  signal?: AbortSignal,
+) {
+  const token = getToken();
+  const res = await fetch(`/api/chat/${agentId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ message }),
+    signal,
+  });
+
+  if (!res.ok) {
+    let error = `请求失败 (${res.status})`;
+    try {
+      const body = await res.json();
+      error = body.error || error;
+    } catch {
+      // ignore
+    }
+    handlers.onError(error);
+    return;
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) {
+    handlers.onError('无法读取响应流');
+    return;
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let fullContent = '';
+  let messageId: number | undefined;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith('data: ')) continue;
+
+      try {
+        const data = JSON.parse(trimmed.slice(6));
+        if (data.type === 'chunk') {
+          fullContent += data.content;
+          handlers.onChunk(data.content);
+        } else if (data.type === 'error') {
+          handlers.onError(data.error);
+          return;
+        } else if (data.type === 'done') {
+          fullContent = data.content || fullContent;
+          messageId = data.messageId;
+        }
+      } catch {
+        // skip
+      }
+    }
+  }
+
+  handlers.onDone(fullContent, messageId);
+}

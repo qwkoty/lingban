@@ -1,52 +1,45 @@
 import express from 'express';
 import cors from 'cors';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { existsSync } from 'node:fs';
+import authRoutes from './routes/auth';
+import agentRoutes from './routes/agents';
+import chatRoutes from './routes/chat';
+import uploadRoutes from './routes/upload';
 
-import { authRouter } from './routes/auth.js';
-import { agentsRouter } from './routes/agents.js';
-import { chatRouter } from './routes/chat.js';
-import { uploadRouter } from './routes/upload.js';
-import { pool } from './lib/prisma.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export const app = express();
+const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json());
 
-app.use('/api/auth', authRouter);
-app.use('/api/agents', agentsRouter);
-app.use('/api/chat', chatRouter);
-app.use('/api/upload', uploadRouter);
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// 静态资源：上传的文件
+app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
-app.get('/api/health', async (_req, res) => {
-  try {
-    await pool.query('SELECT 1');
-    res.json({ status: 'ok', db: 'connected' });
-  } catch (err) {
-    // 保持 200，让 Render 先部署成功，方便前端/日志查看数据库状态
-    res.json({ status: 'ok', db: 'disconnected', error: (err as Error).message });
-  }
+// 健康检查
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.get('/api/health/db', async (_req, res) => {
-  try {
-    const tables = await pool.query(
-      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
-    );
-    res.json({ tables: tables.rows.map((r) => r.table_name) });
-  } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
-  }
-});
+// 业务路由
+app.use('/api/auth', authRoutes);
+app.use('/api/agents', agentRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/upload', uploadRoutes);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
+// 生产环境：托管前端构建产物
+const distDir = join(process.cwd(), 'dist');
+if (existsSync(distDir)) {
+  app.use(express.static(distDir));
   app.get('*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
+    res.sendFile(join(distDir, 'index.html'));
   });
 }
+
+// 全局错误处理
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('[error]', err.message);
+  const status = (err as { status?: number }).status || 500;
+  res.status(status).json({ error: err.message || '服务器内部错误' });
+});
+
+export default app;

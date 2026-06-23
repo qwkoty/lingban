@@ -1,11 +1,11 @@
-import type { User } from '../../src/generated/prisma/client.js';
+import type { AuthedRequest } from '../middleware/auth';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      userId?: number;
     }
   }
 }
 
-export {};
+export type { AuthedRequest };

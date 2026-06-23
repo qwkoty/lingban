@@ -1,51 +1,42 @@
 import { create } from 'zustand';
-import type { Theme } from '../types';
+
+type ThemeName = 'aurora' | 'colorful';
 
 const THEME_KEY = 'lingban_theme';
 
+function applyTheme(theme: ThemeName) {
+  document.body.className = `theme-${theme}`;
+}
+
+function getInitialTheme(): ThemeName {
+  const saved = localStorage.getItem(THEME_KEY) as ThemeName | null;
+  return saved === 'colorful' ? 'colorful' : 'aurora';
+}
+
 interface ThemeState {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  initTheme: (theme?: Theme) => void;
+  theme: ThemeName;
+  setTheme: (theme: ThemeName) => void;
+  toggle: () => void;
+  init: () => void;
 }
 
-function getStoredTheme(): Theme | null {
-  try {
-    const value = localStorage.getItem(THEME_KEY);
-    if (value === 'aurora' || value === 'colorful') return value;
-    return null;
-  } catch {
-    return null;
-  }
-}
+export const useThemeStore = create<ThemeState>((set, get) => ({
+  theme: 'aurora',
 
-function setStoredTheme(theme: Theme) {
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch {
-    // ignore
-  }
-}
-
-function applyTheme(theme: Theme) {
-  if (typeof document === 'undefined') return;
-  document.body.classList.remove('theme-aurora', 'theme-colorful');
-  document.body.classList.add(`theme-${theme}`);
-}
-
-export const useThemeStore = create<ThemeState>((set) => ({
-  theme: getStoredTheme() || 'aurora',
-
-  setTheme: (theme) => {
-    setStoredTheme(theme);
+  init: () => {
+    const theme = getInitialTheme();
     applyTheme(theme);
     set({ theme });
   },
 
-  initTheme: (theme) => {
-    const resolved = theme || getStoredTheme() || 'aurora';
-    setStoredTheme(resolved);
-    applyTheme(resolved);
-    set({ theme: resolved });
+  setTheme: (theme) => {
+    localStorage.setItem(THEME_KEY, theme);
+    applyTheme(theme);
+    set({ theme });
+  },
+
+  toggle: () => {
+    const next = get().theme === 'aurora' ? 'colorful' : 'aurora';
+    get().setTheme(next);
   },
 }));

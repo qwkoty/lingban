@@ -1,23 +1,16 @@
-import { Pool } from 'pg';
+import { PrismaClient } from '../../src/generated/prisma/client.ts';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../../src/generated/prisma/client.js';
+import { Pool } from 'pg';
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
   throw new Error('DATABASE_URL is not set');
 }
 
-// Render 等平台的 PostgreSQL 默认需要 SSL
-const ssl = databaseUrl.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined;
-
-export const pool = new Pool({
-  connectionString: databaseUrl,
-  ssl,
-});
-
+const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
-export const prisma = new PrismaClient({
-  adapter,
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-});
+export const prisma = new PrismaClient({ adapter });
+
+export default prisma;

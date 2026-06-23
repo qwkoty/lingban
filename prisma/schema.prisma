@@ -9,18 +9,16 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  token          String   @unique
-  nickname       String
-  avatar         String?
-  persona        String   @default("")
-  theme          String   @default("aurora")
-  memorySnapshot String   @default("") @map("memory_snapshot")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  nickname  String
+  avatar    String?
+  persona   String   @default("")
+  theme     String   @default("aurora")
+  createdAt DateTime @default(now()) @map("created_at")
 
   agents   Agent[]
   messages ChatMessage[]
-  memories Memory[]
 
   @@map("users")
 }
@@ -33,7 +31,7 @@ model Agent {
   persona       String   @default("")
   greeting      String   @default("")
   modelProvider String   @default("deepseek") @map("model_provider")
-  modelName     String   @default("deepseek-v4-pro") @map("model_name")
+  modelName     String   @default("deepseek-chat") @map("model_name")
   apiEndpoint   String   @default("") @map("api_endpoint")
   temperature   Float    @default(0.7)
   maxTokens     Int      @default(4096) @map("max_tokens")
@@ -59,16 +57,4 @@ model ChatMessage {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("chat_messages")
-}
-
-model Memory {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("memories")
 }

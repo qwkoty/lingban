@@ -1,115 +1,120 @@
 import { Router } from 'express';
-import { prisma } from '../lib/prisma.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { prisma } from '../lib/prisma';
+import { authMiddleware } from '../middleware/auth';
 
-export const agentsRouter = Router();
-agentsRouter.use(authMiddleware);
+const router = Router();
 
-agentsRouter.get('/', async (req, res) => {
+router.use(authMiddleware);
+
+// 智能体列表
+router.get('/', async (req, res, next) => {
   try {
     const agents = await prisma.agent.findMany({
-      where: { userId: req.user!.id },
-      orderBy: { createdAt: 'desc' },
+      where: { userId: req.userId! },
+      orderBy: { updatedAt: 'desc' },
     });
     res.json({ agents });
-  } catch (error) {
-    console.error('List agents error:', error);
-    res.status(500).json({ error: '获取智能体失败' });
+  } catch (err) {
+    next(err);
   }
 });
 
-agentsRouter.get('/:id', async (req, res) => {
-  const id = Number(req.params.id);
+// 单个智能体
+router.get('/:id', async (req, res, next) => {
   try {
     const agent = await prisma.agent.findFirst({
-      where: { id, userId: req.user!.id },
+      where: { id: Number(req.params.id), userId: req.userId! },
     });
     if (!agent) {
-      res.status(404).json({ error: 'Not found' });
+      res.status(404).json({ error: '智能体不存在' });
       return;
     }
     res.json({ agent });
-  } catch (error) {
-    console.error('Get agent error:', error);
-    res.status(500).json({ error: '获取智能体失败' });
+  } catch (err) {
+    next(err);
   }
 });
 
-agentsRouter.post('/', async (req, res) => {
-  const {
-    name,
-    avatar,
-    persona,
-    greeting,
-    modelProvider,
-    modelName,
-    apiEndpoint,
-    temperature,
-    maxTokens,
-    apiKey,
-  } = req.body;
-
+// 创建智能体
+router.post('/', async (req, res, next) => {
   try {
+    const { name, avatar, persona, greeting, modelProvider, modelName, apiEndpoint, temperature, maxTokens, apiKey } = req.body;
+
+    if (!name || !name.trim()) {
+      res.status(400).json({ error: '请填写智能体名称' });
+      return;
+    }
+
     const agent = await prisma.agent.create({
       data: {
-        userId: req.user!.id,
-        name,
-        avatar: avatar ?? null,
-        persona: persona ?? '',
-        greeting: greeting ?? '',
-        modelProvider: modelProvider ?? 'deepseek',
-        modelName: modelName ?? 'deepseek-v4-pro',
-        apiEndpoint: apiEndpoint ?? '',
+        userId: req.userId!,
+        name: name.trim(),
+        avatar: avatar || null,
+        persona: persona || '',
+        greeting: greeting || '',
+        modelProvider: modelProvider || 'deepseek',
+        modelName: modelName || 'deepseek-chat',
+        apiEndpoint: apiEndpoint || '',
         temperature: temperature ?? 0.7,
         maxTokens: maxTokens ?? 4096,
-        apiKey: apiKey ?? '',
+        apiKey: apiKey || '',
       },
     });
-
-    res.status(201).json({ agent });
-  } catch (error) {
-    console.error('Create agent error:', error);
-    res.status(500).json({ error: '创建智能体失败' });
+    res.json({ agent });
+  } catch (err) {
+    next(err);
   }
 });
 
-agentsRouter.patch('/:id', async (req, res) => {
-  const id = Number(req.params.id);
-  const existing = await prisma.agent.findFirst({
-    where: { id, userId: req.user!.id },
-  });
-  if (!existing) {
-    res.status(404).json({ error: 'Not found' });
-    return;
-  }
-
+// 更新智能体
+router.patch('/:id', async (req, res, next) => {
   try {
+    const { name, avatar, persona, greeting, modelProvider, modelName, apiEndpoint, temperature, maxTokens, apiKey } = req.body;
+
+    const existing = await prisma.agent.findFirst({
+      where: { id: Number(req.params.id), userId: req.userId! },
+    });
+    if (!existing) {
+      res.status(404).json({ error: '智能体不存在' });
+      return;
+    }
+
     const agent = await prisma.agent.update({
-      where: { id },
-      data: req.body,
+      where: { id: existing.id },
+      data: {
+        ...(name !== undefined && { name: name.trim() }),
+        ...(avatar !== undefined && { avatar }),
+        ...(persona !== undefined && { persona }),
+        ...(greeting !== undefined && { greeting }),
+        ...(modelProvider !== undefined && { modelProvider }),
+        ...(modelName !== undefined && { modelName }),
+        ...(apiEndpoint !== undefined && { apiEndpoint }),
+        ...(temperature !== undefined && { temperature }),
+        ...(maxTokens !== undefined && { maxTokens }),
+        ...(apiKey !== undefined && { apiKey }),
+      },
     });
     res.json({ agent });
-  } catch (error) {
-    console.error('Update agent error:', error);
-    res.status(500).json({ error: '更新智能体失败' });
+  } catch (err) {
+    next(err);
   }
 });
 
-agentsRouter.delete('/:id', async (req, res) => {
-  const id = Number(req.params.id);
-  const existing = await prisma.agent.findFirst({
-    where: { id, userId: req.user!.id },
-  });
-  if (!existing) {
-    res.status(404).json({ error: 'Not found' });
-    return;
-  }
-
+// 删除智能体
+router.delete('/:id', async (req, res, next) => {
   try {
-    await prisma.agent.delete({ where: { id } });
+    const existing = await prisma.agent.findFirst({
+      where: { id: Number(req.params.id), userId: req.userId! },
+    });
+    if (!existing) {
+      res.status(404).json({ error: '智能体不存在' });
+      return;
+    }
+    await prisma.agent.delete({ where: { id: existing.id } });
     res.json({ success: true });
-  } catch (error) {
-    console.error('Delete agent error:', error);
-    res.status(500).json({ error: '删除智能体失败' });
+  } catch (err) {
+    next(err);
   }
 });
+
+export default router;

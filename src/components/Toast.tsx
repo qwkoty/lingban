@@ -2,21 +2,22 @@ import { useToastStore } from '../store/toast';
 import { cn } from '../lib/utils';
 
 export function ToastContainer() {
-  const toasts = useToastStore((s) => s.toasts);
+  const { toasts, dismiss } = useToastStore();
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none">
-      {toasts.map((toast) => (
+    <div className="fixed top-4 left-0 right-0 z-[60] flex flex-col items-center gap-2 px-4 pointer-events-none">
+      {toasts.map((t) => (
         <div
-          key={toast.id}
+          key={t.id}
+          onClick={() => dismiss(t.id)}
           className={cn(
-            'px-4 py-2 rounded-2xl text-sm font-medium shadow-lg backdrop-blur-xl border pointer-events-auto animate-fade-in-up',
-            toast.type === 'error' && 'bg-red-500/20 border-red-500/30 text-red-100',
-            toast.type === 'success' && 'bg-emerald-500/20 border-emerald-500/30 text-emerald-100',
-            toast.type === 'info' && 'bg-white/10 border-white/20 text-white'
+            'pointer-events-auto px-4 py-3 rounded-xl glass text-sm max-w-sm w-full text-center animate-fade-in-up',
+            t.type === 'error' && 'border-red-500/30 text-red-200',
+            t.type === 'success' && 'border-green-500/30 text-green-200',
+            t.type === 'info' && 'text-white/90',
           )}
         >
-          {toast.message}
+          {t.message}
         </div>
       ))}
     </div>

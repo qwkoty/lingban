@@ -1,138 +1,148 @@
 import { create } from 'zustand';
-import type { ChatMessage, ChatSession } from '../types';
-import { chatApi } from '../lib/api';
+import type { Agent, ChatMessage } from '../types';
+import { api, streamChat } from '../lib/api';
 
 interface ChatState {
-  sessions: ChatSession[];
+  agent: Agent | null;
   messages: ChatMessage[];
   loading: boolean;
   streaming: boolean;
-  fetchSessions: () => Promise<void>;
+  streamingContent: string;
+  error: string | null;
+  abortController: AbortController | null;
+
   fetchHistory: (agentId: number) => Promise<void>;
-  clearHistory: (agentId: number) => Promise<void>;
-  sendMessage: (agentId: number, message: string, onUpdate: () => void) => Promise<void>;
-  regenerate: (agentId: number, onUpdate: () => void) => Promise<void>;
+  sendMessage: (content: string) => Promise<void>;
+  regenerate: () => Promise<void>;
+  clearHistory: () => Promise<void>;
+  stopStreaming: () => void;
+  reset: () => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
-  sessions: [],
+  agent: null,
   messages: [],
   loading: false,
   streaming: false,
-
-  fetchSessions: async () => {
-    const { sessions } = await chatApi.sessions();
-    set({ sessions });
-  },
+  streamingContent: '',
+  error: null,
+  abortController: null,
 
   fetchHistory: async (agentId) => {
-    set({ loading: true });
+    set({ loading: true, error: null, messages: [], agent: null });
     try {
-      const { messages } = await chatApi.history(agentId);
-      set({ messages });
-    } finally {
-      set({ loading: false });
+      const { agent, messages } = await api.getHistory(agentId);
+      set({ agent, messages, loading: false });
+    } catch (err) {
+      set({ loading: false, error: (err as Error).message });
     }
   },
 
-  clearHistory: async (agentId) => {
-    await chatApi.clear(agentId);
-    set({ messages: [] });
-    get().fetchSessions();
-  },
+  sendMessage: async (content) => {
+    const { agent } = get();
+    if (!agent || !content.trim() || get().streaming) return;
 
-  sendMessage: async (agentId, message, onUpdate) => {
+    // 乐观更新：先显示用户消息
     const userMessage: ChatMessage = {
       id: Date.now(),
-      agentId,
+      agentId: agent.id,
       userId: 0,
       role: 'user',
-      content: message,
+      content: content.trim(),
       createdAt: new Date().toISOString(),
     };
-
-    set({ messages: [...get().messages, userMessage], streaming: true });
-    onUpdate();
-
-    const assistantMessage: ChatMessage = {
-      id: Date.now() + 1,
-      agentId,
-      userId: 0,
-      role: 'assistant',
-      content: '',
-      createdAt: new Date().toISOString(),
-    };
-
-    set({ messages: [...get().messages, assistantMessage] });
-
-    await new Promise<void>((resolve) => {
-      chatApi.send(
-        agentId,
-        message,
-        (chunk) => {
-          if (chunk.error) {
-            assistantMessage.content = chunk.error;
-          } else if (chunk.content) {
-            assistantMessage.content += chunk.content;
-          }
-          set({ messages: [...get().messages] });
-          onUpdate();
-        },
-        () => {
-          set({ streaming: false });
-          get().fetchSessions();
-          resolve();
-        }
-      );
+    set({
+      messages: [...get().messages, userMessage],
+      streaming: true,
+      streamingContent: '',
+      error: null,
     });
+
+    const controller = new AbortController();
+    set({ abortController: controller });
+
+    await streamChat(
+      agent.id,
+      content.trim(),
+      {
+        onChunk: (chunk) => {
+          set({ streamingContent: get().streamingContent + chunk });
+        },
+        onError: (error) => {
+          set({ streaming: false, error, abortController: null });
+        },
+        onDone: (fullContent, messageId) => {
+          if (fullContent.trim()) {
+            const assistantMessage: ChatMessage = {
+              id: messageId || Date.now(),
+              agentId: agent.id,
+              userId: 0,
+              role: 'assistant',
+              content: fullContent,
+              createdAt: new Date().toISOString(),
+            };
+            set({
+              messages: [...get().messages, assistantMessage],
+              streamingContent: '',
+              streaming: false,
+              abortController: null,
+            });
+          } else {
+            set({ streaming: false, streamingContent: '', abortController: null });
+          }
+        },
+      },
+      controller.signal,
+    );
   },
 
-  regenerate: async (agentId, onUpdate) => {
-    const messages = get().messages;
-    const lastAssistantIndex = [...messages].reverse().findIndex((m) => m.role === 'assistant');
-    if (lastAssistantIndex === -1) return;
+  regenerate: async () => {
+    const { messages, agent } = get();
+    if (!agent || get().streaming) return;
 
-    const targetIndex = messages.length - 1 - lastAssistantIndex;
-    const previousUser = messages
-      .slice(0, targetIndex)
-      .reverse()
-      .find((m) => m.role === 'user');
-    if (!previousUser) return;
+    // 找到最后一条用户消息
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
+    if (!lastUserMsg) return;
 
-    const trimmed = messages.slice(0, targetIndex);
-    set({ messages: trimmed, streaming: true });
-    onUpdate();
+    // 移除最后一条 assistant 消息
+    const newMessages = [...messages];
+    const lastAssistantIdx = newMessages.map((m) => m.role).lastIndexOf('assistant');
+    if (lastAssistantIdx >= 0) {
+      newMessages.splice(lastAssistantIdx, 1);
+    }
+    set({ messages: newMessages });
 
-    const assistantMessage: ChatMessage = {
-      id: Date.now(),
-      agentId,
-      userId: 0,
-      role: 'assistant',
-      content: '',
-      createdAt: new Date().toISOString(),
-    };
+    // 重新发送
+    await get().sendMessage(lastUserMsg.content);
+  },
 
-    set({ messages: [...trimmed, assistantMessage] });
+  clearHistory: async () => {
+    const { agent } = get();
+    if (!agent) return;
+    try {
+      await api.clearHistory(agent.id);
+      set({ messages: [] });
+    } catch (err) {
+      set({ error: (err as Error).message });
+    }
+  },
 
-    await new Promise<void>((resolve) => {
-      chatApi.send(
-        agentId,
-        previousUser.content,
-        (chunk) => {
-          if (chunk.error) {
-            assistantMessage.content = chunk.error;
-          } else if (chunk.content) {
-            assistantMessage.content += chunk.content;
-          }
-          set({ messages: [...get().messages] });
-          onUpdate();
-        },
-        () => {
-          set({ streaming: false });
-          get().fetchSessions();
-          resolve();
-        }
-      );
+  stopStreaming: () => {
+    const { abortController } = get();
+    abortController?.abort();
+    set({ streaming: false, streamingContent: '', abortController: null });
+  },
+
+  reset: () => {
+    get().abortController?.abort();
+    set({
+      agent: null,
+      messages: [],
+      loading: false,
+      streaming: false,
+      streamingContent: '',
+      error: null,
+      abortController: null,
     });
   },
 }));

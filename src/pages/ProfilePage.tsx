@@ -1,153 +1,137 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Camera, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, Check, Palette } from 'lucide-react';
 import { useAuthStore } from '../store/auth';
 import { useThemeStore } from '../store/theme';
-import { useToastStore } from '../store/toast';
-import { uploadApi } from '../lib/api';
+import { toast } from '../store/toast';
 import { Avatar } from '../components/Avatar';
-import type { Theme } from '../types';
-
-const themes: { value: Theme; label: string; icon: typeof Sun }[] = [
-  { value: 'aurora', label: '极光', icon: Moon },
-  { value: 'colorful', label: '七彩', icon: Sun },
-];
+import { GlassCard } from '../components/GlassCard';
+import { BottomNav } from '../components/BottomNav';
+import { api } from '../lib/api';
+import { cn } from '../lib/utils';
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const { user, updateUser } = useAuthStore();
+  const { user, updateProfile } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
-  const showToast = useToastStore((s) => s.show);
 
-  const [nickname, setNickname] = useState(user?.nickname ?? '');
-  const [persona, setPersona] = useState(user?.persona ?? '');
-  const [avatar, setAvatar] = useState(user?.avatar ?? '');
-  const [memorySnapshot, setMemorySnapshot] = useState(user?.memorySnapshot ?? '');
+  const [nickname, setNickname] = useState(user?.nickname || '');
+  const [persona, setPersona] = useState(user?.persona || '');
+  const [avatar, setAvatar] = useState(user?.avatar || null);
   const [saving, setSaving] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleAvatarClick = () => fileInputRef.current?.click();
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const { url } = await uploadApi.avatar(file);
-      setAvatar(url);
-      await updateUser({ avatar: url });
-      showToast('头像上传成功', 'success');
-    } catch (err) {
-      showToast((err as Error).message, 'error');
-    }
-  };
 
   const handleSave = async () => {
+    if (!nickname.trim()) {
+      toast.error('昵称不能为空');
+      return;
+    }
     setSaving(true);
     try {
-      await updateUser({ nickname, persona, memorySnapshot });
-      showToast('已保存', 'success');
+      await updateProfile({ nickname: nickname.trim(), persona, avatar });
+      toast.success('保存成功');
     } catch (err) {
-      showToast((err as Error).message, 'error');
+      toast.error((err as Error).message);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleThemeChange = (t: Theme) => {
-    setTheme(t);
-    updateUser({ theme: t });
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const { url } = await api.uploadAvatar(file);
+      setAvatar(url);
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
   return (
-    <div className="min-h-full p-4 pb-28">
-      <header className="flex items-center gap-3 mb-6 max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-white/10">
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-xl font-bold text-white">我的资料</h1>
+    <div className="min-h-dvh pb-20">
+      <header className="sticky top-0 z-30 glass px-5 py-4">
+        <div className="flex items-center justify-between max-w-md mx-auto">
+          <button
+            onClick={() => navigate(-1)}
+            className="touch-target flex items-center justify-center w-10 h-10 rounded-xl hover:bg-white/10"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-lg font-semibold">我的</h1>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="touch-target flex items-center justify-center w-10 h-10 rounded-xl hover:bg-white/10 disabled:opacity-40"
+          >
+            <Check size={20} />
+          </button>
+        </div>
       </header>
 
-      <div className="max-w-2xl mx-auto space-y-5">
+      <main className="max-w-md mx-auto px-4 py-6 space-y-6">
+        {/* 头像 */}
         <div className="flex flex-col items-center gap-3">
-          <button type="button" onClick={handleAvatarClick} className="relative group">
+          <label className="cursor-pointer">
             <Avatar src={avatar} name={nickname || '我'} size="xl" />
-            <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera className="w-6 h-6 text-white" />
-            </div>
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+            <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+          </label>
+          <p className="text-sm text-white/40">点击头像更换</p>
         </div>
 
-        <div className="glass rounded-2xl border border-white/10 p-4 space-y-4">
+        {/* 基本信息 */}
+        <GlassCard className="space-y-4">
           <div>
-            <label className="block text-sm text-white/70 mb-1">昵称</label>
+            <label className="text-sm text-white/50 mb-1.5 block">昵称</label>
             <input
-              type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors"
+              placeholder="给自己起个名字"
+              className="w-full bg-white/5 rounded-xl px-4 py-3 outline-none focus:bg-white/10 transition-colors"
             />
           </div>
-
           <div>
-            <label className="block text-sm text-white/70 mb-1">我的人设</label>
+            <label className="text-sm text-white/50 mb-1.5 block">人设（让 AI 更懂你）</label>
             <textarea
               value={persona}
               onChange={(e) => setPersona(e.target.value)}
-              placeholder="你希望 AI 好友怎么看待你？比如职业、性格、兴趣等"
+              placeholder="例如：喜欢玩游戏、正在学编程、性格内向但话多..."
               rows={3}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors resize-none"
+              className="w-full bg-white/5 rounded-xl px-4 py-3 outline-none focus:bg-white/10 transition-colors resize-none"
             />
           </div>
+        </GlassCard>
 
-          <div>
-            <label className="block text-sm text-white/70 mb-1">关于我的记忆</label>
-            <textarea
-              value={memorySnapshot}
-              onChange={(e) => setMemorySnapshot(e.target.value)}
-              placeholder="AI 好友会记住这些内容。也可以让它在聊天中自动整理。"
-              rows={4}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/30 transition-colors resize-none"
-            />
-            <p className="text-xs text-white/40 mt-1">这些记忆会在每次对话前告诉 AI 好友。</p>
+        {/* 主题 */}
+        <GlassCard>
+          <div className="flex items-center gap-2 mb-3">
+            <Palette size={18} className="text-white/60" />
+            <span className="font-medium">主题</span>
           </div>
-        </div>
-
-        <div className="glass rounded-2xl border border-white/10 p-4">
-          <label className="block text-sm text-white/70 mb-3">主题</label>
-          <div className="flex gap-3">
-            {themes.map((t) => (
+          <div className="grid grid-cols-2 gap-3">
+            {([
+              { key: 'aurora', label: '极光', gradient: 'from-[#0f0c29] via-[#302b63] to-[#24243e]' },
+              { key: 'colorful', label: '七彩', gradient: 'from-[#1a1a2e] via-[#0f3460] to-[#533483]' },
+            ] as const).map((t) => (
               <button
-                key={t.value}
-                type="button"
-                onClick={() => handleThemeChange(t.value)}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-all ${
-                  theme === t.value
-                    ? 'bg-white/20 border-white/30 text-white'
-                    : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
-                }`}
+                key={t.key}
+                onClick={() => {
+                  setTheme(t.key);
+                  updateProfile({ theme: t.key });
+                }}
+                className={cn(
+                  'h-20 rounded-xl bg-gradient-to-br relative overflow-hidden transition-all',
+                  t.gradient,
+                  theme === t.key ? 'ring-2 ring-white/60' : 'ring-1 ring-white/10',
+                )}
               >
-                <t.icon className="w-4 h-4" />
-                {t.label}
+                <span className="absolute bottom-2 left-3 text-sm font-medium">{t.label}</span>
               </button>
             ))}
           </div>
-        </div>
+        </GlassCard>
+      </main>
 
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full py-3 rounded-2xl font-medium text-white bg-white/15 hover:bg-white/25 disabled:opacity-50 transition-all active:scale-[0.98]"
-        >
-          {saving ? '保存中…' : '保存'}
-        </button>
-      </div>
+      <BottomNav />
     </div>
   );
 }

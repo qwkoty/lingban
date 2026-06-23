@@ -1,72 +1,57 @@
 import { Router } from 'express';
-import crypto from 'node:crypto';
-import { prisma } from '../lib/prisma.js';
-import { authMiddleware } from '../middleware/auth.js';
-import type { User } from '../../src/generated/prisma/client.js';
+import { randomUUID } from 'node:crypto';
+import { prisma } from '../lib/prisma';
+import { authMiddleware } from '../middleware/auth';
 
-export const authRouter = Router();
+const router = Router();
 
-function serializeUser(user: User) {
-  return {
-    id: user.id,
-    nickname: user.nickname,
-    avatar: user.avatar,
-    persona: user.persona,
-    theme: user.theme,
-    memorySnapshot: user.memorySnapshot,
-    createdAt: user.createdAt.toISOString(),
-  };
-}
-
-authRouter.post('/anonymous', async (_req, res) => {
+// 匿名登录：首次访问创建用户，返回 token
+router.post('/anonymous', async (_req, res, next) => {
   try {
-    const count = await prisma.user.count();
+    const token = randomUUID();
     const user = await prisma.user.create({
       data: {
-        token: crypto.randomUUID(),
-        nickname: `用户${count + 1}`,
+        token,
+        nickname: `旅人${Math.floor(Math.random() * 10000)}`,
       },
     });
-
-    res.json({ token: user.token, user: serializeUser(user) });
-  } catch (error) {
-    console.error('Anonymous login error:', error);
-    let cause = (error as Error).cause;
-    let causeMsg = '';
-    while (cause instanceof Error) {
-      causeMsg += ` | ${cause.message}`;
-      cause = cause.cause;
-    }
-    const message = (error instanceof Error ? error.message : String(error)) + causeMsg;
-    res.status(500).json({
-      error: '创建用户失败',
-      detail: message,
-    });
+    res.json({ token, user });
+  } catch (err) {
+    next(err);
   }
 });
 
-authRouter.get('/me', authMiddleware, async (req, res) => {
-  res.json({ user: serializeUser(req.user!) });
+// 获取当前用户
+router.get('/me', authMiddleware, async (req, res, next) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+    if (!user) {
+      res.status(404).json({ error: '用户不存在' });
+      return;
+    }
+    res.json({ user });
+  } catch (err) {
+    next(err);
+  }
 });
 
-authRouter.patch('/me', authMiddleware, async (req, res) => {
-  const { nickname, avatar, persona, theme, memorySnapshot } = req.body;
-
+// 更新用户资料
+router.patch('/me', authMiddleware, async (req, res, next) => {
   try {
+    const { nickname, avatar, persona, theme } = req.body;
     const user = await prisma.user.update({
-      where: { id: req.user!.id },
+      where: { id: req.userId! },
       data: {
         ...(nickname !== undefined && { nickname }),
         ...(avatar !== undefined && { avatar }),
         ...(persona !== undefined && { persona }),
         ...(theme !== undefined && { theme }),
-        ...(memorySnapshot !== undefined && { memorySnapshot }),
       },
     });
-
-    res.json({ user: serializeUser(user) });
-  } catch (error) {
-    console.error('Update user error:', error);
-    res.status(500).json({ error: '更新用户失败' });
+    res.json({ user });
+  } catch (err) {
+    next(err);
   }
 });
+
+export default router;

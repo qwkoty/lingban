@@ -1,7 +1,7 @@
 import { cn } from '../lib/utils';
 
 interface EmptyStateProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -10,13 +10,11 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action, className }: EmptyStateProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center text-center px-6 py-12', className)}>
-      <div className="w-20 h-20 rounded-full glass flex items-center justify-center text-white/70 mb-4">
-        {icon}
-      </div>
-      <h3 className="text-lg font-semibold text-white mb-1">{title}</h3>
-      {description && <p className="text-sm text-white/50 max-w-xs mb-4">{description}</p>}
-      {action}
+    <div className={cn('flex flex-col items-center justify-center text-center py-16 px-6', className)}>
+      {icon && <div className="mb-4 text-white/30">{icon}</div>}
+      <h3 className="text-lg font-medium text-white/70">{title}</h3>
+      {description && <p className="mt-2 text-sm text-white/40 max-w-xs">{description}</p>}
+      {action && <div className="mt-6">{action}</div>}
     </div>
   );
 }

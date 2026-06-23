@@ -1,53 +1,47 @@
 import { create } from 'zustand';
 import type { User } from '../types';
-import { authApi } from '../lib/api';
+import { api, getToken, setToken, clearToken } from '../lib/api';
 
 interface AuthState {
   user: User | null;
+  loading: boolean;
   initialized: boolean;
-  error: string | null;
   init: () => Promise<void>;
-  updateUser: (data: Partial<User>) => Promise<void>;
+  updateProfile: (data: Partial<Pick<User, 'nickname' | 'avatar' | 'persona' | 'theme'>>) => Promise<void>;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  loading: false,
   initialized: false,
-  error: null,
 
   init: async () => {
-    set({ error: null });
+    set({ loading: true });
     try {
-      const token = localStorage.getItem('lingban_token');
-      if (!token) {
-        const res = await authApi.anonymous();
-        localStorage.setItem('lingban_token', res.token);
-        set({ user: res.user, initialized: true, error: null });
+      const token = getToken();
+      if (token) {
+        const { user } = await api.getMe();
+        set({ user, loading: false, initialized: true });
         return;
       }
-
-      try {
-        const res = await authApi.me();
-        set({ user: res.user, initialized: true, error: null });
-      } catch {
-        // token 失效或数据库已清空，自动重新匿名登录
-        localStorage.removeItem('lingban_token');
-        const res = await authApi.anonymous();
-        localStorage.setItem('lingban_token', res.token);
-        set({ user: res.user, initialized: true, error: null });
-      }
-    } catch (err) {
-      localStorage.removeItem('lingban_token');
-      set({
-        user: null,
-        initialized: true,
-        error: err instanceof Error ? err.message : '登录失败，请检查网络或后端服务',
-      });
+      // 首次访问：匿名登录
+      const { token: newToken, user } = await api.anonymousLogin();
+      setToken(newToken);
+      set({ user, loading: false, initialized: true });
+    } catch {
+      clearToken();
+      set({ user: null, loading: false, initialized: true });
     }
   },
 
-  updateUser: async (data) => {
-    const res = await authApi.updateMe(data);
-    set({ user: res.user });
+  updateProfile: async (data) => {
+    const { user } = await api.updateMe(data);
+    set({ user });
+  },
+
+  logout: () => {
+    clearToken();
+    set({ user: null });
   },
 }));
