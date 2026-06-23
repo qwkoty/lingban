@@ -15,8 +15,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "#prisma": ["./src/generated/prisma/client"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src", "api"],

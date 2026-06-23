@@ -1,5 +1,4 @@
 import 'dotenv/config';
-// @ts-expect-error Prisma v7 generated client - resolved by tsx at runtime
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
