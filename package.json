@@ -2,14 +2,13 @@
   "name": "lingban",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.28.1",
   "engines": {
-    "node": "22.x"
+    "node": "20.x"
   },
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "prisma migrate deploy && next start",
+    "start": "prisma migrate deploy && next start -p ${PORT:-3000}",
     "lint": "next lint",
     "check": "tsc --noEmit",
     "db:generate": "prisma generate",
@@ -18,13 +17,11 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "^6.19.3",
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
     "next": "15.2.3",
-    "pg": "^8.16.0",
-    "prisma": "^7.8.0",
+    "prisma": "^6.19.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.2",
@@ -32,7 +29,6 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.30",
-    "@types/pg": "^8.20.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.21",
