@@ -8,13 +8,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "prisma migrate deploy && next start -p ${PORT:-3000}",
+    "start": "npm run db:deploy && next start -p ${PORT:-3000}",
     "lint": "next lint",
     "check": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

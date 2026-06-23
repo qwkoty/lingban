@@ -6,14 +6,18 @@ services:
     region: singapore
     buildCommand: npm install && npm run build
     startCommand: npm run start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 20.x
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
       - key: DATABASE_URL
         fromDatabase:
           name: lingban-db
           property: connectionString
-    healthCheckPath: /api/health
 
 databases:
   - name: lingban-db
