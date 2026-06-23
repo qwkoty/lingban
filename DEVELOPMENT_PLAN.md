@@ -533,3 +533,8374 @@ NODE_ENV=production pnpm start
 ## 9. 结语
 
 本开发文档以「先可用、再好用、再扩展」为节奏，把「灵伴」从一个空白工程逐步打磨成像 Character.AI 那样有陪伴感的 AI 好友应用。每个阶段都以 Render 作为默认生产部署目标，并有明确的验收标准，便于按里程碑推进、持续在真实用户环境中验证。
+# 灵伴 AI 好友 -# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 |# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） |# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+#### 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├──# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├──# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+|# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+#### 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+-# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Pr# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/pr# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+-# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+##### 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health`# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-1# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main` 分支后，Render 会自动触发重新部署：
+
+```bash
+git add .# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main` 分支后，Render 会自动触发重新部署：
+
+```bash
+git add .
+git commit -m "描述你的修改"
+git push origin main
+```
+
+#### 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main` 分支后，Render 会自动触发重新部署：
+
+```bash
+git add .
+git commit -m "描述你的修改"
+git push origin main
+```
+
+### 3.5 验收标准
+
+- [ ] `pnpm lint` 无错误
+-# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main` 分支后，Render 会自动触发重新部署：
+
+```bash
+git add .
+git commit -m "描述你的修改"
+git push origin main
+```
+
+### 3.5 验收标准
+
+- [ ] `pnpm lint` 无错误
+- [ ] `pnpm check` 无类型错误
+- [ ] `pnpm build`# 灵伴 AI 好友 - 三阶段开发文档
+
+> 版本：v1.0
+> 当前状态：第一阶段核心代码已完成，待完善与部署
+> 部署目标：Render
+> 代码分支：main（默认分支）
+
+---
+
+## 0. 文档说明
+
+本文档是「灵伴 AI 好友」项目的开发路线图，按三个阶段递进式推进：
+
+- **第一阶段**：完善核心链路 + 成功部署到 Render
+- **第二阶段**：深化 AI 好友感 + 打磨用户体验
+- **第三阶段**：接入微信 + 跨端互通
+
+每个阶段都有明确的目标、任务清单和验收标准，阶段结束时 `main` 分支上的代码都应能成功部署到 Render。
+
+### Git 工作流约定
+
+> **重要：所有开发和修改都直接在 `main` 分支上进行，每次完成后推送到远程 `main` 分支。**
+
+```bash
+# 查看当前状态
+git status
+
+# 添加修改
+git add .
+
+# 提交（使用有意义的提交信息）
+git commit -m "feat: 添加 xxx 功能"
+git commit -m "fix: 修复 xxx 问题"
+git commit -m "refactor: 重构 xxx 模块"
+
+# 推送到远程 main 分支
+git push origin main
+```
+
+Render 会自动监听 `main` 分支的推送，触发自动部署。
+
+---
+
+## 1. 项目总览
+
+### 1.1 产品定位
+
+「灵伴」是一个 **AI 好友 / 角色陪伴** 应用。每个智能体都像用户拥有的一位虚拟朋友：有鲜明性格、背景、说话方式，会主动关心用户、找话题聊天。用户无需注册即可匿名使用，可创建多个不同性格的 AI 好友。
+
+### 1.2 技术栈
+
+| 层 | 选型 | 说明 |
+|---|---|---|
+| 前端 | React 18 + TypeScript + Vite + Tailwind CSS + Zustand + React Router | 移动端优先，单页应用 |
+| 后端 | Express 4 + TypeScript（ESM） | REST + SSE 流式 |
+| 数据库 | PostgreSQL + Prisma ORM v7 | |
+| LLM | OpenAI 兼容格式 | 支持 OpenAI / DeepSeek / 自定义端点 |
+| 部署 | Render Blueprint | Web Service + PostgreSQL |
+
+### 1.3 当前项目结构
+
+```text
+/workspace
+├── src/               # React 前端
+│   ├── components/    # 通用组件
+│   ├── pages/         # 页面
+│   ├── store/         # Zustand 状态
+│   ├── lib/           # API 封装、工具函数
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── api/               # Express 后端
+│   ├── routes/        # 业务路由
+│   ├── middleware/    # 鉴权
+│   ├── lib/           # prisma、llm 适配器
+│   ├── types/         # 类型声明
+│   ├── app.ts
+│   └── server.ts
+├── prisma/            # Schema 与迁移
+├── public/            # 静态资源
+├── scripts/           # 维护脚本
+├── render.yaml        # Render Blueprint 配置
+└── package.json
+```
+
+---
+
+## 2. 总体路线图
+
+| 阶段 | 核心目标 | 产出标准 |
+|---|---|---|
+| **第一阶段** | 核心链路完善 + 稳定部署 | 修复问题、完善功能、Render 部署成功并可用 |
+| **第二阶段** | AI 好友感 + 体验打磨 | 长期记忆、主动开口、角色一致、UI 顺滑 |
+| **第三阶段** | 接入微信 | 微信内可多轮对话，跨端历史与记忆互通 |
+
+---
+
+## 3. 第一阶段：核心链路完善与部署上线
+
+### 3.1 目标
+
+基于现有代码，修复问题、完善功能、确保「匿名登录 → 创建 AI 好友 → 流式聊天」主链路完整可用，并成功部署到 Render 生产环境。
+
+### 3.2 当前已实现
+
+- ✅ 工程骨架：前后端分离、TypeScript、Vite、Tailwind CSS
+- ✅ 数据库模型：User、Agent、ChatMessage 三张核心表
+- ✅ 后端路由：auth、agents、chat、upload
+- ✅ LLM 适配层：OpenAI 兼容格式，支持流式（SSE）
+- ✅ 前端页面：AgentsPage、AgentEditPage、ChatPage、ProfilePage
+- ✅ 状态管理：auth、agents、chat、theme、toast
+- ✅ 通用组件：Avatar、BottomNav、GlassCard、Modal、Toast、EmptyState、ErrorBoundary
+- ✅ 智能体模板：预设模板一键填充
+- ✅ 双主题：极光 / 七彩
+- ✅ Render Blueprint 配置：`render.yaml`
+
+### 3.3 待完善任务
+
+#### 3.3.1 代码质量检查与修复
+
+- 运行 `pnpm lint`，修复所有 ESLint 错误和警告
+- 运行 `pnpm check`，确保 TypeScript 类型检查通过
+- 运行 `pnpm build`，确保生产构建成功
+- 检查 Prisma schema 与生成路径是否正确（`output` 指向 `../src/generated/prisma`）
+
+#### 3.3.2 核心功能验证与修复
+
+- **开场白功能**：验证进入聊天页时智能体是否自动发送问候
+- **流式对话**：验证 SSE 流式渲染是否正常，中断处理是否完善
+- **重新生成**：验证重新生成最后一条消息功能
+- **清空对话**：验证清空后历史记录是否正确删除
+- **头像上传**：验证头像上传和显示是否正常
+- **模板功能**：验证预设模板是否正确填充表单
+- **主题切换**：验证极光 / 七彩主题切换是否正常
+
+#### 3.3.3 移动端适配优化
+
+- iOS 键盘弹出时输入框位置调整
+- 底部安全区适配
+- 触控目标大小检查
+- 移动端浏览器兼容性测试
+
+#### 3.3.4 错误处理完善
+
+- 所有 API 请求错误有明确的用户提示
+- 网络断开时的友好提示
+- LLM API Key 缺失 / 无效 / 余额不足的具体错误提示
+- 全局 ErrorBoundary 优化
+
+#### 3.3.5 Render 部署准备
+
+- 确认 `render.yaml` 配置正确
+- 确认 `buildCommand` 和 `startCommand` 正确
+- 确认环境变量配置完整
+- 确认健康检查路径 `/api/health` 正常工作
+- 确认静态资源路径配置正确（前端构建产物 `dist/` 目录）
+
+### 3.4 部署到 Render 步骤
+
+#### 前置准备
+
+1. 确保代码已推送到 GitHub 仓库的 `main` 分支
+2. 注册 Render 账号（render.com）
+
+#### 部署步骤
+
+1. 在 Render Dashboard 选择 **Blueprints** → **New Blueprint Instance**
+2. 连接 GitHub 仓库，选择本项目
+3. Render 会自动读取 `render.yaml`，创建：
+   - Web Service（Node.js）
+   - PostgreSQL 数据库
+4. 等待部署完成（首次部署约 5-10 分钟）
+5. 访问分配的域名（如 `https://lingban-xxx.onrender.com`）验证
+
+#### 后续部署
+
+每次将代码推送到 `main` 分支后，Render 会自动触发重新部署：
+
+```bash
+git add .
+git commit -m "描述你的修改"
+git push origin main
+```
+
+### 3.5 验收标准
+
+- [ ] `pnpm lint` 无错误
+- [ ] `pnpm check` 无类型错误
+- [ ] `pnpm build` 构建成功
+- [ ] `pnpm dev` 可正常启动前后端，本地
