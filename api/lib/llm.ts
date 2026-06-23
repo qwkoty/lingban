@@ -1,5 +1,3 @@
-import type { Agent } from '../../src/generated/prisma/client.ts';
-
 const DEFAULT_ENDPOINTS: Record<string, string> = {
   openai: 'https://api.openai.com/v1/chat/completions',
   deepseek: 'https://api.deepseek.com/chat/completions',
@@ -12,7 +10,19 @@ export interface LLMMessage {
   content: string;
 }
 
-export function getEndpoint(agent: Pick<Agent, 'modelProvider' | 'apiEndpoint'>): string {
+interface AgentLike {
+  modelProvider: string;
+  modelName: string;
+  apiEndpoint: string;
+  apiKey: string;
+  temperature: number;
+  maxTokens: number;
+  name: string;
+  persona: string;
+  greeting: string;
+}
+
+export function getEndpoint(agent: Pick<AgentLike, 'modelProvider' | 'apiEndpoint'>): string {
   if (agent.modelProvider === 'custom' || agent.modelProvider === 'anthropic') {
     if (!agent.apiEndpoint) {
       throw new Error('请先在智能体设置中配置 API 端点（apiEndpoint）');
@@ -23,7 +33,7 @@ export function getEndpoint(agent: Pick<Agent, 'modelProvider' | 'apiEndpoint'>)
 }
 
 export interface StreamChatOptions {
-  agent: Pick<Agent, 'modelProvider' | 'modelName' | 'apiEndpoint' | 'apiKey' | 'temperature' | 'maxTokens'>;
+  agent: Pick<AgentLike, 'modelProvider' | 'modelName' | 'apiEndpoint' | 'apiKey' | 'temperature' | 'maxTokens'>;
   messages: LLMMessage[];
   onChunk: (text: string) => void;
   signal?: AbortSignal;
@@ -105,7 +115,7 @@ export async function streamChat({ agent, messages, onChunk, signal }: StreamCha
   return fullText;
 }
 
-export function buildSystemPrompt(agent: Pick<Agent, 'name' | 'persona' | 'greeting'>, userPersona: string): string {
+export function buildSystemPrompt(agent: Pick<AgentLike, 'name' | 'persona' | 'greeting'>, userPersona: string): string {
   const parts: string[] = [];
 
   parts.push(`你是「${agent.name}」，一个 AI 好友。`);

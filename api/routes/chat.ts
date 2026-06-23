@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { prisma } from '../lib/prisma';
 import { authMiddleware } from '../middleware/auth';
 import { streamChat, buildSystemPrompt, type LLMMessage } from '../lib/llm';
+import type { Agent, ChatMessage } from '../../src/generated/prisma/client';
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.get('/sessions', async (req, res, next) => {
       },
     });
 
-    const sessions = agents.map((agent) => ({
+    const sessions = agents.map((agent: Agent & { messages: ChatMessage[] }) => ({
       id: agent.id,
       name: agent.name,
       avatar: agent.avatar,
@@ -101,7 +102,7 @@ router.post('/:agentId', async (req, res, next) => {
     const systemPrompt = buildSystemPrompt(agent, user?.persona || '');
     const llmMessages: LLMMessage[] = [
       { role: 'system', content: systemPrompt },
-      ...history.map((m) => ({
+      ...history.map((m: ChatMessage) => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),

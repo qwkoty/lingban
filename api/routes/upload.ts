@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
     if (allowed.includes(file.mimetype)) {
@@ -35,13 +35,20 @@ const upload = multer({
 
 router.use(authMiddleware);
 
-router.post('/avatar', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    res.status(400).json({ error: '请选择要上传的图片' });
-    return;
-  }
-  const url = `/uploads/avatars/${req.file.filename}`;
-  res.json({ url });
+router.post('/avatar', (req, res, next) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      // multer 错误交给全局错误处理
+      next(err);
+      return;
+    }
+    if (!req.file) {
+      res.status(400).json({ error: '请选择要上传的图片' });
+      return;
+    }
+    const url = `/uploads/avatars/${req.file.filename}`;
+    res.json({ url });
+  });
 });
 
 export default router;
