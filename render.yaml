@@ -4,8 +4,8 @@ services:
     runtime: node
     plan: starter
     region: singapore
-    buildCommand: pnpm install && pnpm run build
-    startCommand: "npx prisma generate && npx tsx scripts/reset-db.ts && npx prisma migrate deploy && pnpm run start"
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm run build
+    startCommand: pnpm run db:deploy && pnpm run start
     envVars:
       - key: NODE_ENV
         value: production

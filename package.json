@@ -11,7 +11,7 @@
     "dev": "concurrently \"pnpm run client:dev\" \"pnpm run server:dev\"",
     "client:dev": "vite",
     "server:dev": "nodemon",
-    "build": "npx prisma generate && tsc --noEmit && vite build",
+    "build": "prisma generate && tsc --noEmit && vite build",
     "start": "tsx api/server.ts",
     "lint": "eslint .",
     "check": "tsc --noEmit",
