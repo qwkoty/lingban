@@ -1,47 +1,73 @@
 import { create } from 'zustand';
-import type { User } from '../types';
-import { api, getToken, setToken, clearToken } from '../lib/api';
+import type { User } from '@/types';
+import { authApi } from '@/lib/api';
 
 interface AuthState {
   user: User | null;
+  token: string | null;
   loading: boolean;
   initialized: boolean;
+  error: string | null;
   init: () => Promise<void>;
-  updateProfile: (data: Partial<Pick<User, 'nickname' | 'avatar' | 'persona' | 'theme'>>) => Promise<void>;
+  updateUser: (data: Partial<User>) => Promise<void>;
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
+  token: null,
   loading: false,
   initialized: false,
+  error: null,
 
   init: async () => {
-    set({ loading: true });
+    if (get().initialized) return;
+
+    set({ loading: true, error: null });
+
     try {
-      const token = getToken();
+      const token = authApi.getToken();
+
       if (token) {
-        const { user } = await api.getMe();
-        set({ user, loading: false, initialized: true });
-        return;
+        try {
+          const user = await authApi.me();
+          set({ user, token, initialized: true, loading: false });
+          return;
+        } catch {
+          // Token 失效，重新登录
+          authApi.clearToken();
+        }
       }
-      // 首次访问：匿名登录
-      const { token: newToken, user } = await api.anonymousLogin();
-      setToken(newToken);
-      set({ user, loading: false, initialized: true });
-    } catch {
-      clearToken();
-      set({ user: null, loading: false, initialized: true });
+
+      // 匿名登录
+      const user = await authApi.anonymous();
+      const newToken = authApi.getToken();
+      set({ user, token: newToken, initialized: true, loading: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '初始化失败',
+        initialized: true,
+        loading: false,
+      });
     }
   },
 
-  updateProfile: async (data) => {
-    const { user } = await api.updateMe(data);
-    set({ user });
+  updateUser: async (data) => {
+    set({ loading: true, error: null });
+    try {
+      const updatedUser = await authApi.update(data);
+      set({ user: updatedUser, loading: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '更新失败',
+        loading: false,
+      });
+      throw error;
+    }
   },
 
   logout: () => {
-    clearToken();
-    set({ user: null });
+    authApi.clearToken();
+    set({ user: null, token: null, initialized: false });
   },
 }));

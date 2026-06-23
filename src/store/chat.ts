@@ -1,148 +1,185 @@
 import { create } from 'zustand';
-import type { Agent, ChatMessage } from '../types';
-import { api, streamChat } from '../lib/api';
+import type { Agent, ChatMessage } from '@/types';
+import { chatApi, agentsApi } from '@/lib/api';
 
 interface ChatState {
   agent: Agent | null;
   messages: ChatMessage[];
-  loading: boolean;
   streaming: boolean;
   streamingContent: string;
+  loading: boolean;
   error: string | null;
-  abortController: AbortController | null;
-
-  fetchHistory: (agentId: number) => Promise<void>;
+  fetchHistory: (agentId: string) => Promise<void>;
   sendMessage: (content: string) => Promise<void>;
   regenerate: () => Promise<void>;
   clearHistory: () => Promise<void>;
-  stopStreaming: () => void;
   reset: () => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
   agent: null,
   messages: [],
-  loading: false,
   streaming: false,
   streamingContent: '',
+  loading: false,
   error: null,
-  abortController: null,
 
   fetchHistory: async (agentId) => {
-    set({ loading: true, error: null, messages: [], agent: null });
+    set({ loading: true, error: null });
     try {
-      const { agent, messages } = await api.getHistory(agentId);
+      const [agent, messages] = await Promise.all([
+        agentsApi.get(agentId),
+        chatApi.getMessages(agentId),
+      ]);
       set({ agent, messages, loading: false });
-    } catch (err) {
-      set({ loading: false, error: (err as Error).message });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '获取对话历史失败',
+        loading: false,
+      });
+      throw error;
     }
   },
 
   sendMessage: async (content) => {
-    const { agent } = get();
-    if (!agent || !content.trim() || get().streaming) return;
+    const { agent, messages } = get();
+    if (!agent || get().streaming) return;
 
-    // 乐观更新：先显示用户消息
-    const userMessage: ChatMessage = {
-      id: Date.now(),
+    // 立即添加用户消息到 UI
+    const tempUserMessage: ChatMessage = {
+      id: 'temp-' + Date.now(),
       agentId: agent.id,
-      userId: 0,
+      userId: agent.userId,
       role: 'user',
-      content: content.trim(),
+      content,
       createdAt: new Date().toISOString(),
     };
+
     set({
-      messages: [...get().messages, userMessage],
+      messages: [...messages, tempUserMessage],
       streaming: true,
       streamingContent: '',
       error: null,
     });
 
-    const controller = new AbortController();
-    set({ abortController: controller });
+    try {
+      const fullContent = await chatApi.streamSend(agent.id, content, (chunk) => {
+        set((state) => ({
+          streamingContent: state.streamingContent + chunk,
+        }));
+      });
 
-    await streamChat(
-      agent.id,
-      content.trim(),
-      {
-        onChunk: (chunk) => {
-          set({ streamingContent: get().streamingContent + chunk });
-        },
-        onError: (error) => {
-          set({ streaming: false, error, abortController: null });
-        },
-        onDone: (fullContent, messageId) => {
-          if (fullContent.trim()) {
-            const assistantMessage: ChatMessage = {
-              id: messageId || Date.now(),
-              agentId: agent.id,
-              userId: 0,
-              role: 'assistant',
-              content: fullContent,
-              createdAt: new Date().toISOString(),
-            };
-            set({
-              messages: [...get().messages, assistantMessage],
-              streamingContent: '',
-              streaming: false,
-              abortController: null,
-            });
-          } else {
-            set({ streaming: false, streamingContent: '', abortController: null });
-          }
-        },
-      },
-      controller.signal,
-    );
+      // 流式完成后，添加正式的 assistant 消息
+      const newAssistantMessage: ChatMessage = {
+        id: 'assistant-' + Date.now(),
+        agentId: agent.id,
+        userId: agent.userId,
+        role: 'assistant',
+        content: fullContent,
+        createdAt: new Date().toISOString(),
+      };
+
+      set((state) => ({
+        messages: [...state.messages.filter((m) => m.id !== tempUserMessage.id), tempUserMessage, newAssistantMessage],
+        streaming: false,
+        streamingContent: '',
+      }));
+
+      // 重新获取历史以确保同步
+      await get().fetchHistory(agent.id);
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '发送消息失败',
+        streaming: false,
+        streamingContent: '',
+        messages: messages, // 回滚
+      });
+      throw error;
+    }
   },
 
   regenerate: async () => {
-    const { messages, agent } = get();
-    if (!agent || get().streaming) return;
+    const { agent, messages } = get();
+    if (!agent || get().streaming || messages.length === 0) return;
+
+    // 移除最后一条 assistant 消息
+    const messagesWithoutLast = messages.filter((m) => m.role !== 'assistant' || m.id !== messages[messages.length - 1].id);
+    // 如果最后一条是 user 消息也先移除（等下重新生成）
+    const lastUserIndex = [...messagesWithoutLast].reverse().findIndex((m) => m.role === 'user');
+    const baseMessages = lastUserIndex >= 0 
+      ? messagesWithoutLast.slice(0, messagesWithoutLast.length - lastUserIndex - 1)
+      : messagesWithoutLast;
 
     // 找到最后一条用户消息
     const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
     if (!lastUserMsg) return;
 
-    // 移除最后一条 assistant 消息
-    const newMessages = [...messages];
-    const lastAssistantIdx = newMessages.map((m) => m.role).lastIndexOf('assistant');
-    if (lastAssistantIdx >= 0) {
-      newMessages.splice(lastAssistantIdx, 1);
-    }
-    set({ messages: newMessages });
+    set({
+      messages: [...baseMessages, lastUserMsg],
+      streaming: true,
+      streamingContent: '',
+      error: null,
+    });
 
-    // 重新发送
-    await get().sendMessage(lastUserMsg.content);
+    try {
+      const fullContent = await chatApi.streamRegenerate(agent.id, (chunk) => {
+        set((state) => ({
+          streamingContent: state.streamingContent + chunk,
+        }));
+      });
+
+      const newAssistantMessage: ChatMessage = {
+        id: 'assistant-' + Date.now(),
+        agentId: agent.id,
+        userId: agent.userId,
+        role: 'assistant',
+        content: fullContent,
+        createdAt: new Date().toISOString(),
+      };
+
+      set((state) => ({
+        messages: [...state.messages, newAssistantMessage],
+        streaming: false,
+        streamingContent: '',
+      }));
+
+      await get().fetchHistory(agent.id);
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '重新生成失败',
+        streaming: false,
+        streamingContent: '',
+        messages,
+      });
+      throw error;
+    }
   },
 
   clearHistory: async () => {
     const { agent } = get();
     if (!agent) return;
+
+    set({ loading: true, error: null });
     try {
-      await api.clearHistory(agent.id);
-      set({ messages: [] });
-    } catch (err) {
-      set({ error: (err as Error).message });
+      await chatApi.clearHistory(agent.id);
+      set({ messages: [], loading: false });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : '清空对话失败',
+        loading: false,
+      });
+      throw error;
     }
   },
 
-  stopStreaming: () => {
-    const { abortController } = get();
-    abortController?.abort();
-    set({ streaming: false, streamingContent: '', abortController: null });
-  },
-
   reset: () => {
-    get().abortController?.abort();
     set({
       agent: null,
       messages: [],
-      loading: false,
       streaming: false,
       streamingContent: '',
+      loading: false,
       error: null,
-      abortController: null,
     });
   },
 }));

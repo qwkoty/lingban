@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 250 100% 98%;
+    --foreground: 250 20% 15%;
+    --card: 0 0% 100% / 0.7;
+    --card-foreground: 250 20% 15%;
+    --primary: 270 80% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 90% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 250 10% 95%;
+    --muted-foreground: 250 10% 45%;
+    --accent: 330 80% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 15% 85%;
+    --input: 250 15% 85%;
+    --ring: 270 80% 65%;
+    --radius: 0.75rem;
+  }
+
+  [data-theme='aurora'] {
+    --background: 250 100% 98%;
+    --foreground: 250 20% 15%;
+    --card: 0 0% 100% / 0.7;
+    --card-foreground: 250 20% 15%;
+    --primary: 270 80% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 90% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 250 10% 95%;
+    --muted-foreground: 250 10% 45%;
+    --accent: 330 80% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 15% 85%;
+    --input: 250 15% 85%;
+    --ring: 270 80% 65%;
+  }
+
+  [data-theme='dark'] {
+    --background: 250 30% 8%;
+    --foreground: 250 10% 95%;
+    --card: 250 25% 12% / 0.8;
+    --card-foreground: 250 10% 95%;
+    --primary: 270 75% 70%;
+    --primary-foreground: 250 30% 8%;
+    --secondary: 200 80% 65%;
+    --secondary-foreground: 250 30% 8%;
+    --muted: 250 20% 15%;
+    --muted-foreground: 250 10% 60%;
+    --accent: 330 75% 70%;
+    --accent-foreground: 250 30% 8%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 20% 20%;
+    --input: 250 20% 20%;
+    --ring: 270 75% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+      'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 极光背景渐变 */
+  [data-theme='aurora'] body {
+    background: linear-gradient(
+      135deg,
+      hsl(250 100% 98%) 0%,
+      hsl(270 90% 96%) 25%,
+      hsl(200 90% 96%) 50%,
+      hsl(330 90% 96%) 75%,
+      hsl(250 100% 98%) 100%
+    );
+    background-attachment: fixed;
+  }
+
+  [data-theme='dark'] body {
+    background: linear-gradient(
+      135deg,
+      hsl(250 30% 8%) 0%,
+      hsl(270 40% 10%) 25%,
+      hsl(230 40% 10%) 50%,
+      hsl(300 30% 10%) 75%,
+      hsl(250 30% 8%) 100%
+    );
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .pb-nav {
+    padding-bottom: 5rem;
+  }
+}
+
+/* 动画 */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* 输入框样式 */
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+textarea {
+  resize: none;
+}
+
+/* 按钮默认样式重置 */
+button {
+  font: inherit;
+}

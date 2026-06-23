@@ -1,42 +1,37 @@
-import { cn } from '../lib/utils';
+'use client';
+
+import { cn } from '@/lib/utils';
+import { getInitials } from '@/lib/utils';
 
 interface AvatarProps {
   src?: string | null;
-  name: string;
+  name?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
-const sizeMap = {
-  sm: 'w-8 h-8 text-xs',
-  md: 'w-12 h-12 text-sm',
-  lg: 'w-16 h-16 text-lg',
-  xl: 'w-24 h-24 text-2xl',
+const sizeClasses: Record<string, string> = {
+  sm: 'w-8 h-8 text-sm',
+  md: 'w-10 h-10 text-base',
+  lg: 'w-14 h-14 text-xl',
+  xl: 'w-20 h-20 text-2xl',
 };
 
-export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
-  const initial = name?.[0] || '?';
-
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={name}
-        className={cn('rounded-full object-cover', sizeMap[size], className)}
-      />
-    );
-  }
-
+export function Avatar({ src, name = '', size = 'md', className }: AvatarProps) {
   return (
     <div
       className={cn(
-        'rounded-full flex items-center justify-center font-medium text-white',
-        'bg-gradient-to-br from-indigo-500 to-purple-600',
-        sizeMap[size],
-        className,
+        'relative rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-primary/30 to-secondary/30 text-white font-semibold flex-shrink-0',
+        sizeClasses[size],
+        className
       )}
     >
-      {initial}
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={name} className="w-full h-full object-cover" />
+      ) : (
+        <span>{getInitials(name)}</span>
+      )}
     </div>
   );
 }

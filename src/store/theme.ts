@@ -1,42 +1,43 @@
 import { create } from 'zustand';
-
-type ThemeName = 'aurora' | 'colorful';
-
-const THEME_KEY = 'lingban_theme';
-
-function applyTheme(theme: ThemeName) {
-  document.body.className = `theme-${theme}`;
-}
-
-function getInitialTheme(): ThemeName {
-  const saved = localStorage.getItem(THEME_KEY) as ThemeName | null;
-  return saved === 'colorful' ? 'colorful' : 'aurora';
-}
+import type { ThemeType } from '@/types';
 
 interface ThemeState {
-  theme: ThemeName;
-  setTheme: (theme: ThemeName) => void;
-  toggle: () => void;
+  theme: ThemeType;
   init: () => void;
+  setTheme: (theme: ThemeType) => void;
+  toggleTheme: () => void;
 }
+
+const THEME_KEY = 'lingban_theme';
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
   theme: 'aurora',
 
   init: () => {
-    const theme = getInitialTheme();
-    applyTheme(theme);
+    if (typeof window === 'undefined') return;
+
+    const saved = localStorage.getItem(THEME_KEY) as ThemeType | null;
+    const theme = saved || 'aurora';
     set({ theme });
+    applyTheme(theme);
   },
 
   setTheme: (theme) => {
-    localStorage.setItem(THEME_KEY, theme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(THEME_KEY, theme);
+    }
     applyTheme(theme);
     set({ theme });
   },
 
-  toggle: () => {
-    const next = get().theme === 'aurora' ? 'colorful' : 'aurora';
+  toggleTheme: () => {
+    const current = get().theme;
+    const next: ThemeType = current === 'aurora' ? 'dark' : 'aurora';
     get().setTheme(next);
   },
 }));
+
+function applyTheme(theme: ThemeType) {
+  if (typeof document === 'undefined') return;
+  document.documentElement.setAttribute('data-theme', theme);
+}

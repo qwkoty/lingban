@@ -1,20 +1,20 @@
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 
-interface GlassCardProps {
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
+  hover?: boolean;
 }
 
-export function GlassCard({ children, className, onClick }: GlassCardProps) {
+export function GlassCard({ children, className, hover = false, ...props }: GlassCardProps) {
   return (
     <div
-      onClick={onClick}
       className={cn(
-        'glass-card p-4 transition-all',
-        onClick && 'cursor-pointer hover:bg-white/10 active:scale-[0.98]',
-        className,
+        'backdrop-blur-xl bg-white/10 border border-white/15 rounded-2xl shadow-lg',
+        hover && 'transition-all duration-300 hover:bg-white/15 hover:border-white/20 hover:shadow-xl active:scale-[0.98]',
+        className
       )}
+      {...props}
     >
       {children}
     </div>

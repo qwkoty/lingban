@@ -1,8 +1,0 @@
-import 'dotenv/config';
-import app from './app';
-
-const PORT = Number(process.env.PORT) || 3001;
-
-app.listen(PORT, () => {
-  console.log(`🚀 灵伴服务已启动: http://localhost:${PORT}`);
-});

@@ -1,38 +1,57 @@
 import { create } from 'zustand';
-
-export interface ToastItem {
-  id: number;
-  message: string;
-  type: 'success' | 'error' | 'info';
-}
+import type { ToastMessage } from '@/types';
 
 interface ToastState {
-  toasts: ToastItem[];
-  show: (message: string, type?: ToastItem['type']) => void;
-  dismiss: (id: number) => void;
+  toasts: ToastMessage[];
+  success: (message: string) => void;
+  error: (message: string) => void;
+  info: (message: string) => void;
+  dismiss: (id: string) => void;
 }
 
-let nextId = 1;
+let idCounter = 0;
 
-export const useToastStore = create<ToastState>((set, get) => ({
+export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
 
-  show: (message, type = 'info') => {
-    const id = nextId++;
-    set({ toasts: [...get().toasts, { id, message, type }] });
+  success: (message) => {
+    const id = String(++idCounter);
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: 'success', message }],
+    }));
     setTimeout(() => {
-      get().dismiss(id);
+      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
+    }, 3000);
+  },
+
+  error: (message) => {
+    const id = String(++idCounter);
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: 'error', message }],
+    }));
+    setTimeout(() => {
+      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
+    }, 4000);
+  },
+
+  info: (message) => {
+    const id = String(++idCounter);
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: 'info', message }],
+    }));
+    setTimeout(() => {
+      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
     }, 3000);
   },
 
   dismiss: (id) => {
-    set({ toasts: get().toasts.filter((t) => t.id !== id) });
+    set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
   },
 }));
 
-// 便捷方法
+// 导出一个独立的 toast 对象，方便在非组件中使用
 export const toast = {
-  success: (msg: string) => useToastStore.getState().show(msg, 'success'),
-  error: (msg: string) => useToastStore.getState().show(msg, 'error'),
-  info: (msg: string) => useToastStore.getState().show(msg, 'info'),
+  success: (message: string) => useToastStore.getState().success(message),
+  error: (message: string) => useToastStore.getState().error(message),
+  info: (message: string) => useToastStore.getState().info(message),
 };
